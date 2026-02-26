@@ -24,9 +24,9 @@ describe('Auth Middleware', () => {
     vi.clearAllMocks()
   })
 
-  it('redirects unauthenticated user from /profilul-meu to /logare', () => {
+  it('redirects unauthenticated user from /profilul-meu to /logare', async () => {
     const req = createMockAuthRequest('/profilul-meu', null)
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     expect(response).toBeInstanceOf(Response)
     const location = (response as Response).headers.get('location')
@@ -34,18 +34,18 @@ describe('Auth Middleware', () => {
     expect(location).toContain('callbackUrl=/profilul-meu')
   })
 
-  it('redirects unauthenticated user from /curs/test to /logare', () => {
+  it('redirects unauthenticated user from /curs/test to /logare', async () => {
     const req = createMockAuthRequest('/curs/test', null)
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     expect(response).toBeInstanceOf(Response)
     const location = (response as Response).headers.get('location')
     expect(location).toContain('/logare')
   })
 
-  it('redirects unauthenticated user from /admin/dashboard to /logare', () => {
+  it('redirects unauthenticated user from /admin/dashboard to /logare', async () => {
     const req = createMockAuthRequest('/admin/dashboard', null)
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     expect(response).toBeInstanceOf(Response)
     const location = (response as Response).headers.get('location')
@@ -56,7 +56,7 @@ describe('Auth Middleware', () => {
     const req = createMockAuthRequest('/admin/dashboard', {
       user: { role: 'USER' },
     })
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     expect(response).toBeInstanceOf(Response)
     expect((response as Response).status).toBe(403)
@@ -64,11 +64,11 @@ describe('Auth Middleware', () => {
     expect(data.error).toBe('Acces interzis')
   })
 
-  it('allows admin to access /admin routes', () => {
+  it('allows admin to access /admin routes', async () => {
     const req = createMockAuthRequest('/admin/dashboard', {
       user: { role: 'ADMIN' },
     })
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     // NextResponse.next() or undefined means allowed
     expect(
@@ -78,11 +78,11 @@ describe('Auth Middleware', () => {
     ).toBe(true)
   })
 
-  it('allows authenticated user to access /profilul-meu', () => {
+  it('allows authenticated user to access /profilul-meu', async () => {
     const req = createMockAuthRequest('/profilul-meu', {
       user: { role: 'USER' },
     })
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     expect(
       response === undefined ||
@@ -91,9 +91,9 @@ describe('Auth Middleware', () => {
     ).toBe(true)
   })
 
-  it('allows unauthenticated access to public routes', () => {
+  it('allows unauthenticated access to public routes', async () => {
     const req = createMockAuthRequest('/', null)
-    const response = middlewareCallback(req)
+    const response = await middlewareCallback(req)
 
     expect(
       response === undefined ||

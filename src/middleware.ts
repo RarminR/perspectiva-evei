@@ -3,15 +3,16 @@ import { NextResponse } from "next/server"
 
 type AuthRequest = {
   nextUrl: URL
-  auth: { user?: { role?: string } } | null
+  auth: { user?: { id?: string; role?: string } } | null
   url: string
+  headers?: Headers
 }
 
 /**
  * Middleware callback — exported separately for unit testing.
  * In production, this is wrapped by NextAuth's `auth()`.
  */
-export function middlewareCallback(req: AuthRequest) {
+export async function middlewareCallback(req: AuthRequest) {
   const { nextUrl, auth: session } = req
   const isLoggedIn = !!session
   const isAdmin = session?.user?.role === "ADMIN"
@@ -41,6 +42,22 @@ export function middlewareCallback(req: AuthRequest) {
     return NextResponse.redirect(
       new URL(`/logare?callbackUrl=${nextUrl.pathname}`, nextUrl)
     )
+  }
+
+  const fingerprint = req.headers?.get('x-device-fingerprint')
+  if (isLoggedIn && isProtected && fingerprint && session?.user?.id) {
+    const response = await fetch(`${nextUrl.origin}/api/devices/validate`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        cookie: req.headers?.get('cookie') || '',
+      },
+      body: JSON.stringify({ fingerprint }),
+    })
+
+    if (!response.ok) {
+      return NextResponse.json({ error: 'Dispozitiv neautorizat' }, { status: 403 })
+    }
   }
 
   return NextResponse.next()
