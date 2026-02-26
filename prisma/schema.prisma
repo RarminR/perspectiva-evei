@@ -1,0 +1,340 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  PENDING
+  CREATED
+  FAILED
+  STORNO
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  EXPIRED
+  EXTENDED
+}
+
+enum ProductType {
+  DIGITAL
+  PHYSICAL
+}
+
+enum OrderItemType {
+  COURSE
+  GUIDE
+  BUNDLE
+  PRODUCT
+  SESSION
+}
+
+enum PromoCodeType {
+  PERCENTAGE
+  FIXED
+}
+
+enum SessionStatus {
+  BOOKED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String
+  hashedPassword String?
+  phone          String?
+  role           Role     @default(USER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  devices     Device[]
+  orders      Order[]
+  enrollments CourseEnrollment[]
+  guideAccess GuideAccess[]
+  sessions    Session1on1[]
+  progress    LessonProgress[]
+}
+
+model Device {
+  id          String   @id @default(cuid())
+  userId      String
+  fingerprint String
+  name        String?
+  lastSeen    DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fingerprint])
+}
+
+model Course {
+  id                 String   @id @default(cuid())
+  title              String
+  slug               String   @unique
+  description        String?
+  price              Float
+  installmentPrice   Float?
+  maxParticipants    Int      @default(15)
+  accessDurationDays Int      @default(30)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  editions CourseEdition[]
+}
+
+model CourseEdition {
+  id               String   @id @default(cuid())
+  courseId         String
+  editionNumber    Int
+  startDate        DateTime
+  endDate          DateTime
+  enrollmentOpen   Boolean  @default(false)
+  maxParticipants  Int      @default(15)
+  createdAt        DateTime @default(now())
+
+  course      Course             @relation(fields: [courseId], references: [id])
+  lessons     Lesson[]
+  enrollments CourseEnrollment[]
+
+  @@unique([courseId, editionNumber])
+}
+
+model CourseEnrollment {
+  id              String           @id @default(cuid())
+  userId          String
+  editionId       String
+  orderId         String?
+  status          EnrollmentStatus @default(ACTIVE)
+  accessExpiresAt DateTime
+  createdAt       DateTime         @default(now())
+
+  user    User          @relation(fields: [userId], references: [id])
+  edition CourseEdition @relation(fields: [editionId], references: [id])
+
+  @@unique([userId, editionId])
+}
+
+model Lesson {
+  id            String    @id @default(cuid())
+  editionId     String
+  title         String
+  order         Int
+  videoKey      String?
+  duration      Int?
+  availableFrom DateTime?
+  createdAt     DateTime  @default(now())
+
+  edition  CourseEdition    @relation(fields: [editionId], references: [id])
+  progress LessonProgress[]
+
+  @@unique([editionId, order])
+}
+
+model LessonProgress {
+  id             String   @id @default(cuid())
+  userId         String
+  lessonId       String
+  watchedSeconds Int      @default(0)
+  completed      Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+
+  @@unique([userId, lessonId])
+}
+
+model Guide {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  description   String?
+  price         Float
+  coverImage    String?
+  contentJson   Json?
+  audioKey      String?
+  audioDuration Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  access      GuideAccess[]
+  bundleItems BundleItem[]
+}
+
+model GuideAccess {
+  id        String   @id @default(cuid())
+  userId    String
+  guideId   String
+  orderId   String?
+  grantedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  guide Guide @relation(fields: [guideId], references: [id])
+
+  @@unique([userId, guideId])
+}
+
+model Bundle {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  price         Float
+  originalPrice Float
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  items BundleItem[]
+}
+
+model BundleItem {
+  id       String @id @default(cuid())
+  bundleId String
+  guideId  String
+
+  bundle Bundle @relation(fields: [bundleId], references: [id])
+  guide  Guide  @relation(fields: [guideId], references: [id])
+
+  @@unique([bundleId, guideId])
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  description String?
+  price       Float
+  type        ProductType @default(PHYSICAL)
+  stock       Int         @default(0)
+  images      String[]
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Order {
+  id                   String      @id @default(cuid())
+  userId               String
+  revolutOrderId       String?     @unique
+  revolutCheckoutUrl   String?
+  status               OrderStatus @default(PENDING)
+  totalAmount          Float
+  currency             String      @default("EUR")
+  installmentNumber    Int?
+  parentOrderId        String?
+  expiresPendingAfter  DateTime?
+  shippingAddress      Json?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  user     User        @relation(fields: [userId], references: [id])
+  items    OrderItem[]
+  invoices Invoice[]
+}
+
+model OrderItem {
+  id          String        @id @default(cuid())
+  orderId     String
+  productType OrderItemType
+  productId   String
+  quantity    Int           @default(1)
+  unitPrice   Float
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model Invoice {
+  id               String        @id @default(cuid())
+  orderId          String
+  smartbillSeries  String?
+  smartbillNumber  String?
+  smartbillUrl     String?
+  status           InvoiceStatus @default(PENDING)
+  errorText        String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model PromoCode {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  type        PromoCodeType
+  value       Float
+  validFrom   DateTime?
+  validUntil  DateTime?
+  maxUses     Int?
+  currentUses Int           @default(0)
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+}
+
+model Session1on1 {
+  id          String        @id @default(cuid())
+  userId      String
+  scheduledAt DateTime
+  duration    Int           @default(60)
+  status      SessionStatus @default(BOOKED)
+  zoomLink    String?
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Availability {
+  id        String   @id @default(cuid())
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  content     String?
+  coverImage  String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model CaseStudy {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  content          String?
+  coverImage       String?
+  testimonialQuote String?
+  clientName       String?
+  published        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
