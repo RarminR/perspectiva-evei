@@ -1,5 +1,10 @@
 import { auth } from "@/lib/auth"
+import { checkRateLimit } from "@/lib/rate-limit"
 import { NextResponse } from "next/server"
+
+const AUTH_LIMIT = { limit: 10, windowMs: 60 * 1000 }
+const CHECKOUT_LIMIT = { limit: 5, windowMs: 60 * 1000 }
+const CONTACT_LIMIT = { limit: 3, windowMs: 60 * 1000 }
 
 type AuthRequest = {
   nextUrl: URL
@@ -14,6 +19,51 @@ type AuthRequest = {
  */
 export async function middlewareCallback(req: AuthRequest) {
   const { nextUrl, auth: session } = req
+
+  const forwardedFor = req.headers?.get("x-forwarded-for")
+  const realIp = req.headers?.get("x-real-ip")
+  const ip = forwardedFor?.split(",")[0]?.trim() || realIp || "unknown"
+  const pathname = nextUrl.pathname
+
+  if (pathname.startsWith("/api/auth")) {
+    const result = checkRateLimit(`auth:${ip}`, AUTH_LIMIT)
+    if (!result.allowed) {
+      return NextResponse.json(
+        { error: "Prea multe incercari. Incearca din nou mai tarziu." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(result.retryAfter ?? 0) },
+        }
+      )
+    }
+  }
+
+  if (pathname.startsWith("/api/checkout")) {
+    const result = checkRateLimit(`checkout:${ip}`, CHECKOUT_LIMIT)
+    if (!result.allowed) {
+      return NextResponse.json(
+        { error: "Prea multe cereri. Incearca din nou mai tarziu." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(result.retryAfter ?? 0) },
+        }
+      )
+    }
+  }
+
+  if (pathname === "/api/contact") {
+    const result = checkRateLimit(`contact:${ip}`, CONTACT_LIMIT)
+    if (!result.allowed) {
+      return NextResponse.json(
+        { error: "Prea multe mesaje. Incearca din nou mai tarziu." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(result.retryAfter ?? 0) },
+        }
+      )
+    }
+  }
+
   const isLoggedIn = !!session
   const isAdmin = session?.user?.role === "ADMIN"
 
@@ -68,5 +118,10 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/api/auth/:path*",
+    "/api/checkout/:path*",
+    "/api/contact",
+  ],
 }
