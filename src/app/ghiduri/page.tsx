@@ -1,7 +1,29 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section, Badge } from '@/components/ui'
 import { prisma } from '@/lib/db'
+
+export const metadata: Metadata = {
+  title: 'Ghiduri de Manifestare | Perspectiva Evei',
+  description:
+    'Ghiduri digitale de manifestare conștientă create de Eva Popescu. Pași clari spre transformare autentică.',
+  openGraph: {
+    title: 'Ghiduri de Manifestare | Perspectiva Evei',
+    description:
+      'Ghiduri digitale de manifestare conștientă create de Eva Popescu.',
+    url: 'https://perspectivaevei.com/ghiduri',
+    siteName: 'Perspectiva Evei',
+    locale: 'ro_RO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ghiduri de Manifestare | Perspectiva Evei',
+    description:
+      'Ghiduri digitale de manifestare conștientă create de Eva Popescu.',
+  },
+}
 
 const FALLBACK_GUIDES = [
   {

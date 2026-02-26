@@ -1,7 +1,29 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
+
+export const metadata: Metadata = {
+  title: 'Blog | Perspectiva Evei',
+  description:
+    'Articole și resurse despre manifestare conștientă, creștere personală și transformare autentică de la Eva Popescu.',
+  openGraph: {
+    title: 'Blog | Perspectiva Evei',
+    description:
+      'Articole despre manifestare conștientă și creștere personală de la Eva Popescu.',
+    url: 'https://perspectivaevei.com/blog',
+    siteName: 'Perspectiva Evei',
+    locale: 'ro_RO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | Perspectiva Evei',
+    description:
+      'Articole despre manifestare conștientă și creștere personală de la Eva Popescu.',
+  },
+}
 
 export const dynamic = 'force-dynamic'
 

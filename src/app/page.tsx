@@ -1,9 +1,31 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar } from '@/components/ui/Navbar'
 import { Footer } from '@/components/ui/Footer'
 import { Section } from '@/components/ui/Section'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+
+export const metadata: Metadata = {
+  title: 'Perspectiva Evei | Coach de Manifestare Conștientă',
+  description:
+    'Transformă-ți viața prin manifestare conștientă cu Eva Popescu. Cursuri, ghiduri și ședințe 1:1 pentru creștere personală autentică.',
+  openGraph: {
+    title: 'Perspectiva Evei | Coach de Manifestare Conștientă',
+    description:
+      'Transformă-ți viața prin manifestare conștientă cu Eva Popescu.',
+    url: 'https://perspectivaevei.com',
+    siteName: 'Perspectiva Evei',
+    locale: 'ro_RO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Perspectiva Evei | Coach de Manifestare Conștientă',
+    description:
+      'Transformă-ți viața prin manifestare conștientă cu Eva Popescu.',
+  },
+}
 
 const testimonials = [
   {

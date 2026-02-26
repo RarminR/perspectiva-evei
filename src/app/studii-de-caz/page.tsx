@@ -1,7 +1,29 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
+
+export const metadata: Metadata = {
+  title: 'Studii de Caz | Perspectiva Evei',
+  description:
+    'Povești reale de transformare prin manifestare conștientă. Studii de caz de la clienții Evei Popescu.',
+  openGraph: {
+    title: 'Studii de Caz | Perspectiva Evei',
+    description:
+      'Transformări reale prin manifestare conștientă. Studii de caz de la clienții Evei Popescu.',
+    url: 'https://perspectivaevei.com/studii-de-caz',
+    siteName: 'Perspectiva Evei',
+    locale: 'ro_RO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Studii de Caz | Perspectiva Evei',
+    description:
+      'Transformări reale prin manifestare conștientă. Studii de caz de la clienții Evei Popescu.',
+  },
+}
 
 export const dynamic = 'force-dynamic'
 

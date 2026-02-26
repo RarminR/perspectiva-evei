@@ -1,8 +1,31 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar, Footer, Section, Badge, Accordion } from '@/components/ui'
 import { getCourseWithEditions } from '@/services/course'
 
+export const metadata: Metadata = {
+  title: 'Cursul A.D.O. | Perspectiva Evei',
+  description:
+    'Cursul A.D.O. (Alege! Decide! Observă!) — 8 săptămâni de transformare autentică cu Eva Popescu. Max. 15 participanți, sesiuni live pe Zoom.',
+  openGraph: {
+    title: 'Cursul A.D.O. | Perspectiva Evei',
+    description:
+      '8 săptămâni de manifestare conștientă cu Eva Popescu. Max. 15 participanți.',
+    url: 'https://perspectivaevei.com/cursul-ado',
+    siteName: 'Perspectiva Evei',
+    locale: 'ro_RO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Cursul A.D.O. | Perspectiva Evei',
+    description:
+      '8 săptămâni de manifestare conștientă cu Eva Popescu. Max. 15 participanți.',
+  },
+}
+
 export const dynamic = 'force-dynamic'
+
 
 // ─── Pricing Constants ─────────────────────────────────────────
 const FULL_PRICE = '€1.188'

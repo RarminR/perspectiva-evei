@@ -1,8 +1,29 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar } from '@/components/ui'
 import { Footer } from '@/components/ui'
 import { Section } from '@/components/ui'
 
+export const metadata: Metadata = {
+  title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
+  description:
+    'Ședințe individuale de coaching cu Eva Popescu. Îndrumare personalizată în manifestare conștientă și Legea Asumpției.',
+  openGraph: {
+    title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
+    description:
+      'Coaching personalizat cu Eva Popescu. Ședințe individuale de manifestare conștientă.',
+    url: 'https://perspectivaevei.com/sedinte-1-la-1',
+    siteName: 'Perspectiva Evei',
+    locale: 'ro_RO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
+    description:
+      'Coaching personalizat cu Eva Popescu. Ședințe individuale de manifestare conștientă.',
+  },
+}
 const benefits = [
   {
     icon: '✦',
