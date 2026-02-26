@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { Navbar, Footer, Section, Badge, Accordion } from '@/components/ui'
 import { getCourseWithEditions } from '@/services/course'
 
+export const dynamic = 'force-dynamic'
+
 // ─── Pricing Constants ─────────────────────────────────────────
 const FULL_PRICE = '€1.188'
 const FULL_PRICE_CROSSED = '€1.288'
