@@ -18,36 +18,66 @@ const NAV_ITEMS = [
   { href: '/admin/setari', label: 'Setări', icon: '⚙️' },
 ]
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 bg-[#2D1B69] min-h-screen flex flex-col">
-      <div className="p-6 border-b border-white/10">
-        <h1 className="text-white font-bold text-lg">Admin Panel</h1>
-        <p className="text-white/50 text-xs mt-1">Perspectiva Evei</p>
-      </div>
-      <nav className="flex-1 p-4 space-y-1">
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== '/admin' && pathname.startsWith(item.href))
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
-                isActive
-                  ? 'bg-[#E91E8C] text-white'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
-          )
-        })}
-      </nav>
-    </aside>
+    <>
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#2D1B69] flex flex-col transform transition-transform duration-200 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0 md:static md:transform-none`}
+      >
+        <div className="p-6 border-b border-white/10 flex items-center justify-between">
+          <div>
+            <h1 className="text-white font-bold text-lg">Admin Panel</h1>
+            <p className="text-white/50 text-xs mt-1">Perspectiva Evei</p>
+          </div>
+          {/* Close button for mobile */}
+          <button
+            className="md:hidden text-white/70 hover:text-white"
+            onClick={onClose}
+            aria-label="Închide meniu"
+          >
+            ✕
+          </button>
+        </div>
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {NAV_ITEMS.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/admin' && pathname.startsWith(item.href))
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
+                  isActive
+                    ? 'bg-[#E91E8C] text-white'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+              </Link>
+            )
+          })}
+        </nav>
+      </aside>
+    </>
   )
 }
