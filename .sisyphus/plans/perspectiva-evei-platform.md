@@ -283,7 +283,7 @@ Max Concurrent: 8 (Waves 1-3)
 > TDD: Each task follows RED (failing test) → GREEN (minimal impl) → REFACTOR.
 
 
-- [ ] 1. Project Scaffolding + Configuration
+- [x] 1. Project Scaffolding + Configuration
 
   **What to do**:
   - Initialize Next.js 14+ project with App Router (`create-next-app` with TypeScript)
@@ -550,7 +550,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 4. NextAuth.js Authentication Setup
+- [x] 4. NextAuth.js Authentication Setup
 
   **What to do**:
   - Install and configure NextAuth.js v5 (Auth.js) with Prisma adapter
@@ -649,7 +649,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/api/auth/[...nextauth]/route.ts, src/lib/auth.ts, src/middleware.ts, src/app/(auth)/logare/page.tsx, src/app/(auth)/inregistrare/page.tsx, src/app/(auth)/resetare-parola/*, prisma/schema.prisma (Account/Session models)`
   - Pre-commit: `vitest run`
 
-- [ ] 5. Resend Email Service + React Email Templates
+- [x] 5. Resend Email Service + React Email Templates
 
   **What to do**:
   - Install `resend` and `@react-email/components`
@@ -727,7 +727,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/email.ts, src/emails/*, src/app/dev/emails/page.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 6. Revolut Payment Gateway Service Module
+- [x] 6. Revolut Payment Gateway Service Module
 
   **What to do**:
   - Create Revolut service module at `src/services/revolut.ts` with typed functions:
@@ -816,7 +816,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 7. SmartBill Invoicing Service Module
+- [x] 7. SmartBill Invoicing Service Module
 
   **What to do**:
   - Create SmartBill service module at `src/services/smartbill.ts` with typed functions:
@@ -913,7 +913,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/smartbill.ts, src/services/smartbill.test.ts, src/types/smartbill.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 8. AWS Infrastructure Setup (S3 + CloudFront + MediaConvert)
+- [x] 8. AWS Infrastructure Setup (S3 + CloudFront + MediaConvert)
 
   **What to do**:
   - Create AWS service module at `src/services/aws-video.ts` with typed functions:

@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}";
+self.__REACT_LOADABLE_MANIFEST='{"../node_modules/@react-email/components/node_modules/@react-email/render/dist/browser/index.mjs -> react-dom/server":{"id":null,"files":[]}}';

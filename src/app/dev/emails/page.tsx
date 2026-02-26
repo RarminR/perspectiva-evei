@@ -7,7 +7,7 @@ import { InstallmentReminderEmail } from '@/emails/InstallmentReminderEmail'
 import { PasswordResetEmail } from '@/emails/PasswordResetEmail'
 import { SessionBookedEmail } from '@/emails/SessionBookedEmail'
 import { SessionReminderEmail } from '@/emails/SessionReminderEmail'
-import { render } from '@react-email/components'
+
 
 const emailTemplates = [
   {

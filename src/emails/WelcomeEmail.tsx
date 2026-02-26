@@ -5,10 +5,10 @@ import {
   Head,
   Hr,
   Html,
-  Img,
-  Link,
+
+
   Preview,
-  Row,
+
   Section,
   Text,
 } from '@react-email/components'

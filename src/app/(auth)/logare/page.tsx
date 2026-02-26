@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
-export default function LogarePage() {
+function LogareForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/"
   const [error, setError] = useState("")
@@ -100,5 +100,13 @@ export default function LogarePage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function LogarePage() {
+  return (
+    <Suspense fallback={<div className="text-white text-center">Se încarcă...</div>}>
+      <LogareForm />
+    </Suspense>
   )
 }
