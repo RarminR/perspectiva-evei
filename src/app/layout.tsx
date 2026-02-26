@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import CookieConsent from '@/components/CookieConsent'
 
 export const metadata: Metadata = {
   title: 'Perspectiva Evei',
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="ro">
       <body className="bg-brand-purple-dark text-white">
         {children}
+        <CookieConsent />
       </body>
     </html>
   )
