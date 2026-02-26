@@ -1,250 +1,807 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Navbar } from '@/components/ui/Navbar'
 import { Footer } from '@/components/ui/Footer'
-import { Section } from '@/components/ui/Section'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
+import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
+import { getCourseWithEditions } from '@/services/course'
+import { prisma } from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Perspectiva Evei | Coach de Manifestare Conștientă',
+  title: 'Acasă | Perspectiva Evei',
   description:
-    'Transformă-ți viața prin manifestare conștientă cu Eva Popescu. Cursuri, ghiduri și ședințe 1:1 pentru creștere personală autentică.',
+    'Descoperă cum să devii Creatorul realității tale prin cursuri, ghiduri și sesiuni 1 la 1. Manifestare conștientă și schimbare autentică cu Eva.',
   openGraph: {
-    title: 'Perspectiva Evei | Coach de Manifestare Conștientă',
+    title: 'Acasă | Perspectiva Evei',
     description:
-      'Transformă-ți viața prin manifestare conștientă cu Eva Popescu.',
+      'Descoperă cum să devii Creatorul realității tale prin cursuri, ghiduri și sesiuni 1 la 1.',
     url: 'https://perspectivaevei.com',
     siteName: 'Perspectiva Evei',
     locale: 'ro_RO',
     type: 'website',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Perspectiva Evei | Coach de Manifestare Conștientă',
-    description:
-      'Transformă-ți viața prin manifestare conștientă cu Eva Popescu.',
-  },
 }
+
+const StarSVG = () => (
+  <svg
+    width="18"
+    height="17"
+    viewBox="0 0 18 17"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M8.16379 0.551109C8.47316 -0.183704 9.52684 -0.183703 9.83621 0.551111L11.6621 4.88811C11.7926 5.19789 12.0875 5.40955 12.426 5.43636L17.1654 5.81173C17.9684 5.87533 18.294 6.86532 17.6822 7.38306L14.0713 10.4388C13.8134 10.6571 13.7007 10.9996 13.7795 11.3259L14.8827 15.8949C15.0696 16.669 14.2172 17.2809 13.5297 16.8661L9.47208 14.4176C9.18225 14.2427 8.81775 14.2427 8.52793 14.4176L4.47029 16.8661C3.7828 17.2809 2.93036 16.669 3.11727 15.8949L4.22048 11.3259C4.29928 10.9996 4.18664 10.6571 3.92873 10.4388L0.317756 7.38306C-0.294046 6.86532 0.0315611 5.87533 0.834562 5.81173L5.57402 5.43636C5.91255 5.40955 6.20744 5.19789 6.33786 4.88811L8.16379 0.551109Z"
+      fill="currentColor"
+    />
+  </svg>
+)
 
 const testimonials = [
   {
-    quote: 'Eva, te iubesc! Dacă ai ști cât de mult s-a schimbat tot după cursul tău... Voi fi mereu recunoscătoare!',
-    name: 'Roxana',
-    role: 'Cursantă A.D.O.',
+    quote:
+      'Am venit în curs confuză și blocată. În câteva săptămâni am învățat să-mi schimb complet raportarea și să aleg conștient ce trăiesc.',
+    name: 'Roxana M.',
+    role: 'Antreprenoare',
   },
   {
-    quote: 'Singurul curs care te scoate din întuneric este A.D.O.! MULȚUMESC! TE IUBESC EVA!!!',
-    name: 'Loredana',
-    role: 'Cursantă A.D.O.',
+    quote:
+      'Cel mai valoros lucru pentru mine a fost claritatea. Nu mai alerg după tehnici, ci îmi asum postura de creator în fiecare zi.',
+    name: 'Loredana P.',
+    role: 'Manager HR',
   },
   {
-    quote: 'Chiar este minunat cursul tău. Tu în realitatea mea faci o treabă minunată, realmente schimbi viețile oamenilor!',
-    name: 'Andreea',
-    role: 'Cursantă A.D.O.',
+    quote:
+      'Fiecare sesiune a fost practică, aplicată și directă. Rezultatele au apărut atât în relații, cât și în felul în care mă văd pe mine.',
+    name: 'Andreea C.',
+    role: 'Consultant',
   },
 ]
 
-const benefits = [
-  {
-    title: 'Descoperi cum să trăiești conștient și autentic.',
-    icon: '✦',
-  },
-  {
-    title: 'Preiei controlul complet asupra realității tale printr-un proces practic.',
-    icon: '◈',
-  },
-  {
-    title: 'Obții îndrumare personalizată, care duce la schimbări reale.',
-    icon: '❋',
-  },
-  {
-    title: 'Înveți cum să te raportezi la tine și la tot ceea ce se întâmplă în realitatea ta.',
-    icon: '✧',
-  },
+const courseBenefits = [
+  'Înțelegi manifestarea conștientă',
+  'Te bucuri de atenție personalizată',
+  'Deprinzi un nou mod de gândire',
+  'Ajungi la cârma propriei vieți',
 ]
 
-export default function Home() {
+const socialProofStats = [
+  { value: '100+', label: 'cursanți mulțumiți' },
+  { value: '4+', label: 'ani de experiență' },
+  { value: '8', label: 'săptămâni de transformare' },
+  { value: '15', label: 'participanți max / ediție' },
+]
+
+const formatEur = (value: number) =>
+  new Intl.NumberFormat('ro-RO', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(value)
+
+export default async function Home() {
+  const course = await getCourseWithEditions('cursul-ado')
+  const activeEdition = course?.editions?.find((e) => e.enrollmentOpen)
+
+  let guides: {
+    id: string
+    title: string
+    slug: string
+    price: number
+    coverImage: string | null
+  }[] = []
+  try {
+    guides = await prisma.guide.findMany({
+      where: {},
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, title: true, slug: true, price: true, coverImage: true },
+    })
+  } catch {}
+
+  let bundle: { id: string; price: number; originalPrice: number } | null = null
+  try {
+    bundle = await prisma.bundle.findFirst({
+      where: { active: true },
+      select: { id: true, price: true, originalPrice: true },
+    })
+  } catch {}
+
+  const displayedGuides = guides.slice(0, 3)
+
   return (
     <main>
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#C4956A]/30 via-[#2D1B69] to-[#2D1B69] text-white py-24 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMC41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJ1cmwoI2cpIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PC9zdmc+')] opacity-40" />
-        <div className="relative max-w-7xl mx-auto">
-          <div className="flex flex-wrap gap-3 mb-8">
-            <Badge variant="pink">4+ ani de experiență</Badge>
-            <Badge variant="pink">1000+ ore de coaching</Badge>
-            <Badge variant="pink">100+ cursanți mulțumiți</Badge>
+      <section
+        style={{
+          backgroundImage:
+            "linear-gradient(101deg, #a007dc, rgba(62,6,97,0.75) 30%, rgba(62,6,97,0.5) 55%, transparent 69%), url('/images/IMG_7501.jpg')",
+          backgroundPosition: '0 0, 50%',
+          backgroundSize: 'auto, cover',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '90vh',
+          display: 'flex',
+        }}
+      >
+        <div style={{ maxWidth: '940px', width: '100%', margin: '0 auto', padding: '0 30px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '22px',
+              alignItems: 'flex-start',
+              width: '50%',
+              color: '#f8f9fa',
+            }}
+            className="w-full md:w-1/2"
+          >
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  backgroundColor: 'rgba(255,255,255,0.25)',
+                  borderRadius: '999px',
+                  padding: '.75rem 1.5rem',
+                  fontSize: '0.9rem',
+                }}
+              >
+                <span style={{ color: '#a007dc' }}>●</span>
+                <span>Locuri limitate</span>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  backgroundColor: 'rgba(255,255,255,0.25)',
+                  borderRadius: '999px',
+                  padding: '.75rem 1.5rem',
+                  fontSize: '0.9rem',
+                }}
+              >
+                <span>Sesiuni live pe Zoom</span>
+              </div>
+            </div>
+
+            <h1
+              style={{
+                backgroundImage: 'linear-gradient(90deg, #ffffff, #e8c2ff)',
+                WebkitTextFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                lineHeight: 1.1,
+                fontWeight: 700,
+                margin: 0,
+              }}
+            >
+              Transformă-ți viața în 8 săptămâni.
+            </h1>
+
+            <p style={{ color: '#ffffff', maxWidth: '480px', margin: 0, lineHeight: 1.65 }}>
+              Cursul A.D.O. te învață să devii Creatorul realității tale. Fără tehnici. Fără
+              meditații. Doar tu, într-o postură complet nouă.
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
+              <Link
+                href="/checkout?product=COURSE&type=full"
+                style={{
+                  backgroundColor: '#ffffff',
+                  color: '#51087e',
+                  border: '1px solid #ffffff',
+                  borderRadius: '999px',
+                  padding: '.85rem 1.7rem',
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                }}
+              >
+                Înscrie-te — {COURSE_PRICING.FULL_PRICE}
+              </Link>
+              <Link
+                href="#produs"
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#ffffff',
+                  border: '1px solid #ffffff',
+                  borderRadius: '999px',
+                  padding: '.85rem 1.7rem',
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                }}
+              >
+                Vezi ce include ↓
+              </Link>
+            </div>
+
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>
+              sau 2 × {COURSE_PRICING.INSTALLMENT_PRICE} în rate
+            </p>
+            <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)' }}>
+              {activeEdition ? 'Înscrieri deschise acum pentru ediția curentă.' : 'Edițiile sunt anunțate periodic.'}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ backgroundColor: '#51087e', padding: '20px 30px' }}>
+        <div style={{ maxWidth: '940px', width: '100%', margin: '0 auto' }}>
+          <div className="hidden md:flex" style={{ justifyContent: 'space-between', gap: '20px' }}>
+            {socialProofStats.map((stat) => (
+              <div key={stat.label} style={{ textAlign: 'center', flex: 1 }}>
+                <p style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#ffffff' }}>
+                  {stat.value}
+                </p>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight max-w-3xl">
-            <span className="bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] bg-clip-text text-transparent">Totul începe cu tine, </span>
-            pentru că totul începe în minte.
-          </h1>
+          <div
+            className="grid grid-cols-2 gap-6 md:hidden"
+            style={{ justifyContent: 'space-between' }}
+          >
+            {socialProofStats.map((stat) => (
+              <div key={`mobile-${stat.label}`} style={{ textAlign: 'left' }}>
+                <p style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#ffffff' }}>
+                  {stat.value}
+                </p>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <p className="text-white/80 text-lg md:text-xl mb-10 max-w-2xl leading-relaxed">
-            Viața pe care o trăiești nu este decât oglinda gândurilor și convingerilor tale.
-            Sunt aici să te ghidez pentru a înțelege corect manifestarea conștientă, astfel încât
-            tu să alegi conștient o experiență autentică.
-          </p>
+      <section
+        id="produs"
+        style={{
+          backgroundImage: 'linear-gradient(180deg, #ffffff, #e8c2ff)',
+          padding: '90px 30px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '940px', width: '100%', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: '16px',
+              marginBottom: '40px',
+            }}
+          >
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontWeight: 700,
+                backgroundImage: 'linear-gradient(90deg, #51087e, #a007dc)',
+                WebkitTextFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+              }}
+            >
+              Ce primești în Cursul A.D.O.
+            </h2>
+            <p style={{ margin: 0, color: '#2c0246' }}>
+              8 săptămâni de transformare autentică, live pe Zoom
+            </p>
+          </div>
 
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/cursul-ado"
-              className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#E91E8C]/90 transition-all hover:shadow-lg hover:shadow-[#E91E8C]/25"
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {courseBenefits.map((benefit) => (
+                <div
+                  key={benefit}
+                  style={{
+                    backgroundColor: 'rgba(81,8,126,0.15)',
+                    borderRadius: '20px',
+                    padding: '30px',
+                    display: 'flex',
+                    gap: '20px',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '58px',
+                      height: '58px',
+                      minWidth: '58px',
+                      borderRadius: '14px',
+                      backgroundColor: '#ffffff',
+                      color: '#51087e',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      boxShadow: '0 12px 28px rgba(81,8,126,0.35)',
+                      fontSize: '24px',
+                    }}
+                  >
+                    ✦
+                  </div>
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: '1.4rem',
+                      fontWeight: 700,
+                      lineHeight: 1.2,
+                      backgroundImage: 'linear-gradient(90deg, #51087e, #a007dc)',
+                      WebkitTextFillColor: 'transparent',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                    }}
+                  >
+                    {benefit}
+                  </h3>
+                </div>
+              ))}
+            </div>
+
+            <div
+              style={{
+                backgroundColor: '#51087e',
+                borderRadius: '30px',
+                padding: '40px',
+                color: '#f8f9fa',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
             >
-              Descoperă Cursul A.D.O.
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:border-white/60 transition-all"
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '190px',
+                  height: '190px',
+                  borderRadius: '999px',
+                  backgroundColor: 'rgba(160,7,220,0.35)',
+                  filter: 'blur(42px)',
+                  top: '-70px',
+                  right: '-20px',
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '140px',
+                  height: '140px',
+                  borderRadius: '999px',
+                  backgroundColor: 'rgba(232,194,255,0.25)',
+                  filter: 'blur(36px)',
+                  bottom: '-40px',
+                  left: '-20px',
+                }}
+              />
+
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    border: '1px solid rgba(255,255,255,0.35)',
+                    borderRadius: '999px',
+                    padding: '.5rem 1rem',
+                    fontSize: '0.8rem',
+                    marginBottom: '18px',
+                  }}
+                >
+                  Plată integrală
+                </div>
+
+                <p style={{ margin: 0, fontSize: '2.8rem', fontWeight: 700 }}>{COURSE_PRICING.FULL_PRICE}</p>
+                <p
+                  style={{
+                    margin: '4px 0 10px',
+                    color: 'rgba(255,255,255,0.72)',
+                    textDecoration: 'line-through',
+                  }}
+                >
+                  {COURSE_PRICING.FULL_PRICE_CROSSED}
+                </p>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    backgroundColor: 'rgba(232,194,255,0.25)',
+                    color: '#ffffff',
+                    borderRadius: '999px',
+                    padding: '.4rem .9rem',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                  }}
+                >
+                  Economisești {COURSE_PRICING.SAVINGS_PERCENT}
+                </div>
+
+                <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.2)', margin: '24px 0' }} />
+
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.85)' }}>
+                  sau 2 × {COURSE_PRICING.INSTALLMENT_PRICE} ({COURSE_PRICING.INSTALLMENT_TOTAL} total)
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+                  {PRICING_FEATURES.slice(0, 3).map((feature) => (
+                    <div key={feature} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <span style={{ color: '#e8c2ff' }}>✓</span>
+                      <span style={{ fontSize: '0.95rem' }}>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  href="/checkout?product=COURSE&type=full"
+                  style={{
+                    marginTop: '24px',
+                    width: '100%',
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    backgroundColor: '#a007dc',
+                    color: '#ffffff',
+                    borderRadius: '999px',
+                    padding: '.9rem 1.3rem',
+                    textDecoration: 'none',
+                    fontWeight: 700,
+                  }}
+                >
+                  Cumpără acum →
+                </Link>
+
+                <p style={{ margin: '12px 0 0', fontSize: '0.85rem', color: 'rgba(255,255,255,0.75)' }}>
+                  Doar {COURSE_PRICING.MAX_PARTICIPANTS} locuri per ediție
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          backgroundImage: 'linear-gradient(180deg, #e8c2ff, #ffffff)',
+          padding: '90px 30px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '940px', width: '100%', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: '16px',
+              marginBottom: '40px',
+            }}
+          >
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontWeight: 700,
+                backgroundImage: 'linear-gradient(90deg, #51087e, #a007dc)',
+                WebkitTextFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+              }}
             >
-              Contactează-mă
+              Ce spun cursanții mei
+            </h2>
+          </div>
+
+          <div
+            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px' }}
+            className="md:grid-cols-3"
+          >
+            {testimonials.map((item) => (
+              <div
+                key={item.name}
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '20px',
+                  padding: '30px',
+                  boxShadow: '0 16px 30px rgba(81,8,126,0.12)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                }}
+              >
+                <div style={{ display: 'flex', gap: '4px', color: '#f59e0b' }}>
+                  {[1, 2, 3, 4, 5].map((index) => (
+                    <StarSVG key={index} />
+                  ))}
+                </div>
+                <p style={{ margin: 0, color: '#2c0246', fontStyle: 'italic', lineHeight: 1.65 }}>
+                  &ldquo;{item.quote}&rdquo;
+                </p>
+                <div style={{ borderTop: '1px solid rgba(81,8,126,0.16)', paddingTop: '16px' }}>
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div
+                      style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '999px',
+                        backgroundImage: 'linear-gradient(135deg, #51087e, #a007dc)',
+                        color: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {item.name[0]}
+                    </div>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700, color: '#2c0246' }}>{item.name}</p>
+                      <p style={{ margin: 0, fontSize: '0.85rem', color: '#6f5a81' }}>{item.role}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+            <Link
+              href="/studii-de-caz"
+              style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
+            >
+              Vezi toate studiile de caz →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <Section variant="white">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
-            Dacă lucrezi cu mine...
-          </h2>
-          <p className="text-gray-600 text-lg">Îți vei da seama că totul este doar în puterea ta.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {benefits.map((b) => (
-            <Card key={b.title} className="group hover:shadow-xl transition-shadow">
-              <div className="flex items-start gap-4">
-                <span className="text-2xl text-[#E91E8C] shrink-0 mt-1">{b.icon}</span>
-                <h3 className="text-[#2D1B69] font-semibold text-lg leading-snug">{b.title}</h3>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <Link
-            href="/despre-mine"
-            className="inline-flex items-center gap-2 bg-[#2D1B69] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#2D1B69]/90 transition"
+      <section
+        style={{
+          backgroundImage: 'linear-gradient(180deg, #ffffff, #e8c2ff)',
+          padding: '90px 30px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '940px', width: '100%', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: '16px',
+              marginBottom: '40px',
+            }}
           >
-            Află mai mult
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </Section>
-
-      {/* Services Section */}
-      <Section variant="light-pink">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
-            Serviciile mele
-          </h2>
-          <p className="text-gray-600 text-lg">Ești gata să mergi la nivelul următor?</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="group hover:shadow-xl transition-all hover:-translate-y-1">
-            <div className="h-3 bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] rounded-t-2xl -mx-6 -mt-6 mb-6" />
-            <Badge variant="pink" className="mb-4">Max. 15 participanți</Badge>
-            <h3 className="text-xl font-bold text-[#2D1B69] mb-3">Cursul A.D.O.!</h3>
-            <p className="text-sm text-gray-500 mb-1">Alege! Decide! Observă!</p>
-            <p className="text-gray-600 mb-6">
-              Un curs de 8 săptămâni, live, cu maxim 15 participanți, pentru cei hotărâți să își transforme complet viața.
-            </p>
-            <Link href="/cursul-ado" className="text-[#E91E8C] font-semibold hover:underline inline-flex items-center gap-1">
-              Află mai mult <span>→</span>
-            </Link>
-          </Card>
-
-          <Card className="group hover:shadow-xl transition-all hover:-translate-y-1">
-            <div className="h-3 bg-gradient-to-r from-[#2D1B69] to-[#E91E8C] rounded-t-2xl -mx-6 -mt-6 mb-6" />
-            <Badge variant="purple" className="mb-4">Ghiduri digitale</Badge>
-            <h3 className="text-xl font-bold text-[#2D1B69] mb-3">Ghiduri</h3>
-            <p className="text-sm text-gray-500 mb-1">Pas cu pas spre transformare</p>
-            <p className="text-gray-600 mb-6">
-              Ghiduri create pentru a te ajuta să preiei controlul asupra vieții tale, pas cu pas.
-            </p>
-            <Link href="/ghiduri" className="text-[#E91E8C] font-semibold hover:underline inline-flex items-center gap-1">
-              Află mai mult <span>→</span>
-            </Link>
-          </Card>
-
-          <Card className="group hover:shadow-xl transition-all hover:-translate-y-1">
-            <div className="h-3 bg-gradient-to-r from-[#C4956A] to-[#E91E8C] rounded-t-2xl -mx-6 -mt-6 mb-6" />
-            <Badge variant="purple" className="mb-4">Îndrumare personalizată</Badge>
-            <h3 className="text-xl font-bold text-[#2D1B69] mb-3">Ședințe 1:1</h3>
-            <p className="text-sm text-gray-500 mb-1">O oră în care îți amintești cine ești</p>
-            <p className="text-gray-600 mb-6">
-              Îndrumare adaptată nevoilor tale, pentru transformări reale.
-            </p>
-            <Link href="/sedinte-1-la-1" className="text-[#E91E8C] font-semibold hover:underline inline-flex items-center gap-1">
-              Află mai mult <span>→</span>
-            </Link>
-          </Card>
-        </div>
-      </Section>
-
-      {/* Testimonials */}
-      <Section variant="dark">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] bg-clip-text text-transparent">
-              Ce spun clienții mei?
-            </span>
-          </h2>
-          <p className="text-white/70 text-lg">Vieți schimbate și transformări reale.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((t) => (
-            <Card key={t.name} variant="testimonial" className="bg-white/5 border-white/10 backdrop-blur-sm">
-              <div className="flex gap-1 mb-4 text-yellow-400">
-                {'★★★★★'.split('').map((s, i) => (
-                  <span key={i}>{s}</span>
-                ))}
-              </div>
-              <p className="text-white/90 italic mb-6 leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
-              <div className="border-t border-white/10 pt-4">
-                <p className="text-white font-semibold">{t.name}</p>
-                <p className="text-white/50 text-sm">{t.role}</p>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      {/* Final CTA */}
-      <Section variant="desert">
-        <div className="text-center py-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
-            E timpul să preiei controlul.
-          </h2>
-          <p className="text-gray-700 text-lg mb-8 max-w-xl mx-auto">
-            Ești Creatorul realității tale. Hai să descoperim asta împreună.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              href="/cursul-ado"
-              className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#E91E8C]/90 transition-all hover:shadow-lg hover:shadow-[#E91E8C]/25"
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontWeight: 700,
+                backgroundImage: 'linear-gradient(90deg, #51087e, #a007dc)',
+                WebkitTextFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+              }}
             >
-              Începe cu Cursul A.D.O.
-              <span aria-hidden="true">→</span>
+              Explorează și alte resurse
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              {displayedGuides.length > 0 ? (
+                displayedGuides.map((guide) => (
+                  <div
+                    key={guide.id}
+                    style={{
+                      backgroundColor: '#ffffff',
+                      borderRadius: '24px',
+                      padding: '16px',
+                      display: 'flex',
+                      gap: '16px',
+                      alignItems: 'center',
+                      boxShadow: '0 12px 24px rgba(81,8,126,0.1)',
+                    }}
+                  >
+                    <div style={{ borderRadius: '16px', overflow: 'hidden', width: '80px', height: '112px' }}>
+                      <Image
+                        src={guide.coverImage || '/images/Cine-manifesta.png'}
+                        alt={guide.title}
+                        width={80}
+                        height={112}
+                        unoptimized
+                        style={{ width: '80px', height: '112px', objectFit: 'cover', display: 'block' }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <p style={{ margin: 0, fontWeight: 700, color: '#2c0246', fontSize: '1.05rem' }}>
+                        {guide.title}
+                      </p>
+                      <p style={{ margin: 0, color: '#51087e' }}>{formatEur(guide.price)}</p>
+                      <Link
+                        href={`/ghiduri/${guide.slug}`}
+                        style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
+                      >
+                        Cumpără →
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '24px',
+                    padding: '28px',
+                    color: '#2c0246',
+                    boxShadow: '0 12px 24px rgba(81,8,126,0.1)',
+                  }}
+                >
+                  Ghidurile sunt în curs de actualizare. Revino în scurt timp pentru noile resurse.
+                </div>
+              )}
+
+              {bundle ? (
+                <div
+                  style={{
+                    backgroundColor: '#51087e',
+                    borderRadius: '24px',
+                    padding: '24px',
+                    color: '#ffffff',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <p style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>Pachet promoțional activ</p>
+                  <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{formatEur(bundle.price)}</p>
+                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', textDecoration: 'line-through' }}>
+                    {formatEur(bundle.originalPrice)}
+                  </p>
+                  <Link
+                    href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+                    style={{
+                      marginTop: '8px',
+                      width: 'fit-content',
+                      backgroundColor: '#a007dc',
+                      borderRadius: '999px',
+                      padding: '.7rem 1.3rem',
+                      textDecoration: 'none',
+                      color: '#ffffff',
+                      fontWeight: 700,
+                    }}
+                  >
+                    Cumpără pachetul →
+                  </Link>
+                </div>
+              ) : null}
+            </div>
+
+            <div
+              style={{
+                borderRadius: '30px',
+                overflow: 'hidden',
+                minHeight: '420px',
+                display: 'flex',
+                alignItems: 'flex-end',
+                backgroundImage:
+                  "linear-gradient(180deg, rgba(44,2,70,0.2), rgba(44,2,70,0.85)), url('/images/IMG_6167-min_1.jpeg')",
+                backgroundPosition: '50%',
+                backgroundSize: 'cover',
+              }}
+            >
+              <div style={{ padding: '30px', color: '#ffffff', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <Image
+                  src="/images/poza-eva-hero.png"
+                  alt="Eva"
+                  width={56}
+                  height={56}
+                  style={{ borderRadius: '999px', border: '2px solid rgba(255,255,255,0.6)' }}
+                />
+                <h3 style={{ margin: 0, fontSize: '1.7rem', fontWeight: 700 }}>Ședințe 1:1</h3>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6 }}>
+                  O sesiune directă pentru blocajele tale actuale, cu claritate, structură și pași aplicabili.
+                </p>
+                <Link
+                  href="/sedinte-1-la-1"
+                  style={{
+                    width: 'fit-content',
+                    border: '1px solid #ffffff',
+                    borderRadius: '999px',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    padding: '.75rem 1.2rem',
+                    fontWeight: 600,
+                  }}
+                >
+                  Programează o sesiune
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(81,8,126,0.45), rgba(81,8,126,0.45)), linear-gradient(transparent, #51087e), url('/images/IMG_6166-min_1.avif')",
+          backgroundPosition: '0 0, 0 0, 50%',
+          backgroundSize: 'auto, auto, cover',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: '110px 30px',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '940px',
+            width: '100%',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '24px',
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 'clamp(2rem, 4.5vw, 3.4rem)',
+              fontWeight: 700,
+              backgroundImage: 'linear-gradient(90deg, #ffffff, #e8c2ff)',
+              WebkitTextFillColor: 'transparent',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+            }}
+          >
+            Ești gata să trăiești o altă realitate?
+          </h2>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '1.05rem' }}>
+            Cursul A.D.O. — {COURSE_PRICING.FULL_PRICE} (sau 2 × {COURSE_PRICING.INSTALLMENT_PRICE})
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center' }}>
+            <Link
+              href="/checkout?product=COURSE&type=full"
+              style={{
+                borderRadius: '999px',
+                backgroundColor: '#ffffff',
+                color: '#51087e',
+                textDecoration: 'none',
+                padding: '.85rem 1.8rem',
+                fontWeight: 700,
+                border: '1px solid #ffffff',
+              }}
+            >
+              Înscrie-te acum
             </Link>
             <Link
               href="/ghiduri"
-              className="inline-flex items-center gap-2 border-2 border-[#2D1B69] text-[#2D1B69] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#2D1B69] hover:text-white transition-all"
+              style={{
+                borderRadius: '999px',
+                backgroundColor: 'transparent',
+                color: '#ffffff',
+                textDecoration: 'none',
+                padding: '.85rem 1.8rem',
+                fontWeight: 700,
+                border: '1px solid #ffffff',
+              }}
             >
               Explorează ghidurile
             </Link>
           </div>
         </div>
-      </Section>
+      </section>
 
       <Footer />
     </main>
