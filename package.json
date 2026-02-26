@@ -24,6 +24,7 @@
     "@revolut/checkout": "^1.1.24",
     "@types/pg": "^8.16.0",
     "bcryptjs": "^3.0.3",
+    "hls.js": "^1.6.15",
     "next": "^14.2.0",
     "next-auth": "^5.0.0-beta.30",
     "pg": "^8.19.0",
@@ -34,9 +35,10 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^14.3.1",
     "@types/bcryptjs": "^2.4.6",
+    "@types/hls.js": "^0.13.3",
     "@types/node": "^20.10.6",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
