@@ -137,3 +137,161 @@ src/
 - SmartBill tests require checking errorText independently from HTTP status; HTTP 200 can still indicate business errors.
 - Rate limiter behavior is best verified by asserting a >=10s setTimeout throttle after burst requests, then ensuring all 26 queued calls complete.
 - Vitest fetch mocks should use tuple generic typing vi.fn<[RequestInfo | URL, RequestInit?], Promise<Response>>() to keep call indexing type-safe.
+
+## [2026-02-27] Build Fixes — Wave 1 Completion
+
+### Prisma v7 Adapter Required
+- Prisma v7 `client` engine type requires `adapter` or `accelerateUrl` in constructor
+- Fix: Install `@prisma/adapter-pg` + `pg` + `@types/pg`
+- `src/lib/db.ts` updated to use `PrismaPg` adapter with `Pool` from `pg`
+- Pattern:
+  ```ts
+  import { PrismaPg } from '@prisma/adapter-pg'
+  import { Pool } from 'pg'
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+  const adapter = new PrismaPg(pool)
+  new PrismaClient({ adapter })
+  ```
+
+### Next.js useSearchParams Requires Suspense
+- Any page using `useSearchParams()` must be wrapped in `<Suspense>` boundary
+- Pattern: Extract inner component, wrap in `<Suspense>` in default export
+- Applied to: `src/app/(auth)/logare/page.tsx`
+
+### Unused Imports Cause Build Failures
+- Next.js build (TypeScript strict mode) fails on unused imports
+- Fixed in: `src/emails/WelcomeEmail.tsx` (Img, Link, Row), `src/emails/OrderConfirmationEmail.tsx` (Link), `src/app/dev/emails/page.tsx` (render)
+
+### auth.ts Type Casting
+- `session.user as Record<string, unknown>` fails TS strict check
+- Fix: Use `session.user as any` for role/id assignment in NextAuth callbacks
+
+### .gitignore
+- Added `.next/` to prevent build artifacts from being committed
+- Added `.env.local` and `*.env` patterns
+
+### Wave 1 Final State
+- 71/71 tests passing
+- `npm run build` succeeds
+- All 8 tasks (1-8) complete and verified
+- Task 3 (Design System) relaunched as fresh agent (bg_d9b98951 / ses_36576921dffeaVVhOExNUkl8a0)
+
+## [2026-02-27] Task 3 — Design System Base Components Complete
+
+### Components Created (13 total)
+- Button (4 variants: primary/secondary/outline/ghost, 3 sizes: sm/md/lg, loading state)
+- Card (3 variants: default/pricing/testimonial, featured flag)
+- Input (label, error, helperText)
+- Textarea (same API as Input)
+- Select (options array, label, error)
+- Badge (4 variants: pink/purple/green/gray)
+- Accordion (expandable items, single-open behavior)
+- Modal (isOpen/onClose, title, body lock)
+- Toast + ToastProvider (4 types: success/error/info/warning, auto-dismiss 4s)
+- Navbar (responsive, mobile menu, user state)
+- Footer (3-column grid, brand gradient)
+- Section (4 variants: dark/light-pink/desert/white)
+- Hero (title, subtitle, CTA, optional image)
+
+### Testing Infrastructure
+- `src/test-setup.ts` with `@testing-library/jest-dom`
+- `vitest.config.ts` updated with `setupFiles: ['./src/test-setup.ts']`
+- 6 test files, 20 tests total — all pass
+- TDD: wrote tests first, verified RED (all fail), then GREEN (all pass)
+
+### Key Patterns
+- All components use pure Tailwind CSS classes with brand hex colors
+- `'use client'` directive on interactive components (Accordion, Modal, Toast, Navbar)
+- Barrel export at `src/components/ui/index.ts`
+- Dev preview page at `/dev/components` with all component variants
+- Next.js `Image` component used instead of `<img>` (avoids build warning)
+
+### Verification
+- `npx vitest run`: 91/91 tests pass (71 existing + 20 new)
+- `npm run build`: Compiled successfully, 11 routes generated
+- Commit: `feat(ui): add design system base components with brand colors`
+
+## [2026-02-27] Task 10 — Course/Cohort Management Service Complete
+
+### Schema Field Names (Important Differences)
+- Lesson uses `duration` (Int?), NOT `durationSeconds`
+- Course has `accessDurationDays` (Int, default 30) for computing access expiry
+- CourseEnrollment has `@@unique([userId, editionId])` — compound unique key
+- LessonProgress has `@@unique([userId, lessonId])` — compound unique for upsert
+- CourseEnrollment.orderId is optional (`String?`)
+
+### Implementation Details
+- 7 functions: getCourseWithEditions, getActiveEdition, enrollUser, checkAccess, getEditionLessons, getUserProgress, updateProgress
+- enrollUser checks: edition exists → enrollmentOpen → capacity → already enrolled → create
+- Access expiry: 30 days after edition.endDate
+- Lesson completion: watchedSeconds >= 90% of lesson.duration
+- updateProgress: only sets `completed: true` on update (never reverts to false)
+- All error messages in Romanian
+
+### Testing Pattern
+- vi.mock('@/lib/db') with full prisma mock structure
+- vi.useFakeTimers() with fixed date for deterministic tests
+- vi.mocked() for type-safe mock assertions
+- 16 tests covering all 7 functions + edge cases
+
+### Verification
+- 16/16 course tests pass
+- 115/115 total tests pass (no regressions)
+- npm run build: success
+- LSP diagnostics: clean
+
+- Implemented src/services/device.ts with strict max 2 devices per user using @@unique([userId, fingerprint]); duplicate fingerprints only refresh lastSeen without consuming slots.
+- Added device routes under src/app/api/devices for list/register/delete plus validate endpoint used by middleware for optional fingerprint verification.
+- Added client-only fingerprint helper in src/lib/device-fingerprint.ts; cast navigator to any for platform to avoid TS deprecation diagnostics.
+
+## [2026-02-27] Task 13 — Promo Code + Bundle Engine Complete
+
+### Schema Field Adaptation
+- PromoCode: `type` (not `discountType`), `value` (not `discountValue`), `currentUses` (not `usedCount`)
+- PromoCode: no `applicableProductTypes` field in schema — skipped that validation
+- All prices are `Float` (EUR), not cents — adapted interfaces to use EUR amounts
+- Bundle: `price` + `originalPrice` (Float), Guide: `price` (Float)
+- PromoCodeType enum: PERCENTAGE | FIXED
+
+### Implementation
+- `validatePromoCode(code, amount)`: checks active, validFrom/Until, maxUses, returns discount info
+- `applyPromoCode(amount, type, value)`: pure function for discount calculation
+- `incrementPromoUse(code)`: atomic increment of currentUses
+- `getBundleWithItems(slug)`: bundle with items + guide select
+- `calculateBundleDiscount(bundleId)`: computes savings amount and percent
+
+### Pre-existing Issues (Not From This Task)
+- `checkout.test.ts`: 1 failing test (GuideAccess create spy not called) — unrelated to promo/bundle
+- `npm run build`: fails on `checkout/page.tsx` line 72 (null type assertion) — pre-existing
+
+### Verification
+- 17/17 promo+bundle tests pass
+- 139/140 total tests pass (1 pre-existing failure in checkout.test.ts)
+- LSP diagnostics: all 4 new files clean
+- Commit: `feat(promo): add promo code validation and bundle pricing engine`
+
+## [2026-02-27] Task 11 — Checkout Flow (Single Product)
+
+- Prisma `Order` uses `totalAmount` (Float EUR) and `OrderItem` uses `unitPrice` (Float EUR), so checkout service converts from input cents to EUR for DB persistence.
+- Keep `expirePendingAfter: 'PT24H'` in Revolut `createOrder` params and also persist `expiresPendingAfter` in DB for internal tracking.
+- Checkout completion flow should be non-blocking for invoicing (`void triggerInvoiceAsync(order)`), while fulfillment and status update remain synchronous.
+- Revolut widget integration uses `RevolutCheckout(token, mode)` then `instance.revolutPay({ target, onSuccess, onError, onCancel })`; `target` must be a non-null `HTMLElement` to satisfy strict TS.
+- FX disclosure text must stay visible on checkout page: "Prețul este în EUR. Echivalentul în RON poate varia în funcție de cursul valutar la data plății."
+
+## [2026-02-27] Task 14 — Guide Reader + Watermark System
+
+- `GuideAccess` access checks should use compound key lookup: `prisma.guideAccess.findUnique({ where: { userId_guideId: { userId, guideId } } })`.
+- For purchased guides list, `GuideAccess` ordering field is `grantedAt` (not `createdAt`) in current Prisma schema.
+- Reader-safe content parsing for `Json` field works best with fallback order: `pages[]` -> `text` -> `JSON.stringify(contentJson)` -> "Continut indisponibil.".
+- Content protection in client reader is implemented by blocking `selectstart` and `contextmenu` via document listeners and applying `userSelect: 'none'` on container.
+- Full `vitest` currently has pre-existing unrelated failures in `src/components/AudiobookPlayer.test.tsx` (`localStorage.clear is not a function`); new guide tests pass (`5/5`).
+- `npm run build` passes after rerun; one non-blocking `pg-native` optional dependency warning appears from `pg` native import path.
+
+## [2026-02-27] Task 12 — 2-Rate Installment System Complete
+
+- Implemented dedicated `src/services/installments.ts` to keep installment flow isolated from standard checkout and aligned with existing service patterns.
+- Order 1 logic uses fixed values (`64400` cents for Revolut, `644` EUR in DB), `installmentNumber: 1`, and `expirePendingAfter: 'PT24H'` with persisted `expiresPendingAfter`.
+- Order 2 creation now validates parent order existence and `COMPLETED` status, sets `installmentNumber: 2`, `parentOrderId`, and `expirePendingAfter: 'P7D'`, then sends installment email with checkout URL.
+- Reminder scheduler checks pending Order 2 records and only sends reminders at day offsets `+3` and `+7` from Order 2 creation, skipping already completed internal/Revolut orders.
+- Added `src/services/installments.test.ts` with 10 TDD tests covering create flows, error branches, Revolut params, DB persistence, and reminder timing behavior.
+- Verification: `npx vitest run src/services/installments.test.ts` passes (`10/10`), `npm run build` passes after rerun; full `npx vitest run` still has pre-existing unrelated failure in `src/components/AudiobookPlayer.test.tsx` (missing `./AudiobookPlayer` import).
