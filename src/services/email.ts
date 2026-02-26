@@ -8,11 +8,11 @@ import { PasswordResetEmail } from '@/emails/PasswordResetEmail'
 import { SessionBookedEmail } from '@/emails/SessionBookedEmail'
 import { SessionReminderEmail } from '@/emails/SessionReminderEmail'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@perspectivaevei.com'
 
 export async function sendWelcomeEmail(to: string, name: string) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Bun venit la Perspectiva Evei!',
@@ -30,7 +30,7 @@ export async function sendOrderConfirmationEmail(
     invoiceUrl?: string
   }
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `Confirmare comandă #${params.orderNumber}`,
@@ -47,7 +47,7 @@ export async function sendInstallmentReminderEmail(
     dueDate: string
   }
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Rata 2 — Cursul A.D.O. este scadentă',
@@ -62,7 +62,7 @@ export async function sendPasswordResetEmail(
     resetUrl: string
   }
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Resetare parolă — Perspectiva Evei',
@@ -79,7 +79,7 @@ export async function sendSessionBookedEmail(
     zoomLink?: string
   }
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Ședință 1:1 confirmată',
@@ -96,10 +96,23 @@ export async function sendSessionReminderEmail(
     zoomLink?: string
   }
 ) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Reminder: Ședința ta 1:1 este mâine',
     react: SessionReminderEmail(params),
+  })
+}
+
+export async function sendCourseExpiryEmail(
+  to: string,
+  params: { name: string; courseTitle: string }
+) {
+  const { CourseExpiryEmail } = await import('@/emails/CourseExpiryEmail')
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `Accesul tău la ${params.courseTitle} a expirat`,
+    react: CourseExpiryEmail(params),
   })
 }
