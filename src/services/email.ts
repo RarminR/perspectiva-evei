@@ -1,0 +1,105 @@
+'use server'
+
+import { Resend } from 'resend'
+import { WelcomeEmail } from '@/emails/WelcomeEmail'
+import { OrderConfirmationEmail } from '@/emails/OrderConfirmationEmail'
+import { InstallmentReminderEmail } from '@/emails/InstallmentReminderEmail'
+import { PasswordResetEmail } from '@/emails/PasswordResetEmail'
+import { SessionBookedEmail } from '@/emails/SessionBookedEmail'
+import { SessionReminderEmail } from '@/emails/SessionReminderEmail'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@perspectivaevei.com'
+
+export async function sendWelcomeEmail(to: string, name: string) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: 'Bun venit la Perspectiva Evei!',
+    react: WelcomeEmail({ name }),
+  })
+}
+
+export async function sendOrderConfirmationEmail(
+  to: string,
+  params: {
+    name: string
+    orderNumber: string
+    productName: string
+    amount: string
+    invoiceUrl?: string
+  }
+) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Confirmare comandă #${params.orderNumber}`,
+    react: OrderConfirmationEmail(params),
+  })
+}
+
+export async function sendInstallmentReminderEmail(
+  to: string,
+  params: {
+    name: string
+    amount: string
+    checkoutUrl: string
+    dueDate: string
+  }
+) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: 'Rata 2 — Cursul A.D.O. este scadentă',
+    react: InstallmentReminderEmail(params),
+  })
+}
+
+export async function sendPasswordResetEmail(
+  to: string,
+  params: {
+    name: string
+    resetUrl: string
+  }
+) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: 'Resetare parolă — Perspectiva Evei',
+    react: PasswordResetEmail(params),
+  })
+}
+
+export async function sendSessionBookedEmail(
+  to: string,
+  params: {
+    name: string
+    sessionDate: string
+    sessionTime: string
+    zoomLink?: string
+  }
+) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: 'Ședință 1:1 confirmată',
+    react: SessionBookedEmail(params),
+  })
+}
+
+export async function sendSessionReminderEmail(
+  to: string,
+  params: {
+    name: string
+    sessionDate: string
+    sessionTime: string
+    zoomLink?: string
+  }
+) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: 'Reminder: Ședința ta 1:1 este mâine',
+    react: SessionReminderEmail(params),
+  })
+}
