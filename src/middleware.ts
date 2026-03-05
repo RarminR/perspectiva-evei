@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth"
+import { auth } from "@/lib/auth-edge"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { NextResponse } from "next/server"
 

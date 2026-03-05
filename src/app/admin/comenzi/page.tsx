@@ -65,7 +65,7 @@ export default async function OrdersPage({
         <select
           name="status"
           defaultValue={params.status ?? 'ALL'}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#51087e] focus:border-transparent"
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>
@@ -75,7 +75,7 @@ export default async function OrdersPage({
         </select>
         <button
           type="submit"
-          className="ml-2 px-4 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 text-sm font-medium"
+          className="ml-2 px-4 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 text-sm font-medium"
         >
           Filtrează
         </button>
@@ -131,7 +131,7 @@ export default async function OrdersPage({
                     <td className="px-6 py-4">
                       <Link
                         href={`/admin/comenzi/${order.id}`}
-                        className="text-[#2D1B69] hover:text-[#E91E8C] font-medium text-sm"
+                        className="text-[#51087e] hover:text-[#a007dc] font-medium text-sm"
                       >
                         Detalii
                       </Link>

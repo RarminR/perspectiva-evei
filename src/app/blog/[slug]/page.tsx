@@ -28,16 +28,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       <article>
         {/* Header */}
-        <div className="bg-[#2D1B69] text-white">
+        <div className="bg-[#51087e] text-white">
           <div className="max-w-3xl mx-auto px-4 py-16 text-center">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-1 text-[#FDA4AF]/70 text-sm hover:text-[#FDA4AF] transition mb-6"
+              className="inline-flex items-center gap-1 text-[#e0b0ff]/70 text-sm hover:text-[#e0b0ff] transition mb-6"
             >
               <span>←</span> Înapoi la Blog
             </Link>
             {post.publishedAt && (
-              <time className="block text-[#FDA4AF]/60 text-sm mb-4">
+              <time className="block text-[#e0b0ff]/60 text-sm mb-4">
                 {formatDate(new Date(post.publishedAt))}
               </time>
             )}
@@ -77,7 +77,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`/blog/${post.slug}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-[#2D1B69]/5 flex items-center justify-center text-[#2D1B69] hover:bg-[#E91E8C] hover:text-white transition"
+                  className="w-10 h-10 rounded-full bg-[#51087e]/5 flex items-center justify-center text-[#51087e] hover:bg-[#a007dc] hover:text-white transition"
                 >
                   f
                 </a>
@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-[#2D1B69]/5 flex items-center justify-center text-[#2D1B69] hover:bg-[#E91E8C] hover:text-white transition"
+                  className="w-10 h-10 rounded-full bg-[#51087e]/5 flex items-center justify-center text-[#51087e] hover:bg-[#a007dc] hover:text-white transition"
                 >
                   𝕏
                 </a>

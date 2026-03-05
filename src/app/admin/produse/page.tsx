@@ -26,7 +26,7 @@ export default async function ProductsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Produse</h1>
         <Link
           href="/admin/produse/new"
-          className="px-4 py-2 bg-[#E91E8C] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition"
+          className="px-4 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition"
         >
           Adaugă produs
         </Link>
@@ -69,7 +69,7 @@ export default async function ProductsPage() {
                     <td className="p-4">
                       <Link
                         href={`/admin/produse/${product.id}`}
-                        className="text-[#E91E8C] hover:underline font-medium"
+                        className="text-[#a007dc] hover:underline font-medium"
                       >
                         Editează
                       </Link>

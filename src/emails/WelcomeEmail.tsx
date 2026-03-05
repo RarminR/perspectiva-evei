@@ -74,7 +74,7 @@ const container = {
 }
 
 const header = {
-  backgroundColor: '#2D1B69',
+  backgroundColor: '#51087e',
   padding: '32px 20px',
   textAlign: 'center' as const,
 }
@@ -93,7 +93,7 @@ const content = {
 const greeting = {
   fontSize: '18px',
   fontWeight: 'bold',
-  color: '#2D1B69',
+  color: '#51087e',
   marginBottom: '16px',
 }
 
@@ -105,7 +105,7 @@ const bodyText = {
 }
 
 const button = {
-  backgroundColor: '#E91E8C',
+  backgroundColor: '#a007dc',
   borderRadius: '6px',
   color: '#ffffff',
   fontSize: '16px',

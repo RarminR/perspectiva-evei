@@ -11,21 +11,26 @@ const config: Config = {
       colors: {
         brand: {
           purple: {
-            DEFAULT: '#2D1B69',
-            dark: '#1A0F3D',
-            light: '#4A2FA0',
+            DEFAULT: '#51087e',
+            dark: '#2c0246',
           },
-          pink: {
-            DEFAULT: '#E91E8C',
-            light: '#F472B6',
-            rose: '#FDA4AF',
+          magenta: {
+            DEFAULT: '#a007dc',
           },
-          desert: {
-            DEFAULT: '#C4956A',
-            light: '#E8C9A0',
+          neutral: {
+            lightest: '#eee',
+            light: '#aaa',
+            DEFAULT: '#666',
+            dark: '#444',
+            darker: '#222',
+            darkest: '#111',
           },
-          'light-pink': '#FDF2F8',
+          success: '#027a48',
+          error: '#b42318',
         },
+      },
+      fontFamily: {
+        inter: ['Inter', 'system-ui', 'sans-serif'],
       },
     },
   },

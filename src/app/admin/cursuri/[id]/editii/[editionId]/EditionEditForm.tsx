@@ -73,7 +73,7 @@ export function EditionEditForm({ edition, courseId }: { edition: Edition; cours
           defaultValue={edition.editionNumber}
           min={1}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
         />
       </div>
 
@@ -88,7 +88,7 @@ export function EditionEditForm({ edition, courseId }: { edition: Edition; cours
             name="startDate"
             defaultValue={toDateInput(edition.startDate)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
 
@@ -102,7 +102,7 @@ export function EditionEditForm({ edition, courseId }: { edition: Edition; cours
             name="endDate"
             defaultValue={toDateInput(edition.endDate)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
       </div>
@@ -118,7 +118,7 @@ export function EditionEditForm({ edition, courseId }: { edition: Edition; cours
           defaultValue={edition.maxParticipants}
           min={1}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
         />
       </div>
 
@@ -128,7 +128,7 @@ export function EditionEditForm({ edition, courseId }: { edition: Edition; cours
           id="enrollmentOpen"
           name="enrollmentOpen"
           defaultChecked={edition.enrollmentOpen}
-          className="w-4 h-4 text-[#2D1B69] border-gray-300 rounded focus:ring-[#2D1B69]"
+          className="w-4 h-4 text-[#51087e] border-gray-300 rounded focus:ring-[#51087e]"
         />
         <label htmlFor="enrollmentOpen" className="text-sm font-medium text-gray-700">
           Înscriere deschisă
@@ -139,7 +139,7 @@ export function EditionEditForm({ edition, courseId }: { edition: Edition; cours
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 transition-colors text-sm font-medium disabled:opacity-50"
+          className="px-6 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 transition-colors text-sm font-medium disabled:opacity-50"
         >
           {saving ? 'Se salvează...' : 'Salvează'}
         </button>

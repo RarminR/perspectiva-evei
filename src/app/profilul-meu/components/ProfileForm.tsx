@@ -93,7 +93,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent outline-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#a007dc] focus:border-transparent outline-none"
           />
         </div>
 
@@ -119,7 +119,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent outline-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#a007dc] focus:border-transparent outline-none"
           />
         </div>
 
@@ -132,7 +132,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2 bg-[#E91E8C] text-white font-medium rounded-lg hover:bg-[#D11A7D] transition-colors disabled:opacity-50"
+          className="px-6 py-2 bg-[#a007dc] text-white font-medium rounded-lg hover:bg-[#D11A7D] transition-colors disabled:opacity-50"
         >
           {saving ? 'Se salveaza...' : 'Salveaza'}
         </button>
@@ -140,7 +140,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
       {/* Password change */}
       <div className="border-t pt-6">
-        <h3 className="text-lg font-semibold text-[#2D1B69] mb-4">Schimba parola</h3>
+        <h3 className="text-lg font-semibold text-[#51087e] mb-4">Schimba parola</h3>
         <form onSubmit={handlePasswordSubmit} className="space-y-4">
           <div>
             <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
@@ -151,7 +151,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#a007dc] focus:border-transparent outline-none"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#a007dc] focus:border-transparent outline-none"
             />
           </div>
 
@@ -177,7 +177,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#a007dc] focus:border-transparent outline-none"
             />
           </div>
 
@@ -190,7 +190,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           <button
             type="submit"
             disabled={savingPassword}
-            className="px-6 py-2 bg-[#2D1B69] text-white font-medium rounded-lg hover:bg-[#231456] transition-colors disabled:opacity-50"
+            className="px-6 py-2 bg-[#51087e] text-white font-medium rounded-lg hover:bg-[#231456] transition-colors disabled:opacity-50"
           >
             {savingPassword ? 'Se schimba...' : 'Schimba parola'}
           </button>

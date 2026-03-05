@@ -8,11 +8,17 @@ describe('Button', () => {
   })
   it('applies primary variant by default', () => {
     render(<Button>Test</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-[#E91E8C]')
+    const btn = screen.getByRole('button')
+    expect(btn).toBeInTheDocument()
+    // Primary variant uses inline style with #51087e background
+    expect(btn.style.backgroundColor).toBe('rgb(81, 8, 126)')
   })
   it('applies secondary variant', () => {
     render(<Button variant="secondary">Test</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-[#2D1B69]')
+    const btn = screen.getByRole('button')
+    expect(btn).toBeInTheDocument()
+    // Secondary variant also uses #51087e (same as primary in Webflow design)
+    expect(btn.style.backgroundColor).toBe('rgb(81, 8, 126)')
   })
   it('is disabled when loading', () => {
     render(<Button loading>Test</Button>)

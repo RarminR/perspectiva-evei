@@ -72,7 +72,7 @@ export function CourseEditForm({ course }: { course: Course }) {
             name="title"
             defaultValue={course.title}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
 
@@ -86,7 +86,7 @@ export function CourseEditForm({ course }: { course: Course }) {
             name="slug"
             defaultValue={course.slug}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
 
@@ -101,7 +101,7 @@ export function CourseEditForm({ course }: { course: Course }) {
             defaultValue={course.price}
             step="0.01"
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
 
@@ -115,7 +115,7 @@ export function CourseEditForm({ course }: { course: Course }) {
             name="installmentPrice"
             defaultValue={course.installmentPrice ?? ''}
             step="0.01"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
 
@@ -129,7 +129,7 @@ export function CourseEditForm({ course }: { course: Course }) {
             name="maxParticipants"
             defaultValue={course.maxParticipants}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
 
@@ -143,7 +143,7 @@ export function CourseEditForm({ course }: { course: Course }) {
             name="accessDurationDays"
             defaultValue={course.accessDurationDays}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
           />
         </div>
       </div>
@@ -157,7 +157,7 @@ export function CourseEditForm({ course }: { course: Course }) {
           name="description"
           defaultValue={course.description ?? ''}
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
         />
       </div>
 
@@ -165,7 +165,7 @@ export function CourseEditForm({ course }: { course: Course }) {
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 transition-colors text-sm font-medium disabled:opacity-50"
+          className="px-6 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 transition-colors text-sm font-medium disabled:opacity-50"
         >
           {saving ? 'Se salvează...' : 'Salvează'}
         </button>

@@ -99,7 +99,7 @@ export function LessonManager({
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 transition-colors text-sm font-medium"
         >
           Adaugă lecție
         </button>
@@ -185,7 +185,7 @@ export function LessonManager({
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 bg-[#2D1B69] text-white rounded-lg text-sm disabled:opacity-50"
+                className="px-4 py-2 bg-[#51087e] text-white rounded-lg text-sm disabled:opacity-50"
               >
                 {saving ? 'Se creează...' : 'Adaugă'}
               </button>

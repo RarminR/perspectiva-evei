@@ -43,7 +43,7 @@ export default async function EditionsPage({
         </div>
         <Link
           href={`/admin/cursuri/${id}/editii/new`}
-          className="px-4 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 transition-colors text-sm font-medium"
         >
           Adaugă ediție
         </Link>
@@ -90,13 +90,13 @@ export default async function EditionsPage({
                     <div className="flex gap-3">
                       <Link
                         href={`/admin/cursuri/${id}/editii/${edition.id}`}
-                        className="text-[#2D1B69] hover:underline font-medium"
+                        className="text-[#51087e] hover:underline font-medium"
                       >
                         Editează
                       </Link>
                       <Link
                         href={`/admin/cursuri/${id}/editii/${edition.id}/lectii`}
-                        className="text-[#E91E8C] hover:underline font-medium"
+                        className="text-[#a007dc] hover:underline font-medium"
                       >
                         Lecții
                       </Link>

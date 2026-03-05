@@ -35,7 +35,7 @@ export default async function ProgramariPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-[#2D1B69]">Programări 1:1</h1>
+        <h1 className="text-2xl font-bold text-[#51087e]">Programări 1:1</h1>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -87,7 +87,7 @@ export default async function ProgramariPage() {
                           href={s.zoomLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#2D1B69] hover:text-[#E91E8C] font-medium"
+                          className="text-[#51087e] hover:text-[#a007dc] font-medium"
                         >
                           Link Zoom
                         </a>

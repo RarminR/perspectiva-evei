@@ -47,10 +47,10 @@ export default async function BlogPage() {
       <Navbar />
 
       {/* Hero */}
-      <div className="bg-[#2D1B69] text-white">
+      <div className="bg-[#51087e] text-white">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(233,30,140,0.12),_transparent_60%)]" />
         <div className="relative max-w-5xl mx-auto px-4 py-20 text-center">
-          <p className="text-[#FDA4AF] font-medium tracking-widest uppercase text-sm mb-4">Articole și Resurse</p>
+          <p className="text-[#e0b0ff] font-medium tracking-widest uppercase text-sm mb-4">Articole și Resurse</p>
           <h1 className="text-4xl md:text-5xl font-bold">Blog</h1>
           <p className="text-white/60 text-lg mt-4 max-w-xl mx-auto">
             Gânduri, lecții și perspective din lumea manifestării conștiente.
@@ -70,7 +70,7 @@ export default async function BlogPage() {
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md hover:border-[#E91E8C]/20 transition-all group"
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md hover:border-[#a007dc]/20 transition-all group"
               >
                 {post.coverImage && (
                   <div className="aspect-video overflow-hidden">
@@ -85,11 +85,11 @@ export default async function BlogPage() {
                 )}
                 <div className="p-6">
                   {post.publishedAt && (
-                    <time className="text-sm text-[#E91E8C]/70 font-medium">
+                    <time className="text-sm text-[#a007dc]/70 font-medium">
                       {formatDate(new Date(post.publishedAt))}
                     </time>
                   )}
-                  <h2 className="text-xl font-bold text-[#2D1B69] mt-2 mb-3 group-hover:text-[#E91E8C] transition-colors">
+                  <h2 className="text-xl font-bold text-[#51087e] mt-2 mb-3 group-hover:text-[#a007dc] transition-colors">
                     {post.title}
                   </h2>
                   {post.content && (
@@ -99,7 +99,7 @@ export default async function BlogPage() {
                   )}
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-1 text-[#E91E8C] font-semibold text-sm hover:gap-2 transition-all"
+                    className="inline-flex items-center gap-1 text-[#a007dc] font-semibold text-sm hover:gap-2 transition-all"
                   >
                     Citește mai mult <span>→</span>
                   </Link>

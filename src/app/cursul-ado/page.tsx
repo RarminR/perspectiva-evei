@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar, Footer, Section, Badge, Accordion } from '@/components/ui'
 import { getCourseWithEditions } from '@/services/course'
+import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
 
 export const metadata: Metadata = {
   title: 'Cursul A.D.O. | Perspectiva Evei',
@@ -27,13 +28,8 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 
-// ─── Pricing Constants ─────────────────────────────────────────
-const FULL_PRICE = '€1.188'
-const FULL_PRICE_CROSSED = '€1.288'
-const INSTALLMENT_PRICE = '€644'
-const INSTALLMENT_TOTAL = '€1.288'
-const MAX_PARTICIPANTS = 15
-const SAVINGS_PERCENT = '7,76%'
+// ─── Pricing Constants (from shared) ─────────────────────────────
+const { FULL_PRICE, FULL_PRICE_CROSSED, INSTALLMENT_PRICE, INSTALLMENT_TOTAL, MAX_PARTICIPANTS, SAVINGS_PERCENT } = COURSE_PRICING
 
 // ─── FAQ Content (from Webflow reference) ──────────────────────
 const FAQ_ITEMS = [
@@ -103,12 +99,8 @@ const BENEFITS = [
   { title: 'Ajungi la cârma propriei vieți', description: 'Deprinzi starea de Observator, din care alegi conștient parcursul vieții tale.' },
 ]
 
-// ─── Pricing Features (shared) ─────────────────────────────────
-const PRICING_FEATURES = [
-  'Acces nelimitat la întâlnirile live și la înregistrări',
-  'Singurul curs de manifestare conștientă de care vei avea nevoie',
-  'Garanția clarității',
-]
+// ─── Pricing Features (from shared) ─────────────────────────────
+// Re-exported from @/lib/constants/pricing as PRICING_FEATURES
 
 export default async function CursulAdoPage() {
   // Fetch course data with enrollment counts
@@ -124,12 +116,12 @@ export default async function CursulAdoPage() {
       <Navbar />
 
       {/* ═══ HERO ═══ */}
-      <section className="relative overflow-hidden bg-[#2D1B69] text-white">
+      <section className="relative overflow-hidden bg-[#51087e] text-white">
         {/* Decorative grain overlay */}
         <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIi8+PC9zdmc+')] pointer-events-none" />
         {/* Gradient orb */}
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-[#E91E8C]/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#FDA4AF]/15 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-[#a007dc]/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#e0b0ff]/15 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="max-w-3xl">
@@ -147,7 +139,7 @@ export default async function CursulAdoPage() {
             )}
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-              <span className="bg-gradient-to-r from-[#E91E8C] via-[#FDA4AF] to-[#E91E8C] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#a007dc] via-[#e0b0ff] to-[#a007dc] bg-clip-text text-transparent">
                 Cursul A.D.O.
               </span>
               <br />
@@ -165,8 +157,8 @@ export default async function CursulAdoPage() {
               {spotsText ? (
                 <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5">
                   <div className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FDA4AF] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#E91E8C]" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e0b0ff] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#a007dc]" />
                   </div>
                   <span className="text-sm font-medium">{spotsText}</span>
                 </div>
@@ -185,7 +177,7 @@ export default async function CursulAdoPage() {
 
             <Link
               href="#preturi"
-              className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#E91E8C]/90 transition-all hover:shadow-lg hover:shadow-[#E91E8C]/25 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 bg-[#a007dc] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#a007dc]/90 transition-all hover:shadow-lg hover:shadow-[#a007dc]/25 hover:-translate-y-0.5"
             >
               Vezi prețurile
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,10 +191,10 @@ export default async function CursulAdoPage() {
       {/* ═══ BENEFITS ═══ */}
       <Section variant="light-pink">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-4">
             În cursul A.D.O.!
           </h2>
-          <p className="text-[#2D1B69]/60 max-w-xl mx-auto">
+          <p className="text-[#51087e]/60 max-w-xl mx-auto">
             Descoperă ce te așteaptă în cele 8 săptămâni de transformare autentică.
           </p>
         </div>
@@ -210,21 +202,21 @@ export default async function CursulAdoPage() {
           {BENEFITS.map((benefit, i) => (
             <div
               key={i}
-              className="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-[#E91E8C]/10 hover:border-[#E91E8C]/30"
+              className="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-[#a007dc]/10 hover:border-[#a007dc]/30"
             >
-              <div className="absolute top-0 left-8 w-12 h-1 bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] rounded-b-full" />
-              <h3 className="text-lg font-bold text-[#2D1B69] mb-2 group-hover:text-[#E91E8C] transition-colors">
+              <div className="absolute top-0 left-8 w-12 h-1 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] rounded-b-full" />
+              <h3 className="text-lg font-bold text-[#51087e] mb-2 group-hover:text-[#a007dc] transition-colors">
                 {benefit.title}
               </h3>
-              <p className="text-[#2D1B69]/60 text-sm leading-relaxed">{benefit.description}</p>
+              <p className="text-[#51087e]/60 text-sm leading-relaxed">{benefit.description}</p>
             </div>
           ))}
         </div>
       </Section>
 
       {/* ═══ PRICING ═══ */}
-      <section id="preturi" className="relative bg-[#2D1B69] py-20 px-4 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#E91E8C]/10 rounded-full blur-[200px] pointer-events-none" />
+      <section id="preturi" className="relative bg-[#51087e] py-20 px-4 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#a007dc]/10 rounded-full blur-[200px] pointer-events-none" />
         <div className="relative max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Vreau să mă înscriu la Cursul A.D.O.!
@@ -258,14 +250,14 @@ export default async function CursulAdoPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2.5 text-sm text-white/70">
-                  <svg className="w-4 h-4 text-[#E91E8C] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 text-[#a007dc] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Cost redus comparativ cu plata în rate
                 </li>
                 {PRICING_FEATURES.map((feat, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-white/70">
-                    <svg className="w-4 h-4 text-[#E91E8C] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-[#a007dc] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {feat}
@@ -281,9 +273,9 @@ export default async function CursulAdoPage() {
             </div>
 
             {/* Installment Card — Featured */}
-            <div className="relative bg-gradient-to-b from-[#E91E8C]/10 to-transparent backdrop-blur-sm border-2 border-[#E91E8C]/50 rounded-2xl p-8 text-left ring-4 ring-[#E91E8C]/10">
+            <div className="relative bg-gradient-to-b from-[#a007dc]/10 to-transparent backdrop-blur-sm border-2 border-[#a007dc]/50 rounded-2xl p-8 text-left ring-4 ring-[#a007dc]/10">
               <div className="absolute -top-3 right-6">
-                <span className="bg-[#E91E8C] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                <span className="bg-[#a007dc] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                   POPULAR
                 </span>
               </div>
@@ -295,14 +287,14 @@ export default async function CursulAdoPage() {
               <div className="text-white/40 text-sm mb-6">{INSTALLMENT_TOTAL} total (2 × {INSTALLMENT_PRICE})</div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2.5 text-sm text-white/70">
-                  <svg className="w-4 h-4 text-[#E91E8C] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 text-[#a007dc] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Împarte investiția în 2 rate
                 </li>
                 {PRICING_FEATURES.map((feat, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-white/70">
-                    <svg className="w-4 h-4 text-[#E91E8C] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-[#a007dc] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {feat}
@@ -311,7 +303,7 @@ export default async function CursulAdoPage() {
               </ul>
               <Link
                 href="/checkout?product=COURSE&type=installment"
-                className="block w-full text-center bg-[#E91E8C] text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-[#E91E8C]/90 transition-all hover:shadow-lg hover:shadow-[#E91E8C]/25"
+                className="block w-full text-center bg-[#a007dc] text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-[#a007dc]/90 transition-all hover:shadow-lg hover:shadow-[#a007dc]/25"
               >
                 Cumpără acum
               </Link>
@@ -324,10 +316,10 @@ export default async function CursulAdoPage() {
       <Section variant="white" className="py-20">
         <div className="text-center mb-16">
           <Badge variant="purple" className="mb-4">8 Săptămâni</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-4">
             Ce vei învăța
           </h2>
-          <p className="text-[#2D1B69]/60 max-w-xl mx-auto">
+          <p className="text-[#51087e]/60 max-w-xl mx-auto">
             Fiecare săptămână aduce o perspectivă nouă și instrumente concrete de transformare.
           </p>
         </div>
@@ -335,17 +327,17 @@ export default async function CursulAdoPage() {
           {CURRICULUM.map((item) => (
             <div
               key={item.week}
-              className="group relative bg-white border border-[#2D1B69]/10 rounded-2xl p-6 hover:border-[#E91E8C]/30 hover:shadow-lg transition-all duration-300"
+              className="group relative bg-white border border-[#51087e]/10 rounded-2xl p-6 hover:border-[#a007dc]/30 hover:shadow-lg transition-all duration-300"
             >
-              <div className="text-5xl font-black text-[#E91E8C]/10 absolute top-3 right-4 group-hover:text-[#E91E8C]/20 transition-colors">
+              <div className="text-5xl font-black text-[#a007dc]/10 absolute top-3 right-4 group-hover:text-[#a007dc]/20 transition-colors">
                 {String(item.week).padStart(2, '0')}
               </div>
               <div className="relative">
-                <div className="text-xs font-semibold text-[#E91E8C] uppercase tracking-wider mb-2">
+                <div className="text-xs font-semibold text-[#a007dc] uppercase tracking-wider mb-2">
                   Săptămâna {item.week}
                 </div>
-                <h3 className="text-base font-bold text-[#2D1B69] mb-2">{item.title}</h3>
-                <p className="text-sm text-[#2D1B69]/50 leading-relaxed">{item.description}</p>
+                <h3 className="text-base font-bold text-[#51087e] mb-2">{item.title}</h3>
+                <p className="text-sm text-[#51087e]/50 leading-relaxed">{item.description}</p>
               </div>
             </div>
           ))}
@@ -355,10 +347,10 @@ export default async function CursulAdoPage() {
       {/* ═══ TESTIMONIALS ═══ */}
       <Section variant="light-pink">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-4">
             Vieți reale. Transformări autentice.
           </h2>
-          <p className="text-[#2D1B69]/60 max-w-xl mx-auto">
+          <p className="text-[#51087e]/60 max-w-xl mx-auto">
             Cursul A.D.O. a schimbat deja perspectiva a zeci de femei care au ales să se pună în centrul propriei realități.
           </p>
         </div>
@@ -366,10 +358,10 @@ export default async function CursulAdoPage() {
           {TESTIMONIALS.map((t, i) => (
             <div
               key={i}
-              className="relative bg-white rounded-2xl p-8 shadow-sm border border-[#E91E8C]/10"
+              className="relative bg-white rounded-2xl p-8 shadow-sm border border-[#a007dc]/10"
             >
               {/* Decorative quote mark */}
-              <div className="absolute -top-3 left-6 text-4xl text-[#E91E8C]/30 font-serif leading-none">&ldquo;</div>
+              <div className="absolute -top-3 left-6 text-4xl text-[#a007dc]/30 font-serif leading-none">&ldquo;</div>
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, si) => (
                   <svg key={si} className="w-4 h-4 text-amber-400" viewBox="0 0 18 17" fill="currentColor">
@@ -377,16 +369,16 @@ export default async function CursulAdoPage() {
                   </svg>
                 ))}
               </div>
-              <p className="text-[#2D1B69]/80 text-sm leading-relaxed mb-6 italic">
+              <p className="text-[#51087e]/80 text-sm leading-relaxed mb-6 italic">
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#FDA4AF] flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#a007dc] to-[#e0b0ff] flex items-center justify-center text-white font-bold text-sm">
                   {t.name[0]}
                 </div>
                 <div>
-                  <div className="font-semibold text-sm text-[#2D1B69]">{t.name}</div>
-                  <div className="text-xs text-[#2D1B69]/50">{t.role}</div>
+                  <div className="font-semibold text-sm text-[#51087e]">{t.name}</div>
+                  <div className="text-xs text-[#51087e]/50">{t.role}</div>
                 </div>
               </div>
             </div>
@@ -395,7 +387,7 @@ export default async function CursulAdoPage() {
         <div className="text-center mt-10">
           <Link
             href="/studii-de-caz"
-            className="inline-flex items-center gap-2 text-[#E91E8C] font-semibold hover:text-[#2D1B69] transition-colors"
+            className="inline-flex items-center gap-2 text-[#a007dc] font-semibold hover:text-[#51087e] transition-colors"
           >
             Vezi toate studiile de caz
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -408,10 +400,10 @@ export default async function CursulAdoPage() {
       {/* ═══ FAQ ═══ */}
       <Section variant="white" className="py-20">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-4">
             Ai o curiozitate despre Cursul A.D.O.?
           </h2>
-          <p className="text-[#2D1B69]/60 max-w-xl mx-auto">
+          <p className="text-[#51087e]/60 max-w-xl mx-auto">
             Cel mai probabil vei găsi răspunsul pe care îl cauți mai jos.
           </p>
         </div>
@@ -421,7 +413,7 @@ export default async function CursulAdoPage() {
       </Section>
 
       {/* ═══ FINAL CTA ═══ */}
-      <section className="relative bg-gradient-to-br from-[#2D1B69] via-[#2D1B69] to-[#1a0f3f] py-20 px-4 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#51087e] via-[#51087e] to-[#1a0f3f] py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIi8+PC9zdmc+')] opacity-[0.03] pointer-events-none" />
         <div className="relative max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -432,7 +424,7 @@ export default async function CursulAdoPage() {
           </p>
           <Link
             href="/checkout?product=COURSE&type=full"
-            className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-[#E91E8C]/90 transition-all hover:shadow-xl hover:shadow-[#E91E8C]/25 hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 bg-[#a007dc] text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-[#a007dc]/90 transition-all hover:shadow-xl hover:shadow-[#a007dc]/25 hover:-translate-y-0.5"
           >
             Înscrie-te acum
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -37,7 +37,8 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#2D1B69] flex flex-col transform transition-transform duration-200 ease-in-out
+        style={{ backgroundImage: 'linear-gradient(180deg, #51087e, #2c0246)' }}
+        className={`fixed inset-y-0 left-0 z-50 w-64 flex flex-col transform transition-transform duration-200 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:static md:transform-none`}
       >
@@ -67,7 +68,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
                 onClick={onClose}
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
                   isActive
-                    ? 'bg-[#E91E8C] text-white'
+                    ? 'bg-[#a007dc] text-white'
                     : 'text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
               >

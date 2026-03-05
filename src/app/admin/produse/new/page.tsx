@@ -88,7 +88,7 @@ export default function NewProductPage() {
             required
             value={form.title}
             onChange={(e) => handleTitleChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -102,7 +102,7 @@ export default function NewProductPage() {
             required
             value={form.slug}
             onChange={(e) => handleChange('slug', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -117,7 +117,7 @@ export default function NewProductPage() {
             required
             value={form.price}
             onChange={(e) => handleChange('price', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -131,7 +131,7 @@ export default function NewProductPage() {
             required
             value={form.stock}
             onChange={(e) => handleChange('stock', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -144,7 +144,7 @@ export default function NewProductPage() {
             rows={3}
             value={form.description}
             onChange={(e) => handleChange('description', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -157,7 +157,7 @@ export default function NewProductPage() {
             type="text"
             value={form.images}
             onChange={(e) => handleChange('images', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -167,7 +167,7 @@ export default function NewProductPage() {
             type="checkbox"
             checked={form.active}
             onChange={(e) => handleChange('active', e.target.checked)}
-            className="w-4 h-4 text-[#E91E8C] border-gray-300 rounded focus:ring-[#E91E8C]"
+            className="w-4 h-4 text-[#a007dc] border-gray-300 rounded focus:ring-[#a007dc]"
           />
           <label htmlFor="active" className="text-sm font-medium text-gray-700">
             Activ
@@ -178,7 +178,7 @@ export default function NewProductPage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2 bg-[#E91E8C] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
+            className="px-6 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
           >
             {saving ? 'Se salvează...' : 'Salvează'}
           </button>

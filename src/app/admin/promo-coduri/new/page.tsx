@@ -72,7 +72,7 @@ export default function NewPromoCodePage() {
             value={form.code}
             onChange={(e) => handleChange('code', e.target.value)}
             placeholder="ex: SAVE20"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent font-mono uppercase"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent font-mono uppercase"
           />
         </div>
 
@@ -84,7 +84,7 @@ export default function NewPromoCodePage() {
             id="type"
             value={form.type}
             onChange={(e) => handleChange('type', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           >
             <option value="PERCENTAGE">Procent (%)</option>
             <option value="FIXED">Sumă fixă (EUR)</option>
@@ -102,7 +102,7 @@ export default function NewPromoCodePage() {
             required
             value={form.value}
             onChange={(e) => handleChange('value', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -116,7 +116,7 @@ export default function NewPromoCodePage() {
             value={form.maxUses}
             onChange={(e) => handleChange('maxUses', e.target.value)}
             placeholder="Nelimitat"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -130,7 +130,7 @@ export default function NewPromoCodePage() {
               type="date"
               value={form.validFrom}
               onChange={(e) => handleChange('validFrom', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
             />
           </div>
           <div>
@@ -142,7 +142,7 @@ export default function NewPromoCodePage() {
               type="date"
               value={form.validUntil}
               onChange={(e) => handleChange('validUntil', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
             />
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function NewPromoCodePage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2 bg-[#E91E8C] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
+            className="px-6 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
           >
             {saving ? 'Se salvează...' : 'Salvează'}
           </button>

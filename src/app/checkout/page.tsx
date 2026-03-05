@@ -108,28 +108,37 @@ function CheckoutContent() {
   }, [amountCents, productId, productName, productType, router])
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-12">
-      <div className="mx-auto max-w-lg">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">Finalizare comandă</h1>
+    <div style={{ minHeight: '100vh', backgroundImage: 'linear-gradient(180deg, white, #e8c2ff)', padding: '60px 5%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+      <div style={{ maxWidth: '520px', width: '100%' }}>
+        <h1 style={{
+          backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
+          WebkitTextFillColor: 'transparent',
+          WebkitBackgroundClip: 'text',
+          backgroundClip: 'text',
+          fontSize: '1.8rem',
+          fontWeight: 700,
+          marginBottom: '1.5rem',
+        }}>
+          Finalizare comanda
+        </h1>
 
-        <div className="mb-6 rounded-2xl bg-white p-6 shadow">
-          <h2 className="mb-4 font-semibold text-gray-700">Rezumat comandă</h2>
-          <div className="flex items-center justify-between">
-            <span className="text-gray-600">{productName}</span>
-            <span className="font-bold text-gray-900">EUR {displayPrice}</span>
+        <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(81,8,126,0.1)' }}>
+          <h2 style={{ color: '#51087e', fontWeight: 700, marginBottom: '1rem' }}>Rezumat comanda</h2>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ color: '#444' }}>{productName}</span>
+            <span style={{ fontWeight: 700, color: '#51087e', fontSize: '1.1rem' }}>EUR {displayPrice}</span>
           </div>
         </div>
 
-        <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-          <strong>Notă:</strong> Prețul este în EUR. Echivalentul în RON poate varia în funcție de cursul valutar
-          la data plății.
+        <div style={{ backgroundColor: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', fontSize: '0.9rem', color: '#92400e' }}>
+          <strong>Nota:</strong> Pretul este in EUR. Echivalentul in RON poate varia in functie de cursul valutar la data platii.
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow">
-          <div id="revolut-checkout" className="flex min-h-[200px] items-center justify-center text-gray-400">
-            Se încarcă metoda de plată...
+        <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(81,8,126,0.1)' }}>
+          <div id="revolut-checkout" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+            Se incarca metoda de plata...
           </div>
-          {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
+          {error ? <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#dc2626' }}>{error}</p> : null}
         </div>
       </div>
     </div>
@@ -138,7 +147,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Se încarcă...</div>}>
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Se incarca...</div>}>
       <CheckoutContent />
     </Suspense>
   )

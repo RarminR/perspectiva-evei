@@ -135,10 +135,10 @@ export default async function GuideDetailPage({
       <Navbar />
 
       {/* Hero */}
-      <div className="relative bg-[#2D1B69] overflow-hidden">
+      <div className="relative bg-[#51087e] overflow-hidden">
         <div className="absolute inset-0 opacity-25">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-[#E91E8C] rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#FDA4AF] rounded-full blur-[90px] translate-y-1/4 -translate-x-1/3" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#a007dc] rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#e0b0ff] rounded-full blur-[90px] translate-y-1/4 -translate-x-1/3" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <nav className="flex items-center gap-2 text-sm text-white/50 mb-8">
@@ -152,7 +152,7 @@ export default async function GuideDetailPage({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Text content */}
             <div>
-              <Badge variant="pink" className="mb-4 bg-[#E91E8C]/20 text-[#FDA4AF]">
+              <Badge variant="pink" className="mb-4 bg-[#a007dc]/20 text-[#e0b0ff]">
                 Ghid Digital
               </Badge>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-5 tracking-tight leading-tight">
@@ -167,7 +167,7 @@ export default async function GuideDetailPage({
                 <span className="text-3xl font-bold text-white">€{guide.price}</span>
                 <Link
                   href={`/checkout?product=GUIDE&id=${guide.id}`}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] text-white font-bold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#E91E8C]/25 text-lg"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white font-bold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#a007dc]/25 text-lg"
                 >
                   Cumpără acum
                   <span>→</span>
@@ -193,12 +193,12 @@ export default async function GuideDetailPage({
                     className="rounded-2xl shadow-2xl object-cover"
                   />
                 ) : (
-                  <div className="aspect-[3/4] bg-gradient-to-br from-[#2D1B69] to-[#E91E8C]/30 rounded-2xl shadow-2xl flex items-center justify-center border border-white/10">
+                  <div className="aspect-[3/4] bg-gradient-to-br from-[#51087e] to-[#a007dc]/30 rounded-2xl shadow-2xl flex items-center justify-center border border-white/10">
                     <div className="text-8xl opacity-30">📖</div>
                   </div>
                 )}
                 {/* Decorative floating element */}
-                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#E91E8C]/20 rounded-xl blur-md" />
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#a007dc]/20 rounded-xl blur-md" />
               </div>
             </div>
           </div>
@@ -209,17 +209,17 @@ export default async function GuideDetailPage({
       {toc.length > 0 && (
         <Section variant="white" className="py-16">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#2D1B69] mb-6">Ce vei descoperi</h2>
+            <h2 className="text-2xl font-bold text-[#51087e] mb-6">Ce vei descoperi</h2>
             <div className="space-y-3">
               {toc.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-[#FDF2F8] border border-[#E91E8C]/10"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-[#f5f0ff] border border-[#a007dc]/10"
                 >
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E91E8C] text-white text-sm font-bold flex items-center justify-center">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#a007dc] text-white text-sm font-bold flex items-center justify-center">
                     {index + 1}
                   </span>
-                  <span className="text-[#2D1B69] font-medium">{item}</span>
+                  <span className="text-[#51087e] font-medium">{item}</span>
                 </div>
               ))}
             </div>
@@ -231,7 +231,7 @@ export default async function GuideDetailPage({
       {relatedGuides.length > 0 && (
         <Section variant="light-pink" className="py-16">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#2D1B69] mb-2">
+            <h2 className="text-2xl md:text-3xl font-bold text-[#51087e] mb-2">
               Alte ghiduri care te-ar putea interesa
             </h2>
           </div>
@@ -240,9 +240,9 @@ export default async function GuideDetailPage({
               <Link
                 key={related.id}
                 href={`/ghiduri/${related.slug}`}
-                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#2D1B69]/5 hover:border-[#E91E8C]/20 hover:-translate-y-1"
+                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1"
               >
-                <div className="relative h-40 bg-gradient-to-br from-[#2D1B69] to-[#2D1B69]/80">
+                <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#51087e]/80">
                   {related.coverImage ? (
                     <Image
                       src={related.coverImage}
@@ -256,16 +256,16 @@ export default async function GuideDetailPage({
                     </div>
                   )}
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 bg-[#E91E8C] text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <span className="inline-flex items-center gap-1 bg-[#a007dc] text-white text-xs font-bold px-3 py-1 rounded-full">
                       €{related.price}
                     </span>
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-[#2D1B69] group-hover:text-[#E91E8C] transition-colors">
+                  <h3 className="font-bold text-[#51087e] group-hover:text-[#a007dc] transition-colors">
                     {related.title}
                   </h3>
-                  <span className="text-sm text-[#E91E8C] mt-2 inline-flex items-center gap-1 font-medium">
+                  <span className="text-sm text-[#a007dc] mt-2 inline-flex items-center gap-1 font-medium">
                     Descoperă <span>→</span>
                   </span>
                 </div>

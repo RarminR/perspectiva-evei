@@ -1,49 +1,43 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Navbar } from '@/components/ui'
-import { Footer } from '@/components/ui'
-import { Section } from '@/components/ui'
+import { Navbar } from '@/components/ui/Navbar'
+import { Footer } from '@/components/ui/Footer'
+import { Section } from '@/components/ui/Section'
 
 export const metadata: Metadata = {
   title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
   description:
-    'Ședințe individuale de coaching cu Eva Popescu. Îndrumare personalizată în manifestare conștientă și Legea Asumpției.',
+    'Sedinte individuale de coaching cu Eva Popescu. Indrumare personalizata in manifestare constienta si Legea Asumptiei.',
   openGraph: {
     title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
-    description:
-      'Coaching personalizat cu Eva Popescu. Ședințe individuale de manifestare conștientă.',
+    description: 'Coaching personalizat cu Eva Popescu. Sedinte individuale de manifestare constienta.',
     url: 'https://perspectivaevei.com/sedinte-1-la-1',
     siteName: 'Perspectiva Evei',
     locale: 'ro_RO',
     type: 'website',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
-    description:
-      'Coaching personalizat cu Eva Popescu. Ședințe individuale de manifestare conștientă.',
-  },
 }
+
 const benefits = [
   {
     icon: '✦',
-    title: 'Claritate Personalizată',
-    description: 'Analizăm împreună circumstanțele tale actuale și identificăm exact ce trebuie schimbat pentru a obține rezultatele dorite.',
+    title: 'Claritate Personalizata',
+    description: 'Analizam impreuna circumstantele tale actuale si identificam exact ce trebuie schimbat pentru a obtine rezultatele dorite.',
   },
   {
     icon: '◈',
-    title: 'Ghidare în Manifestare',
-    description: 'Înveți cum funcționează Legea Asumpției aplicată situației tale specifice — nu teorie generală, ci practică reală.',
+    title: 'Ghidare in Manifestare',
+    description: 'Inveti cum functioneaza Legea Asumptiei aplicata situatiei tale specifice — nu teorie generala, ci practica reala.',
   },
   {
     icon: '❋',
-    title: 'Transformare Conștientă',
-    description: 'Descoperi cum poți schimba situațiile cu care te confrunți acum prin puterea conștiinței și a asumpției corecte.',
+    title: 'Transformare Constienta',
+    description: 'Descoperi cum poti schimba situatiile cu care te confrunti acum prin puterea constiintei si a asumptiei corecte.',
   },
   {
     icon: '✧',
     title: 'Suport Continuu',
-    description: 'Primești instrumente și tehnici pe care le poți aplica imediat, cu rezultate vizibile în viața de zi cu zi.',
+    description: 'Primesti instrumente si tehnici pe care le poti aplica imediat, cu rezultate vizibile in viata de zi cu zi.',
   },
 ]
 
@@ -55,7 +49,7 @@ const steps = [
   },
   {
     number: '02',
-    title: 'Ședința',
+    title: 'Sedinta',
     description: 'În 60 de minute, lucrăm împreună pe situația ta. Primești claritate, direcție și tehnici concrete.',
   },
   {
@@ -67,14 +61,12 @@ const steps = [
 
 const testimonials = [
   {
-    quote: 'Eva, te iubesc! Dacă ai ști cât de mult s-a schimbat tot după cursul tău... Voi fi mereu recunoscătoare!',
+    quote: 'Eva, te iubesc! Daca ai sti cat de mult s-a schimbat tot dupa cursul tau... Voi fi mereu recunoscatoare!',
     name: 'Roxana',
-    role: 'Clientă mulțumită',
   },
   {
-    quote: 'Tu în realitatea mea faci o treabă minunată, realmente schimbi viețile oamenilor iar eu mă bucur când văd schimbările pozitive în atâtea persoane!',
+    quote: 'Tu in realitatea mea faci o treaba minunata, realmente schimbi vietile oamenilor iar eu ma bucur cand vad schimbarile pozitive in atatea persoane!',
     name: 'Diana',
-    role: 'Clientă mulțumită',
   },
 ]
 
@@ -84,61 +76,118 @@ export default function SedinteOneLaOnePage() {
       <Navbar />
 
       {/* Hero */}
-      <div className="relative bg-[#2D1B69] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(233,30,140,0.15),_transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(253,164,175,0.1),_transparent_50%)]" />
-        <div className="relative max-w-5xl mx-auto px-4 py-24 md:py-32 text-center">
-          <p className="text-[#FDA4AF] font-medium tracking-widest uppercase text-sm mb-4">Coaching Personalizat</p>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] bg-clip-text text-transparent">Ședințe 1:1</span>
-            {' '}cu Eva
-          </h1>
-          <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            În ședințele individuale, despicăm circumstanțele tale actuale, îți explic cum funcționează
-            manifestarea și Legea Asumpției, cum poți manifesta conștient ceea ce trăiești și implicit
-            cum poți schimba situațiile cu care te confrunți acum.
+      <section style={{
+        backgroundImage: 'linear-gradient(rgba(81,8,126,0.5), rgba(81,8,126,0.5)), linear-gradient(transparent, #51087e), url("/images/Cover-Servicii.jpg")',
+        backgroundPosition: '0 0, 0 0, 50%',
+        backgroundSize: 'auto, auto, cover',
+        padding: '100px 5%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '60vh',
+      }}>
+        <div style={{ maxWidth: '940px', width: '100%', textAlign: 'center' }}>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 500, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '0.85rem', marginBottom: '1rem' }}>
+            Coaching Personalizat
           </p>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#E91E8C]/90 transition-all hover:shadow-lg hover:shadow-[#E91E8C]/25"
-          >
+          <h1 style={{
+            backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+            fontWeight: 700,
+            marginBottom: '1.5rem',
+            lineHeight: 1.1,
+          }}>
+            Ședințe 1:1 cu Eva
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
+            In sedintele individuale, despicam circumstantele tale actuale, iti explic cum functioneaza
+            manifestarea si Legea Asumptiei, cum poti manifesta constient ceea ce traiesti si implicit
+            cum poti schimba situatiile cu care te confrunti acum.
+          </p>
+          <Link href="/programare" style={{
+            backgroundColor: 'white',
+            border: '1px solid white',
+            borderRadius: '999px',
+            color: '#51087e',
+            padding: '.75rem 2.5rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '10px',
+            textDecoration: 'none',
+            fontWeight: 600,
+            fontSize: '1.1rem',
+          }}>
             Rezervă o Ședință
-            <span className="text-xl">→</span>
           </Link>
         </div>
-      </div>
+      </section>
 
       {/* Benefits */}
-      <Section variant="light-pink">
-        <div className="text-center mb-16">
-          <p className="text-[#E91E8C] font-medium tracking-widest uppercase text-sm mb-3">De ce să alegi</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69]">Beneficii</h2>
+      <Section variant="default">
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{
+            backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            fontWeight: 700,
+          }}>
+            Beneficii
+          </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {benefits.map((b) => (
-            <div key={b.title} className="bg-white rounded-2xl p-8 shadow-sm border border-[#E91E8C]/10 hover:shadow-md hover:border-[#E91E8C]/20 transition-all">
-              <span className="text-3xl text-[#E91E8C] block mb-4">{b.icon}</span>
-              <h3 className="text-xl font-bold text-[#2D1B69] mb-3">{b.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{b.description}</p>
+            <div key={b.title} style={{ backgroundColor: 'rgba(81,8,126,0.15)', borderRadius: '20px', padding: '30px', display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+              <div style={{ backgroundColor: 'white', color: '#51087e', borderRadius: '15px', width: '60px', height: '60px', boxShadow: '0 0 15px rgba(81,8,126,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.5rem' }}>
+                {b.icon}
+              </div>
+              <div>
+                <h3 style={{ color: '#51087e', fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem' }}>{b.title}</h3>
+                <p style={{ color: '#444', lineHeight: 1.6, fontSize: '0.95rem' }}>{b.description}</p>
+              </div>
             </div>
           ))}
         </div>
       </Section>
 
       {/* How it works */}
-      <Section variant="white">
-        <div className="text-center mb-16">
-          <p className="text-[#E91E8C] font-medium tracking-widest uppercase text-sm mb-3">Proces simplu</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69]">Cum funcționează</h2>
+      <Section variant="alt">
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{
+            backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            fontWeight: 700,
+          }}>
+            Cum funcționează
+          </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
           {steps.map((s) => (
-            <div key={s.number} className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#FDA4AF] flex items-center justify-center text-white font-bold text-lg mx-auto mb-6">
+            <div key={s.number} style={{ textAlign: 'center' }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                backgroundImage: 'linear-gradient(135deg, #51087e, #a007dc)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 700,
+                fontSize: '1.1rem',
+                margin: '0 auto 1.5rem',
+              }}>
                 {s.number}
               </div>
-              <h3 className="text-xl font-bold text-[#2D1B69] mb-3">{s.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{s.description}</p>
+              <h3 style={{ color: '#51087e', fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.75rem' }}>{s.title}</h3>
+              <p style={{ color: '#444', lineHeight: 1.6, fontSize: '0.95rem' }}>{s.description}</p>
             </div>
           ))}
         </div>
@@ -146,47 +195,62 @@ export default function SedinteOneLaOnePage() {
 
       {/* Pricing */}
       <Section variant="dark">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-[#FDA4AF] font-medium tracking-widest uppercase text-sm mb-3">Investiția ta</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">O ședință, o transformare</h2>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-10 backdrop-blur-sm">
-            <p className="text-white/70 text-lg mb-6 leading-relaxed">
-              Fiecare ședință durează aproximativ 60 de minute și este personalizată
-              în funcție de nevoile tale specifice.
-            </p>
-            <p className="text-white/90 text-lg mb-8">
-              Contactează-mă pentru detalii despre prețuri și disponibilitate.
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#E91E8C]/90 transition-all hover:shadow-lg hover:shadow-[#E91E8C]/25"
-            >
-              Rezervă o Ședință
-              <span className="text-xl">→</span>
-            </Link>
-          </div>
+        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{
+            backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            fontWeight: 700,
+            marginBottom: '1.5rem',
+          }}>
+            O sedinta, o transformare
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1rem' }}>
+            Fiecare sedinta dureaza aproximativ 60 de minute si este personalizata in functie de nevoile tale specifice.
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.05rem', marginBottom: '2rem' }}>
+            Contacteaza-ma pentru detalii despre preturi si disponibilitate.
+          </p>
+          <Link href="/programare" style={{
+            backgroundColor: 'white',
+            border: '1px solid white',
+            borderRadius: '999px',
+            color: '#51087e',
+            padding: '.75rem 2.5rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '10px',
+            textDecoration: 'none',
+            fontWeight: 600,
+            fontSize: '1.1rem',
+          }}>
+            Rezervă o Ședință
+          </Link>
         </div>
       </Section>
 
       {/* Testimonials */}
-      <Section variant="light-pink">
-        <div className="text-center mb-16">
-          <p className="text-[#E91E8C] font-medium tracking-widest uppercase text-sm mb-3">Ce spun clienții mei</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69]">Vieți schimbate</h2>
+      <Section variant="default">
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{
+            backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            fontWeight: 700,
+          }}>
+            Ce spun clientii mei
+          </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', maxWidth: '800px', margin: '0 auto' }}>
           {testimonials.map((t) => (
-            <div key={t.name} className="bg-white rounded-2xl p-8 shadow-sm border border-[#E91E8C]/10">
-              <div className="flex gap-1 text-amber-400 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-lg">★</span>
-                ))}
-              </div>
-              <p className="text-gray-700 italic mb-6 leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
-              <div>
-                <p className="font-semibold text-[#2D1B69]">{t.name}</p>
-                <p className="text-sm text-gray-500">{t.role}</p>
-              </div>
+            <div key={t.name} style={{ backgroundColor: 'white', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 20px rgba(81,8,126,0.1)' }}>
+              <div style={{ color: '#f59e0b', marginBottom: '1rem', fontSize: '1.1rem' }}>★★★★★</div>
+              <p style={{ color: '#444', fontStyle: 'italic', lineHeight: 1.7, marginBottom: '1.5rem' }}>&ldquo;{t.quote}&rdquo;</p>
+              <p style={{ color: '#51087e', fontWeight: 700 }}>{t.name}</p>
             </div>
           ))}
         </div>

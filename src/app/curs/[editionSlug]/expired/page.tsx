@@ -16,10 +16,10 @@ export default async function ExpiredPage({
   await params
 
   return (
-    <div className="min-h-screen bg-[#FDF2F8] flex items-center justify-center">
+    <div className="min-h-screen bg-[#f5f0ff] flex items-center justify-center">
       <div className="max-w-md mx-auto text-center px-4">
         <div className="text-6xl mb-6">⏰</div>
-        <h1 className="text-2xl font-bold text-[#2D1B69] mb-4">
+        <h1 className="text-2xl font-bold text-[#51087e] mb-4">
           Accesul tău a expirat
         </h1>
         <p className="text-gray-600 mb-8">
@@ -28,14 +28,14 @@ export default async function ExpiredPage({
         </p>
         <Link
           href="/cursul-ado"
-          className="inline-block bg-[#E91E8C] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#E91E8C]/80 transition-colors"
+          className="inline-block bg-[#a007dc] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#a007dc]/80 transition-colors"
         >
           Prelungește accesul
         </Link>
         <div className="mt-4">
           <Link
             href="/profilul-meu"
-            className="text-[#2D1B69] hover:underline text-sm"
+            className="text-[#51087e] hover:underline text-sm"
           >
             Înapoi la profilul meu
           </Link>

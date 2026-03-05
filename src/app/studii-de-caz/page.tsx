@@ -38,9 +38,9 @@ export default async function CaseStudiesPage() {
       <Navbar />
 
       {/* Hero */}
-      <div className="bg-[#2D1B69] text-white">
+      <div className="bg-[#51087e] text-white">
         <div className="relative max-w-5xl mx-auto px-4 py-20 text-center">
-          <p className="text-[#FDA4AF] font-medium tracking-widest uppercase text-sm mb-4">Povești Reale</p>
+          <p className="text-[#e0b0ff] font-medium tracking-widest uppercase text-sm mb-4">Povești Reale</p>
           <h1 className="text-4xl md:text-5xl font-bold">Studii de Caz</h1>
           <p className="text-white/60 text-lg mt-4 max-w-xl mx-auto">
             Transformări reale din viețile celor care au aplicat Legea Asumpției.
@@ -60,7 +60,7 @@ export default async function CaseStudiesPage() {
             {caseStudies.map((cs) => (
               <article
                 key={cs.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#E91E8C]/10 hover:shadow-md hover:border-[#E91E8C]/20 transition-all group"
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#a007dc]/10 hover:shadow-md hover:border-[#a007dc]/20 transition-all group"
               >
                 {cs.coverImage && (
                   <div className="aspect-video overflow-hidden">
@@ -75,11 +75,11 @@ export default async function CaseStudiesPage() {
                 )}
                 <div className="p-8">
                   {cs.clientName && (
-                    <span className="inline-block bg-[#E91E8C]/10 text-[#E91E8C] text-xs font-semibold px-3 py-1 rounded-full mb-4">
+                    <span className="inline-block bg-[#a007dc]/10 text-[#a007dc] text-xs font-semibold px-3 py-1 rounded-full mb-4">
                       {cs.clientName}
                     </span>
                   )}
-                  <h2 className="text-xl font-bold text-[#2D1B69] mb-3 group-hover:text-[#E91E8C] transition-colors">
+                  <h2 className="text-xl font-bold text-[#51087e] mb-3 group-hover:text-[#a007dc] transition-colors">
                     {cs.title}
                   </h2>
                   {cs.testimonialQuote && (
@@ -89,7 +89,7 @@ export default async function CaseStudiesPage() {
                   )}
                   <Link
                     href={`/studii-de-caz/${cs.slug}`}
-                    className="inline-flex items-center gap-1 text-[#E91E8C] font-semibold text-sm hover:gap-2 transition-all"
+                    className="inline-flex items-center gap-1 text-[#a007dc] font-semibold text-sm hover:gap-2 transition-all"
                   >
                     Citește povestea <span>→</span>
                   </Link>

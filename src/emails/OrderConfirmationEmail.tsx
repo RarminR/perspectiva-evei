@@ -111,7 +111,7 @@ const container = {
 }
 
 const header = {
-  backgroundColor: '#2D1B69',
+  backgroundColor: '#51087e',
   padding: '32px 20px',
   textAlign: 'center' as const,
 }
@@ -130,7 +130,7 @@ const content = {
 const greeting = {
   fontSize: '18px',
   fontWeight: 'bold',
-  color: '#2D1B69',
+  color: '#51087e',
   marginBottom: '16px',
 }
 
@@ -151,7 +151,7 @@ const orderDetails = {
 const detailsTitle = {
   fontSize: '16px',
   fontWeight: 'bold',
-  color: '#2D1B69',
+  color: '#51087e',
   marginBottom: '12px',
 }
 
@@ -177,7 +177,7 @@ const detailsValue = {
 const button = {
   backgroundColor: '#f3f4f6',
   borderRadius: '6px',
-  color: '#2D1B69',
+  color: '#51087e',
   fontSize: '14px',
   fontWeight: 'bold',
   padding: '10px 24px',
@@ -189,7 +189,7 @@ const button = {
 }
 
 const primaryButton = {
-  backgroundColor: '#E91E8C',
+  backgroundColor: '#a007dc',
   borderRadius: '6px',
   color: '#ffffff',
   fontSize: '16px',

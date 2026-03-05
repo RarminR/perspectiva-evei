@@ -12,15 +12,15 @@ interface HeroProps {
 
 export function Hero({ title, subtitle, ctaText, ctaHref = '/', imageSrc }: HeroProps) {
   return (
-    <div className="bg-[#2D1B69] text-white py-20 px-4">
+    <div className="bg-[#51087e] text-white py-20 px-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] bg-clip-text text-transparent">
             {title}
           </h1>
           {subtitle && <p className="text-white/80 text-lg mb-8">{subtitle}</p>}
           {ctaText && (
-            <Link href={ctaHref} className="inline-block bg-[#E91E8C] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#E91E8C]/90 transition">
+            <Link href={ctaHref} className="inline-block bg-[#a007dc] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#a007dc]/90 transition">
               {ctaText}
             </Link>
           )}

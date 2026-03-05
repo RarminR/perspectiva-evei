@@ -75,7 +75,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
 
       {/* Shipping address */}
       <div className="border-t pt-4">
-        <h3 className="font-semibold text-[#2D1B69] mb-3">Adresă de livrare</h3>
+        <h3 className="font-semibold text-[#51087e] mb-3">Adresă de livrare</h3>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1">Prenume *</label>
@@ -83,7 +83,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               required
               value={shipping.firstName}
               onChange={(e) => setShipping((s) => ({ ...s, firstName: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
           <div>
@@ -92,7 +92,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               required
               value={shipping.lastName}
               onChange={(e) => setShipping((s) => ({ ...s, lastName: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
           <div>
@@ -102,7 +102,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               type="tel"
               value={shipping.phone}
               onChange={(e) => setShipping((s) => ({ ...s, phone: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
           <div>
@@ -111,7 +111,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               required
               value={shipping.judet}
               onChange={(e) => setShipping((s) => ({ ...s, judet: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
           <div>
@@ -120,7 +120,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               required
               value={shipping.localitate}
               onChange={(e) => setShipping((s) => ({ ...s, localitate: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
           <div>
@@ -129,7 +129,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               required
               value={shipping.codPostal}
               onChange={(e) => setShipping((s) => ({ ...s, codPostal: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
           <div className="col-span-2">
@@ -138,7 +138,7 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
               required
               value={shipping.strada}
               onChange={(e) => setShipping((s) => ({ ...s, strada: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E91E8C]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a007dc]"
             />
           </div>
         </div>
@@ -151,12 +151,12 @@ export function ProductCheckoutForm({ productId, productTitle, price, userId }: 
           <span>
             Total ({quantity}x {productTitle})
           </span>
-          <span className="font-bold text-[#2D1B69]">€{(price * quantity).toFixed(2)}</span>
+          <span className="font-bold text-[#51087e]">€{(price * quantity).toFixed(2)}</span>
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#E91E8C] text-white py-3 rounded-full font-semibold hover:opacity-90 disabled:opacity-50"
+          className="w-full bg-[#a007dc] text-white py-3 rounded-full font-semibold hover:opacity-90 disabled:opacity-50"
         >
           {loading ? 'Se procesează...' : 'Continuă spre plată'}
         </button>

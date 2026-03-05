@@ -15,7 +15,7 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header with hamburger */}
-        <header className="md:hidden sticky top-0 z-30 bg-[#2D1B69] px-4 py-3 flex items-center gap-3">
+        <header className="md:hidden sticky top-0 z-30 bg-[#51087e] px-4 py-3 flex items-center gap-3">
           <button
             className="text-white text-xl"
             onClick={() => setSidebarOpen(!sidebarOpen)}

@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { Navbar } from '@/components/ui/Navbar'
+import { Footer } from '@/components/ui/Footer'
 import { ProfileForm } from './components/ProfileForm'
 import { DeviceList } from './components/DeviceList'
 
@@ -34,131 +36,178 @@ export default async function ProfilulMeuPage() {
 
   if (!user) redirect('/logare')
 
+  const sectionStyle: React.CSSProperties = {
+    backgroundColor: 'white',
+    borderRadius: '20px',
+    padding: '1.5rem',
+    marginBottom: '1.5rem',
+    boxShadow: '0 4px 20px rgba(81,8,126,0.08)',
+  }
+
+  const sectionHeadingStyle: React.CSSProperties = {
+    color: '#51087e',
+    fontSize: '1.1rem',
+    fontWeight: 700,
+    marginBottom: '1rem',
+  }
+
+  const listItemStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0.75rem 1rem',
+    backgroundColor: 'rgba(81,8,126,0.06)',
+    borderRadius: '12px',
+    marginBottom: '0.5rem',
+  }
+
   return (
-    <div className="min-h-screen bg-[#FDF2F8]">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-[#2D1B69] mb-8">Profilul meu</h1>
+    <>
+      <Navbar />
 
-        {/* Profile section */}
-        <section className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2D1B69] mb-4">Informatii personale</h2>
-          <ProfileForm
-            user={{
-              id: user.id,
-              name: user.name ?? '',
-              email: user.email,
-              phone: user.phone ?? '',
-            }}
-          />
-        </section>
+      {/* Hero */}
+      <section style={{
+        backgroundImage: 'linear-gradient(#51087e, #a62bf1)',
+        padding: '60px 5%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: 'white',
+      }}>
+        <div style={{ maxWidth: '940px', width: '100%' }}>
+          <h1 style={{
+            backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            fontWeight: 700,
+          }}>
+            Profilul meu
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.8)', marginTop: '0.5rem' }}>
+            Bine ai venit, {user.name || user.email}!
+          </p>
+        </div>
+      </section>
 
-        {/* Devices section */}
-        <section className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2D1B69] mb-4">Dispozitivele mele</h2>
-          <DeviceList devices={devices} />
-        </section>
+      {/* Content */}
+      <section style={{ backgroundImage: 'linear-gradient(180deg, white, #e8c2ff)', padding: '60px 5%', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ maxWidth: '940px', width: '100%' }}>
 
-        {/* Course enrollments */}
-        <section className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2D1B69] mb-4">Cursurile mele</h2>
-          {enrollments.length === 0 ? (
-            <p className="text-gray-500">Nu esti inscris la niciun curs.</p>
-          ) : (
-            <ul className="space-y-3">
-              {enrollments.map((e) => (
-                <li
-                  key={e.id}
-                  className="flex items-center justify-between p-3 bg-[#FDF2F8] rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium text-[#2D1B69]">
-                      {e.edition.course.title}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Editia {e.edition.editionNumber} · Acces pana la{' '}
-                      {new Date(e.accessExpiresAt).toLocaleDateString('ro-RO')}
-                    </p>
-                  </div>
-                  <a
-                    href={`/curs/${e.edition.course.slug}`}
-                    className="text-[#E91E8C] font-medium text-sm hover:underline"
-                  >
-                    Acceseaza →
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+          {/* Profile section */}
+          <div style={sectionStyle}>
+            <h2 style={sectionHeadingStyle}>Informatii personale</h2>
+            <ProfileForm
+              user={{
+                id: user.id,
+                name: user.name ?? '',
+                email: user.email,
+                phone: user.phone ?? '',
+              }}
+            />
+          </div>
 
-        {/* Guide accesses */}
-        <section className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2D1B69] mb-4">Ghidurile mele</h2>
-          {guideAccesses.length === 0 ? (
-            <p className="text-gray-500">Nu ai achizitionat niciun ghid.</p>
-          ) : (
-            <ul className="space-y-3">
-              {guideAccesses.map((ga) => (
-                <li
-                  key={ga.id}
-                  className="flex items-center justify-between p-3 bg-[#FDF2F8] rounded-lg"
-                >
-                  <p className="font-medium text-[#2D1B69]">{ga.guide.title}</p>
-                  <a
-                    href={`/ghidurile-mele/${ga.guide.slug}`}
-                    className="text-[#E91E8C] font-medium text-sm hover:underline"
-                  >
-                    Citeste →
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+          {/* Devices section */}
+          <div style={sectionStyle}>
+            <h2 style={sectionHeadingStyle}>Dispozitivele mele</h2>
+            <DeviceList devices={devices} />
+          </div>
 
-        {/* Order history */}
-        <section className="bg-white rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2D1B69] mb-4">Istoricul comenzilor</h2>
-          {orders.length === 0 ? (
-            <p className="text-gray-500">Nu ai nicio comanda.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b text-left text-gray-500">
-                    <th className="pb-2 font-medium">Data</th>
-                    <th className="pb-2 font-medium">Suma</th>
-                    <th className="pb-2 font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((o) => (
-                    <tr key={o.id} className="border-b last:border-0">
-                      <td className="py-2 text-gray-700">
-                        {new Date(o.createdAt).toLocaleDateString('ro-RO')}
-                      </td>
-                      <td className="py-2 text-gray-900 font-medium">
-                        &euro;{o.totalAmount.toFixed(2)}
-                      </td>
-                      <td className="py-2">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            o.status === 'COMPLETED'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-amber-100 text-amber-700'
-                          }`}
-                        >
-                          {o.status}
-                        </span>
-                      </td>
+          {/* Course enrollments */}
+          <div style={sectionStyle}>
+            <h2 style={sectionHeadingStyle}>Cursurile mele</h2>
+            {enrollments.length === 0 ? (
+              <p style={{ color: '#666' }}>Nu esti inscris la niciun curs.</p>
+            ) : (
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {enrollments.map((e) => (
+                  <li key={e.id} style={listItemStyle}>
+                    <div>
+                      <p style={{ fontWeight: 600, color: '#51087e', marginBottom: '0.2rem' }}>
+                        {e.edition.course.title}
+                      </p>
+                      <p style={{ fontSize: '0.85rem', color: '#666' }}>
+                        Editia {e.edition.editionNumber} · Acces pana la{' '}
+                        {new Date(e.accessExpiresAt).toLocaleDateString('ro-RO')}
+                      </p>
+                    </div>
+                    <a href={`/curs/${e.edition.course.slug}`} style={{ color: '#a007dc', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
+                      Acceseaza →
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Guide accesses */}
+          <div style={sectionStyle}>
+            <h2 style={sectionHeadingStyle}>Ghidurile mele</h2>
+            {guideAccesses.length === 0 ? (
+              <p style={{ color: '#666' }}>Nu ai achizitionat niciun ghid.</p>
+            ) : (
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {guideAccesses.map((ga) => (
+                  <li key={ga.id} style={listItemStyle}>
+                    <p style={{ fontWeight: 600, color: '#51087e' }}>{ga.guide.title}</p>
+                    <a href={`/ghidurile-mele/${ga.guide.slug}`} style={{ color: '#a007dc', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
+                      Citeste →
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Order history */}
+          <div style={sectionStyle}>
+            <h2 style={sectionHeadingStyle}>Istoricul comenzilor</h2>
+            {orders.length === 0 ? (
+              <p style={{ color: '#666' }}>Nu ai nicio comanda.</p>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', fontSize: '0.9rem', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #e8c2ff', textAlign: 'left' }}>
+                      <th style={{ paddingBottom: '0.75rem', fontWeight: 600, color: '#666' }}>Data</th>
+                      <th style={{ paddingBottom: '0.75rem', fontWeight: 600, color: '#666' }}>Suma</th>
+                      <th style={{ paddingBottom: '0.75rem', fontWeight: 600, color: '#666' }}>Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      </div>
-    </div>
+                  </thead>
+                  <tbody>
+                    {orders.map((o) => (
+                      <tr key={o.id} style={{ borderBottom: '1px solid rgba(81,8,126,0.08)' }}>
+                        <td style={{ padding: '0.75rem 0', color: '#444' }}>
+                          {new Date(o.createdAt).toLocaleDateString('ro-RO')}
+                        </td>
+                        <td style={{ padding: '0.75rem 0', color: '#222', fontWeight: 600 }}>
+                          &euro;{o.totalAmount.toFixed(2)}
+                        </td>
+                        <td style={{ padding: '0.75rem 0' }}>
+                          <span style={{
+                            padding: '0.2rem 0.6rem',
+                            borderRadius: '999px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            backgroundColor: o.status === 'COMPLETED' ? 'rgba(34,197,94,0.1)' : 'rgba(245,158,11,0.1)',
+                            color: o.status === 'COMPLETED' ? '#16a34a' : '#d97706',
+                          }}>
+                            {o.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </section>
+
+      <Footer />
+    </>
   )
 }

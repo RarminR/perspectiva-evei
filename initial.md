@@ -380,3 +380,5 @@ Plan de migrare (useri existenți, conținut existent, cumpărături existente)
 Risk list (device locking, anti-piracy, delivery media)
 
 As vrea sa adaug ca as vrea sa fie in NextJs cu Postgresql. 
+Design Systemul o sa il iei din fisierele de webflow. Te rog sa iti faci un styleguide pentru toate componenentele sa intelegi si 
+ton of voice si tot. 

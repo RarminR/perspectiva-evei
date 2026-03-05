@@ -46,10 +46,10 @@ export function DeviceList({ devices: initialDevices }: DeviceListProps) {
       {devices.map((device) => (
         <li
           key={device.id}
-          className="flex items-center justify-between p-3 bg-[#FDF2F8] rounded-lg"
+          className="flex items-center justify-between p-3 bg-[#f5f0ff] rounded-lg"
         >
           <div>
-            <p className="font-medium text-[#2D1B69]">
+            <p className="font-medium text-[#51087e]">
               {device.name || 'Dispozitiv necunoscut'}
             </p>
             <p className="text-xs text-gray-500">

@@ -4,6 +4,9 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+const inputClasses =
+  "w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-4 py-3 text-[#f8f9fa] placeholder:text-white/30 focus:outline-none focus:border-[#a007dc] focus:ring-2 focus:ring-[#a007dc]/25 transition-colors duration-200 text-sm"
+
 export default function InregistrarePage() {
   const router = useRouter()
   const [error, setError] = useState("")
@@ -54,32 +57,44 @@ export default function InregistrarePage() {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur rounded-2xl p-8">
-      <h1 className="text-2xl font-bold text-center mb-6">Creează cont</h1>
+    <div className="backdrop-blur-xl bg-white/[0.07] border border-white/[0.1] rounded-3xl p-8 sm:p-10 shadow-2xl shadow-purple-950/40">
+      <div className="w-16 h-1 bg-gradient-to-r from-[#a007dc] to-[#d063f0] rounded-full mx-auto mb-8" />
+
+      <p className="text-center text-[#f8f9fa]/40 text-xs font-semibold tracking-[0.2em] uppercase mb-6">
+        Perspectiva Evei
+      </p>
+
+      <h1 className="text-[#f8f9fa] text-2xl font-bold text-center mb-2">
+        Creează-ți contul
+      </h1>
+      <p className="text-[#f8f9fa]/60 text-sm text-center mb-8">
+        Înregistrează-te pentru a accesa cursurile și ghidurile.
+      </p>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-500/50 text-red-200 rounded-lg p-3 mb-4 text-sm">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-300 text-sm mb-4">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1">
-            Nume
+          <label htmlFor="name" className="block text-[#f8f9fa]/70 text-sm font-medium mb-1.5">
+            Nume complet
           </label>
           <input
             id="name"
             name="name"
             type="text"
             required
-            className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
-            placeholder="Numele tău"
+            autoComplete="name"
+            className={inputClasses}
+            placeholder="Numele tău complet"
           />
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1">
+          <label htmlFor="email" className="block text-[#f8f9fa]/70 text-sm font-medium mb-1.5">
             Email
           </label>
           <input
@@ -87,13 +102,14 @@ export default function InregistrarePage() {
             name="email"
             type="email"
             required
-            className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            autoComplete="email"
+            className={inputClasses}
             placeholder="exemplu@email.com"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium mb-1">
+          <label htmlFor="password" className="block text-[#f8f9fa]/70 text-sm font-medium mb-1.5">
             Parolă
           </label>
           <input
@@ -102,16 +118,14 @@ export default function InregistrarePage() {
             type="password"
             required
             minLength={8}
-            className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            autoComplete="new-password"
+            className={inputClasses}
             placeholder="Minim 8 caractere"
           />
         </div>
 
         <div>
-          <label
-            htmlFor="confirmPassword"
-            className="block text-sm font-medium mb-1"
-          >
+          <label htmlFor="confirmPassword" className="block text-[#f8f9fa]/70 text-sm font-medium mb-1.5">
             Confirmă parola
           </label>
           <input
@@ -120,7 +134,8 @@ export default function InregistrarePage() {
             type="password"
             required
             minLength={8}
-            className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            autoComplete="new-password"
+            className={inputClasses}
             placeholder="Repetă parola"
           />
         </div>
@@ -128,17 +143,19 @@ export default function InregistrarePage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 px-4 rounded-lg bg-white text-brand-purple-dark font-semibold hover:bg-white/90 transition disabled:opacity-50"
+          className="w-full py-3 rounded-full bg-gradient-to-r from-[#a007dc] to-[#c23de6] text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-[#a007dc]/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {loading ? "Se creează contul..." : "Creează cont"}
         </button>
       </form>
 
-      <div className="mt-6 text-center text-sm">
-        <p>
-          Ai deja cont?{" "}
-          <Link href="/logare" className="underline hover:text-white/80">
-            Intră în cont
+      <div className="h-px bg-white/[0.1] my-6" />
+
+      <div className="text-center text-sm">
+        <p className="text-[#f8f9fa]/50">
+          Ai deja un cont?{" "}
+          <Link href="/logare" className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
+            Loghează-te
           </Link>
         </p>
       </div>

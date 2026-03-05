@@ -22,7 +22,7 @@ export default async function PromoCoduriPage() {
         <h1 className="text-2xl font-bold text-gray-900">Coduri Promoționale</h1>
         <Link
           href="/admin/promo-coduri/new"
-          className="px-4 py-2 bg-[#E91E8C] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition"
+          className="px-4 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition"
         >
           + Cod Nou
         </Link>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-
+import { Navbar } from '@/components/ui/Navbar'
+import { Footer } from '@/components/ui/Footer'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
@@ -27,7 +28,15 @@ export default async function CoursePage({
   })
 
   if (!edition) {
-    return <div className="p-8 text-center">Cursul nu a fost găsit.</div>
+    return (
+      <main>
+        <Navbar />
+        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <p style={{ color: '#666' }}>Cursul nu a fost găsit.</p>
+        </div>
+        <Footer />
+      </main>
+    )
   }
 
   const enrollment = edition.enrollments[0]
@@ -35,15 +44,45 @@ export default async function CoursePage({
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FDF2F8]">
-        <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold text-[#2D1B69] mb-4">Acces interzis</h1>
-          <p className="text-gray-600 mb-6">Nu ești înscris la această ediție a cursului.</p>
-          <a href="/cursul-ado" className="bg-[#E91E8C] text-white px-6 py-3 rounded-full font-semibold hover:opacity-90">
-            Înscrie-te acum
-          </a>
-        </div>
-      </div>
+      <main>
+        <Navbar />
+        <section style={{
+          backgroundImage: 'linear-gradient(135deg, #51087e 0%, #2c0246 100%)',
+          minHeight: '60vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '4rem 1rem',
+        }}>
+          <div style={{ textAlign: 'center', maxWidth: '440px' }}>
+            <h1 style={{
+              backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+              WebkitTextFillColor: 'transparent',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              fontSize: '2rem',
+              fontWeight: 700,
+              marginBottom: '1rem',
+            }}>Acces interzis</h1>
+            <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '2rem' }}>Nu ești înscris la această ediție a cursului.</p>
+            <Link href="/cursul-ado" style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              color: '#51087e',
+              backgroundColor: 'white',
+              border: '1px solid white',
+              borderRadius: '999px',
+              padding: '.75rem 2rem',
+              textDecoration: 'none',
+              fontWeight: 600,
+            }}>
+              Înscrie-te acum
+            </Link>
+          </div>
+        </section>
+        <Footer />
+      </main>
     )
   }
 
@@ -52,48 +91,144 @@ export default async function CoursePage({
     select: { lessonId: true, completed: true },
   })
 
-  const watchedLessonIds = new Set(progress.filter((entry) => entry.completed).map((entry) => entry.lessonId))
+  const watchedLessonIds = new Set(progress.filter((e) => e.completed).map((e) => e.lessonId))
   const now = new Date()
+  const completedCount = watchedLessonIds.size
+  const totalCount = edition.lessons.length
+  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-[#FDF2F8]">
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-[#2D1B69] mb-2">{edition.course.title}</h1>
-        <p className="text-gray-500 mb-8">Ediția {edition.editionNumber}</p>
+    <main>
+      <Navbar />
 
-        <div className="space-y-3">
-          {edition.lessons.map((lesson, idx) => {
-            const isAvailable = !lesson.availableFrom || lesson.availableFrom <= now
-            const isWatched = watchedLessonIds.has(lesson.id)
+      {/* Hero section — matches Webflow section-hero style */}
+      <section style={{
+        backgroundImage: 'linear-gradient(135deg, #51087e 0%, #a007dc 100%)',
+        padding: '60px 5%',
+        color: 'white',
+      }}>
+        <div style={{ maxWidth: '940px', margin: '0 auto' }}>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+            <Link href="/profilul-meu" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>Profilul meu</Link>
+            {' › '}Cursurile mele
+          </p>
+          <h1 style={{
+            backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+            fontWeight: 700,
+            margin: '0 0 0.5rem',
+          }}>{edition.course.title}</h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', margin: '0 0 1.5rem' }}>Ediția {edition.editionNumber}</p>
 
-            return (
-              <div key={lesson.id} className={`bg-white rounded-xl p-4 shadow-sm flex items-center gap-4 ${!isAvailable ? 'opacity-60' : ''}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isWatched ? 'bg-green-100 text-green-700' : 'bg-[#FDF2F8] text-[#2D1B69]'}`}>
-                  {isWatched ? '✓' : idx + 1}
-                </div>
-
-                <div className="flex-1">
-                  <p className="font-medium text-[#2D1B69]">{lesson.title}</p>
-                  {lesson.duration ? <p className="text-sm text-gray-500">{lesson.duration} min</p> : null}
-                  {!isAvailable && lesson.availableFrom ? (
-                    <p className="text-xs text-amber-600">
-                      Disponibil din {lesson.availableFrom.toLocaleDateString('ro-RO')}
-                    </p>
-                  ) : null}
-                </div>
-
-                {isAvailable ? (
-                  <Link href={`/curs/${editionSlug}/lectia/${lesson.id}`} className="text-[#E91E8C] font-medium text-sm hover:underline">
-                    {isWatched ? 'Revizuiește' : 'Urmărește'} →
-                  </Link>
-                ) : (
-                  <span className="text-gray-400 text-lg">🔒</span>
-                )}
-              </div>
-            )
-          })}
+          {/* Progress bar */}
+          <div style={{ maxWidth: '400px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+              <span style={{ color: 'rgba(255,255,255,0.8)' }}>{completedCount} din {totalCount} lecții completate</span>
+              <span style={{ color: 'white', fontWeight: 600 }}>{progressPct}%</span>
+            </div>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
+              <div style={{
+                backgroundColor: 'white',
+                height: '100%',
+                width: `${progressPct}%`,
+                borderRadius: '999px',
+                transition: 'width 0.3s',
+              }} />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Lessons list — white/light gradient background */}
+      <section style={{
+        backgroundImage: 'linear-gradient(180deg, white, #e8c2ff)',
+        padding: '60px 5%',
+        minHeight: '50vh',
+      }}>
+        <div style={{ maxWidth: '940px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {edition.lessons.map((lesson, idx) => {
+              const isAvailable = !lesson.availableFrom || lesson.availableFrom <= now
+              const isWatched = watchedLessonIds.has(lesson.id)
+
+              return (
+                <div
+                  key={lesson.id}
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: '20px',
+                    padding: '20px 24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    boxShadow: '0 2px 12px rgba(81,8,126,0.08)',
+                    opacity: isAvailable ? 1 : 0.6,
+                    transition: 'all .2s',
+                  }}
+                >
+                  {/* Number / check */}
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    flexShrink: 0,
+                    backgroundColor: isWatched ? '#027a48' : 'rgba(81,8,126,0.1)',
+                    color: isWatched ? 'white' : '#51087e',
+                  }}>
+                    {isWatched ? '✓' : idx + 1}
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: 600, color: '#51087e', margin: '0 0 2px' }}>{lesson.title}</p>
+                    {lesson.duration ? (
+                      <p style={{ fontSize: '0.8rem', color: '#666', margin: 0 }}>{lesson.duration} min</p>
+                    ) : null}
+                    {!isAvailable && lesson.availableFrom ? (
+                      <p style={{ fontSize: '0.8rem', color: '#b45309', margin: 0 }}>
+                        Disponibil din {lesson.availableFrom.toLocaleDateString('ro-RO')}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  {isAvailable ? (
+                    <Link
+                      href={`/curs/${editionSlug}/lectia/${lesson.id}`}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        color: 'white',
+                        backgroundColor: '#a007dc',
+                        border: '1px solid #a007dc',
+                        borderRadius: '999px',
+                        padding: '0.5rem 1.25rem',
+                        textDecoration: 'none',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {isWatched ? 'Revizuiește' : 'Urmărește'} →
+                    </Link>
+                  ) : (
+                    <span style={{ color: '#aaa', fontSize: '1.25rem' }}>🔒</span>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
   )
 }

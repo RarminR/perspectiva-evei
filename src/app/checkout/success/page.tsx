@@ -11,7 +11,7 @@ export default function CheckoutSuccessPage() {
         </p>
         <Link
           href="/profilul-meu"
-          className="inline-block rounded-lg bg-[#E91E8C] px-8 py-3 font-semibold text-white transition hover:bg-[#E91E8C]/90"
+          className="inline-block rounded-lg bg-[#a007dc] px-8 py-3 font-semibold text-white transition hover:bg-[#a007dc]/90"
         >
           Accesează conținutul
         </Link>

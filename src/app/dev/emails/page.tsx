@@ -89,7 +89,7 @@ export default function EmailPreviewPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '32px' }}>
           {/* Sidebar */}
           <div>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '16px', color: '#2D1B69' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '16px', color: '#51087e' }}>
               Templates
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -100,7 +100,7 @@ export default function EmailPreviewPage() {
                   style={{
                     padding: '12px 16px',
                     textAlign: 'left',
-                    backgroundColor: selectedTemplate === index ? '#E91E8C' : '#ffffff',
+                    backgroundColor: selectedTemplate === index ? '#a007dc' : '#ffffff',
                     color: selectedTemplate === index ? '#ffffff' : '#374151',
                     border: 'none',
                     borderRadius: '6px',
@@ -118,7 +118,7 @@ export default function EmailPreviewPage() {
           {/* Preview */}
           <div>
             <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px', color: '#2D1B69' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px', color: '#51087e' }}>
                 {emailTemplates[selectedTemplate].name}
               </h2>
               <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '24px' }}>

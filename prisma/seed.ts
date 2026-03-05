@@ -1,7 +1,13 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 import * as crypto from 'crypto';
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 
-const prisma = new PrismaClient();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter } as any);
 
 // Simple password hashing for seed data (NOT for production)
 function hashPassword(password: string): string {

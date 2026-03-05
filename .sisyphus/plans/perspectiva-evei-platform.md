@@ -358,7 +358,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `package.json, tsconfig.json, next.config.ts, tailwind.config.ts, vitest.config.ts, .eslintrc.json, .env.local.example, src/app/layout.tsx, src/app/page.tsx, src/app/api/health/route.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 2. Prisma Schema + Supabase Database Setup
+- [x] 2. Prisma Schema + Supabase Database Setup
 
   **What to do**:
   - Install Prisma and configure for Supabase PostgreSQL (`prisma init --datasource-provider postgresql`)
@@ -454,7 +454,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `prisma/schema.prisma, prisma/migrations/*, prisma/seed.ts`
   - Pre-commit: `npx prisma validate && vitest run`
 
-- [ ] 3. Design System Tokens + Base Components
+- [x] 3. Design System Tokens + Base Components
 
   **What to do**:
   - Extract exact brand colors from Webflow CSS into Tailwind theme:
@@ -1011,7 +1011,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 9. Device Fingerprinting + Locking System
+- [x] 9. Device Fingerprinting + Locking System
 
   **What to do**:
   - Create device fingerprint library at `src/lib/device-fingerprint.ts`:
@@ -1093,7 +1093,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/lib/device-fingerprint.ts, src/services/device.ts, src/app/api/devices/*, src/components/DeviceLimitModal.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 10. Course/Cohort Management Module
+- [x] 10. Course/Cohort Management Module
 
   **What to do**:
   - Create course management service at `src/services/course.ts`:
@@ -1167,7 +1167,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/course.ts, src/services/course.test.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 11. Checkout Flow — Single Product Purchase
+- [x] 11. Checkout Flow — Single Product Purchase
 
   **What to do**:
   - Create checkout service at `src/services/checkout.ts`:
@@ -1266,7 +1266,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/checkout.ts, src/app/api/checkout/route.ts, src/app/api/orders/[id]/route.ts, src/app/checkout/page.tsx, src/app/checkout/success/page.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 12. Checkout Flow — 2-Rate Installment System
+- [x] 12. Checkout Flow — 2-Rate Installment System
 
   **What to do**:
   - Extend checkout service with installment logic:
@@ -1356,7 +1356,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 13. Promo Code + Bundle Engine
+- [x] 13. Promo Code + Bundle Engine
 
   **What to do**:
   - Create promo code service at `src/services/promo.ts`:
@@ -1415,7 +1415,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/promo.ts, src/services/bundle.ts, src/services/promo.test.ts, src/services/bundle.test.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 14. Guide Reader + Watermark System
+- [x] 14. Guide Reader + Watermark System
 
   **What to do**:
   - Create guide content service at `src/services/guide.ts`:
@@ -1493,7 +1493,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/guide.ts, src/components/GuideReader.tsx, src/components/Watermark.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 15. Audiobook Player Module
+- [x] 15. Audiobook Player Module
 
   **What to do**:
   - Build audiobook player component at `src/components/AudiobookPlayer.tsx`:
@@ -1557,7 +1557,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/components/AudiobookPlayer.tsx, src/components/AudiobookPlayer.test.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 16. Secure Video Player (HLS + Signed Cookies + Refresh Loop)
+- [x] 16. Secure Video Player (HLS + Signed Cookies + Refresh Loop)
 
   **What to do**:
   - Build secure video player component at `src/components/SecureVideoPlayer.tsx`:
@@ -1650,7 +1650,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 17. Public Pages — Home + About + Contact
+- [x] 17. Public Pages — Home + About + Contact
 
   **What to do**:
   - Build 3 public marketing pages matching Webflow brand:
@@ -1719,7 +1719,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/page.tsx, src/app/despre-mine/page.tsx, src/app/contact/page.tsx, src/app/api/contact/route.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 18. Public Pages — Course (ADO) + Pricing
+- [x] 18. Public Pages — Course (ADO) + Pricing
 
   **What to do**:
   - Build course marketing page `/cursul-ado`:
@@ -1779,7 +1779,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/cursul-ado/page.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 19. Public Pages — Guides Listing + Detail
+- [x] 19. Public Pages — Guides Listing + Detail
 
   **What to do**:
   - Build guides listing page `/ghiduri`:
@@ -1834,7 +1834,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/ghiduri/page.tsx, src/app/ghiduri/[slug]/page.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 20. Public Pages — 1:1 Sessions + Blog + Case Studies
+- [x] 20. Public Pages — 1:1 Sessions + Blog + Case Studies
 
   **What to do**:
   - Build `/sedinte-1-la-1` page:
@@ -1895,7 +1895,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 21. Admin Layout + Dashboard + Auth Guard
+- [x] 21. Admin Layout + Dashboard + Auth Guard
 
   **What to do**:
   - Build admin layout at `src/app/admin/layout.tsx`:
@@ -1958,7 +1958,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/admin/layout.tsx, src/app/admin/page.tsx, src/app/admin/components/*`
   - Pre-commit: `vitest run`
 
-- [ ] 22. Admin — Course/Cohort CRUD
+- [x] 22. Admin — Course/Cohort CRUD
 
   **What to do**:
   - Build admin course management pages:
@@ -2013,7 +2013,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/admin/cursuri/*, src/app/api/admin/courses/*, src/app/api/admin/editions/*`
   - Pre-commit: `vitest run`
 
-- [ ] 23. Admin — Guide/Product CRUD
+- [x] 23. Admin — Guide/Product CRUD
 
   **What to do**:
   - Build admin guide management:
@@ -2070,7 +2070,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/admin/ghiduri/*, src/app/admin/produse/*, src/app/api/admin/guides/*, src/app/api/admin/products/*`
   - Pre-commit: `vitest run`
 
-- [ ] 24. Admin — User Management + Device Admin
+- [x] 24. Admin — User Management + Device Admin
 
   **What to do**:
   - Build admin user management:
@@ -2123,7 +2123,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 25. User Dashboard — Profilul Meu
+- [x] 25. User Dashboard — Profilul Meu
 
   **What to do**:
   - Build user profile/dashboard at `/profilul-meu`:
@@ -2177,7 +2177,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/profilul-meu/*, src/app/api/user/*`
   - Pre-commit: `vitest run`
 
-- [ ] 26. User — Course Access + Video Lessons Page
+- [x] 26. User — Course Access + Video Lessons Page
 
   **What to do**:
   - Build course access pages:
@@ -2246,7 +2246,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/curs/[editionSlug]/*, src/app/api/lessons/*`
   - Pre-commit: `vitest run`
 
-- [ ] 27. User — Guide Library + Reader Page
+- [x] 27. User — Guide Library + Reader Page
 
   **What to do**:
   - Build user guide library at `/ghidurile-mele`:
@@ -2302,7 +2302,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/ghidurile-mele/*, src/app/api/user/guides/*`
   - Pre-commit: `vitest run`
 
-- [ ] 28. 1:1 Session Scheduling System
+- [x] 28. 1:1 Session Scheduling System
 
   **What to do**:
   - Create scheduling service at `src/services/scheduling.ts`:
@@ -2376,7 +2376,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/scheduling.ts, src/app/programare/*, src/app/api/scheduling/*`
   - Pre-commit: `vitest run`
 
-- [ ] 29. Admin — Orders/Invoices Management
+- [x] 29. Admin — Orders/Invoices Management
 
   **What to do**:
   - Build admin orders page `/admin/comenzi`:
@@ -2430,7 +2430,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/admin/comenzi/*, src/app/admin/facturi/*, src/app/api/admin/orders/*, src/app/api/admin/invoices/*`
   - Pre-commit: `vitest run`
 
-- [ ] 30. Admin — Blog Editor + Case Studies Editor
+- [x] 30. Admin — Blog Editor + Case Studies Editor
 
   **What to do**:
   - Build blog editor at `/admin/blog`:
@@ -2484,7 +2484,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/admin/blog/*, src/app/admin/studii-de-caz/*, src/app/api/admin/blog/*, src/app/api/admin/case-studies/*`
   - Pre-commit: `vitest run`
 
-- [ ] 31. Jute Bags Product Page + Physical Product Checkout
+- [x] 31. Jute Bags Product Page + Physical Product Checkout
 
   **What to do**:
   - Build product page `/produse/[slug]`:
@@ -2543,7 +2543,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 32. Revolut Webhook Handler + Polling Fallback
+- [x] 32. Revolut Webhook Handler + Polling Fallback
 
   **What to do**:
   - Create webhook handler at `POST /api/webhooks/revolut`:
@@ -2613,7 +2613,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/api/webhooks/revolut/route.ts, src/services/order-polling.ts, src/services/order-polling.test.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 33. SmartBill Async Invoice Pipeline
+- [x] 33. SmartBill Async Invoice Pipeline
 
   **What to do**:
   - Create invoice pipeline at `src/services/invoice-pipeline.ts`:
@@ -2677,7 +2677,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/invoice-pipeline.ts, src/services/invoice-pipeline.test.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 34. Memberstack User Migration Script
+- [x] 34. Memberstack User Migration Script
 
   **What to do**:
   - Create migration script at `scripts/migrate-memberstack.ts`:
@@ -2728,7 +2728,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `scripts/migrate-memberstack.ts, scripts/migrate-memberstack.test.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 35. Google Analytics Integration
+- [x] 35. Google Analytics Integration
 
   **What to do**:
   - Add Google Analytics 4 (GA4) to the application:
@@ -2779,7 +2779,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/components/CookieConsent.tsx, src/lib/analytics.ts, src/app/layout.tsx (updated)`
   - Pre-commit: `vitest run`
 
-- [ ] 36. Admin — Promo Codes + Bundles Management
+- [x] 36. Admin — Promo Codes + Bundles Management
 
   **What to do**:
   - Build admin promo codes page `/admin/promo-coduri`:
@@ -2831,7 +2831,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/admin/promo-coduri/*, src/app/admin/bundle-uri/*, src/app/api/admin/promo/*, src/app/api/admin/bundles/*`
   - Pre-commit: `vitest run`
 
-- [ ] 37. Admin — Scheduling + Availability Management
+- [x] 37. Admin — Scheduling + Availability Management
 
   **What to do**:
   - Build admin scheduling page `/admin/programari`:
@@ -2885,7 +2885,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Pre-commit: `vitest run`
 
 
-- [ ] 38. Course Access Expiry + Paid Extension Flow
+- [x] 38. Course Access Expiry + Paid Extension Flow
 
   **What to do**:
   - Implement course access expiry cron job:
@@ -2940,7 +2940,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/course-expiry.ts, src/app/curs/[editionSlug]/expired/page.tsx`
   - Pre-commit: `vitest run`
 
-- [ ] 39. Installment Reminder Cron Job
+- [x] 39. Installment Reminder Cron Job
 
   **What to do**:
   - Create cron service at `src/services/installment-cron.ts`:
@@ -2992,7 +2992,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/services/installment-cron.ts, src/app/api/cron/installments/route.ts`
   - Pre-commit: `vitest run`
 
-- [ ] 40. SEO + Open Graph + Sitemap
+- [x] 40. SEO + Open Graph + Sitemap
 
   **What to do**:
   - Add metadata to all public pages:
@@ -3052,7 +3052,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/app/sitemap.ts, src/app/robots.ts, src/app/layout.tsx (updated), all page metadata`
   - Pre-commit: `vitest run`
 
-- [ ] 41. Rate Limiting + Security Hardening
+- [x] 41. Rate Limiting + Security Hardening
 
   **What to do**:
   - Add rate limiting to sensitive API routes:
@@ -3118,7 +3118,7 @@ Max Concurrent: 8 (Waves 1-3)
   - Files: `src/middleware.ts (updated), src/lib/rate-limit.ts, next.config.ts (updated)`
   - Pre-commit: `vitest run`
 
-- [ ] 42. Responsive Design Pass + Mobile QA
+- [x] 42. Responsive Design Pass + Mobile QA
 
   **What to do**:
   - Review ALL pages for mobile responsiveness (320px → 1920px):
@@ -3194,19 +3194,19 @@ Max Concurrent: 8 (Waves 1-3)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Rejection → fix → re-run.
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle`
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, curl endpoint, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Run `tsc --noEmit` + linter + `vitest run`. Review all changed files for: `as any`/`@ts-ignore`, empty catches, console.log in prod, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names (data/result/item/temp).
   Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
 
-- [ ] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill)
+- [x] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill)
   Start from clean state. Execute EVERY QA scenario from EVERY task — follow exact steps, capture evidence. Test cross-task integration (purchase → invoice → access → video playback). Test edge cases: empty state, invalid input, rapid actions, expired cookie, device limit reached. Save to `.sisyphus/evidence/final-qa/`.
   Output: `Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   For each task: read "What to do", read actual diff (git log/diff). Verify 1:1 — everything in spec was built (no missing), nothing beyond spec was built (no creep). Check "Must NOT do" compliance. Detect cross-task contamination. Flag unaccounted changes.
   Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | Unaccounted [CLEAN/N files] | VERDICT`
 

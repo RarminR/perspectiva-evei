@@ -73,7 +73,7 @@ export function GuideReader({ guide, userEmail, userId }: GuideReaderProps) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-2xl font-bold text-[#2D1B69]">{guide.title}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-[#51087e]">{guide.title}</h1>
 
       <div
         className="relative min-h-[600px] rounded-2xl bg-white p-8 shadow-lg"
@@ -93,7 +93,7 @@ export function GuideReader({ guide, userEmail, userId }: GuideReaderProps) {
             type="button"
             onClick={() => setCurrentPage((page) => Math.max(0, page - 1))}
             disabled={currentPage === 0}
-            className="rounded-lg bg-[#2D1B69] px-4 py-2 text-white transition hover:bg-[#2D1B69]/90 disabled:opacity-40"
+            className="rounded-lg bg-[#51087e] px-4 py-2 text-white transition hover:bg-[#51087e]/90 disabled:opacity-40"
           >
             ← Pagina anterioara
           </button>
@@ -106,7 +106,7 @@ export function GuideReader({ guide, userEmail, userId }: GuideReaderProps) {
             type="button"
             onClick={() => setCurrentPage((page) => Math.min(pages.length - 1, page + 1))}
             disabled={currentPage === pages.length - 1}
-            className="rounded-lg bg-[#2D1B69] px-4 py-2 text-white transition hover:bg-[#2D1B69]/90 disabled:opacity-40"
+            className="rounded-lg bg-[#51087e] px-4 py-2 text-white transition hover:bg-[#51087e]/90 disabled:opacity-40"
           >
             Pagina urmatoare →
           </button>

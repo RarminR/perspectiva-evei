@@ -87,10 +87,10 @@ export function AudiobookPlayer({
   if (!audioUrl) {
     return (
       <div
-        className="bg-[#2D1B69] text-white rounded-2xl p-4 flex items-center gap-3"
+        className="bg-[#51087e] text-white rounded-2xl p-4 flex items-center gap-3"
         data-testid="audiobook-loading"
       >
-        <div className="animate-spin text-[#E91E8C]">⟳</div>
+        <div className="animate-spin text-[#a007dc]">⟳</div>
         <span className="text-sm">Se încarcă audiobook-ul...</span>
       </div>
     )
@@ -98,7 +98,7 @@ export function AudiobookPlayer({
 
   return (
     <div
-      className="bg-[#2D1B69] text-white rounded-2xl p-4 shadow-xl"
+      className="bg-[#51087e] text-white rounded-2xl p-4 shadow-xl"
       data-testid="audiobook-player"
     >
       <audio
@@ -117,7 +117,7 @@ export function AudiobookPlayer({
         {/* Play/Pause */}
         <button
           onClick={isPlaying ? handlePause : handlePlay}
-          className="w-10 h-10 rounded-full bg-[#E91E8C] flex items-center justify-center hover:bg-[#E91E8C]/90 transition flex-shrink-0"
+          className="w-10 h-10 rounded-full bg-[#a007dc] flex items-center justify-center hover:bg-[#a007dc]/90 transition flex-shrink-0"
           aria-label={isPlaying ? 'Pauză' : 'Redă'}
           data-testid={isPlaying ? 'pause-button' : 'play-button'}
         >
@@ -132,7 +132,7 @@ export function AudiobookPlayer({
             max={duration || 100}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full accent-[#E91E8C]"
+            className="w-full accent-[#a007dc]"
             aria-label="Poziție redare"
             data-testid="seek-bar"
           />

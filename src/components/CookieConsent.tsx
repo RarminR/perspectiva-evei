@@ -49,7 +49,7 @@ export default function CookieConsent() {
   if (!visible) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#2D1B69] text-white p-4 shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#51087e] text-white p-4 shadow-lg">
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4">
         <p className="text-sm flex-1">
           Folosim cookie-uri pentru a îmbunătăți experiența ta. Prin acceptare,
@@ -64,7 +64,7 @@ export default function CookieConsent() {
           </button>
           <button
             onClick={accept}
-            className="px-4 py-2 text-sm bg-[#E91E8C] rounded hover:bg-[#E91E8C]/80 transition-colors font-medium"
+            className="px-4 py-2 text-sm bg-[#a007dc] rounded hover:bg-[#a007dc]/80 transition-colors font-medium"
           >
             Accept
           </button>

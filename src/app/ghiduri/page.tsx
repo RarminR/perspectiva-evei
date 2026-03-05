@@ -123,34 +123,40 @@ export default async function GhiduriPage() {
     <>
       <Navbar />
       {/* Hero Section */}
-      <div className="relative bg-[#2D1B69] overflow-hidden">
-        {/* Decorative mesh gradient */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#E91E8C] rounded-full blur-[128px] -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#FDA4AF] rounded-full blur-[100px] translate-y-1/3 -translate-x-1/4" />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-          <nav className="flex items-center justify-center gap-2 text-sm text-white/50 mb-8">
-            <Link href="/" className="hover:text-white/80 transition">Acasă</Link>
-            <span>/</span>
-            <span className="text-white/90 font-medium">Ghiduri</span>
-          </nav>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+      <section style={{
+        backgroundImage: 'linear-gradient(#51087e, #a62bf1)',
+        padding: '100px 5%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: 'white',
+        textAlign: 'center',
+      }}>
+        <div style={{ maxWidth: '940px', width: '100%' }}>
+          <h1 style={{
+            backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+            WebkitTextFillColor: 'transparent',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+            fontWeight: 700,
+            marginBottom: '1rem',
+          }}>
             Ghiduri
           </h1>
-          <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto">
-            Ghiduri create pentru a te ajuta să preiei controlul asupra vieții tale, pas cu pas.
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+            Ghiduri create pentru a te ajuta sa preiei controlul asupra vietii tale, pas cu pas.
           </p>
         </div>
-      </div>
+      </section>
 
       {/* Guide Cards Grid */}
-      <Section variant="light-pink" className="py-20">
+      <Section variant="default">
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2D1B69] mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-3">
             Explorează ghidurile mele
           </h2>
-          <p className="text-[#2D1B69]/60 text-lg max-w-xl mx-auto">
+          <p className="text-[#51087e]/60 text-lg max-w-xl mx-auto">
             Acces instant, pași clari, rezultate reale.
           </p>
         </div>
@@ -159,26 +165,27 @@ export default async function GhiduriPage() {
           {guides.map((guide) => (
             <div
               key={guide.id}
-              className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#2D1B69]/5 hover:border-[#E91E8C]/20 hover:-translate-y-1"
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1"
             >
               {/* Cover image area */}
-              <div className="relative h-52 bg-gradient-to-br from-[#2D1B69] to-[#2D1B69]/80 overflow-hidden">
+              <div className="relative h-52 bg-gradient-to-br from-[#51087e] to-[#51087e]/80 overflow-hidden">
                 {guide.coverImage ? (
                   <Image
-                    src={guide.coverImage}
+                    src={guide.coverImage.startsWith('/') || guide.coverImage.startsWith('http') ? guide.coverImage : `/${guide.coverImage}`}
                     alt={guide.title}
                     fill
+                    unoptimized
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-6xl opacity-20">📖</div>
-                    <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#2D1B69] to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#51087e] to-transparent" />
                   </div>
                 )}
                 {/* Price pill */}
                 <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-md">
+                  <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-md">
                     <span className="text-xs">✦</span>
                     €{guide.price}
                   </span>
@@ -186,17 +193,17 @@ export default async function GhiduriPage() {
               </div>
               {/* Content */}
               <div className="p-6">
-                <h3 className="text-xl font-bold text-[#2D1B69] mb-2 group-hover:text-[#E91E8C] transition-colors">
+                <h3 className="text-xl font-bold text-[#51087e] mb-2 group-hover:text-[#a007dc] transition-colors">
                   {guide.title}
                 </h3>
                 {guide.description && (
-                  <p className="text-[#2D1B69]/60 text-sm mb-5 line-clamp-2">
+                  <p className="text-[#51087e]/60 text-sm mb-5 line-clamp-2">
                     {guide.description}
                   </p>
                 )}
                 <Link
                   href={`/checkout?product=GUIDE&id=${guide.id}`}
-                  className="inline-flex items-center justify-center w-full gap-2 border-2 border-[#2D1B69]/10 text-[#2D1B69] font-semibold py-3 rounded-xl hover:bg-[#E91E8C] hover:text-white hover:border-[#E91E8C] transition-all duration-200 text-sm"
+                  className="inline-flex items-center justify-center w-full gap-2 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-3 rounded-xl hover:bg-[#a007dc] hover:text-white hover:border-[#a007dc] transition-all duration-200 text-sm"
                 >
                   Cumpără
                   <span className="text-xs">→</span>
@@ -208,15 +215,15 @@ export default async function GhiduriPage() {
 
         {/* Bundle Card — Featured */}
         <div className="max-w-2xl mx-auto">
-          <div className="relative bg-gradient-to-br from-[#2D1B69] to-[#2D1B69]/90 rounded-3xl shadow-2xl overflow-hidden border border-[#E91E8C]/20">
+          <div className="relative bg-gradient-to-br from-[#51087e] to-[#51087e]/90 rounded-3xl shadow-2xl overflow-hidden border border-[#a007dc]/20">
             {/* Decorative glow */}
-            <div className="absolute -top-20 -right-20 w-60 h-60 bg-[#E91E8C] rounded-full blur-[80px] opacity-20" />
-            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#FDA4AF] rounded-full blur-[60px] opacity-15" />
+            <div className="absolute -top-20 -right-20 w-60 h-60 bg-[#a007dc] rounded-full blur-[80px] opacity-20" />
+            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#e0b0ff] rounded-full blur-[60px] opacity-15" />
 
             <div className="relative p-8 md:p-10">
               {/* Savings badge */}
               <div className="flex items-center gap-3 mb-6">
-                <Badge variant="pink" className="text-sm px-4 py-1.5 bg-[#E91E8C]/20 text-[#FDA4AF] font-bold">
+                <Badge variant="pink" className="text-sm px-4 py-1.5 bg-[#a007dc]/20 text-[#e0b0ff] font-bold">
                   Economisești €{bundleSavings.toFixed(0)}
                 </Badge>
                 <Badge variant="green" className="text-sm px-3 py-1.5 bg-green-500/20 text-green-300 font-semibold">
@@ -238,7 +245,7 @@ export default async function GhiduriPage() {
                 <span className="text-4xl font-bold text-white">
                   €{bundlePrice.toFixed(2)}
                 </span>
-                <span className="text-lg text-white/40 line-through decoration-[#E91E8C] decoration-2">
+                <span className="text-lg text-white/40 line-through decoration-[#a007dc] decoration-2">
                   €{bundleOriginal}
                 </span>
               </div>
@@ -246,7 +253,7 @@ export default async function GhiduriPage() {
               {/* CTA */}
               <Link
                 href={`/checkout?product=BUNDLE&id=${bundle?.id ?? 'default-bundle'}`}
-                className="inline-flex items-center justify-center w-full gap-2 bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity text-lg shadow-lg shadow-[#E91E8C]/25"
+                className="inline-flex items-center justify-center w-full gap-2 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity text-lg shadow-lg shadow-[#a007dc]/25"
               >
                 Cumpără Pachetul
                 <span>→</span>

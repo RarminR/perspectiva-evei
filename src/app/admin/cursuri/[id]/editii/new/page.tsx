@@ -70,7 +70,7 @@ export default function NewEditionPage() {
               name="editionNumber"
               min={1}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
             />
           </div>
 
@@ -84,7 +84,7 @@ export default function NewEditionPage() {
                 id="startDate"
                 name="startDate"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
               />
             </div>
 
@@ -97,7 +97,7 @@ export default function NewEditionPage() {
                 id="endDate"
                 name="endDate"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
               />
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function NewEditionPage() {
               defaultValue={15}
               min={1}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent text-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
             />
           </div>
 
@@ -127,7 +127,7 @@ export default function NewEditionPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 transition-colors text-sm font-medium disabled:opacity-50"
+              className="px-6 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 transition-colors text-sm font-medium disabled:opacity-50"
             >
               {saving ? 'Se creează...' : 'Creează ediție'}
             </button>

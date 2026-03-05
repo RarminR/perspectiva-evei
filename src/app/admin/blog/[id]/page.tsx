@@ -165,7 +165,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
             required
             value={form.title}
             onChange={(e) => handleTitleChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -179,7 +179,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
             required
             value={form.slug}
             onChange={(e) => handleChange('slug', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -192,7 +192,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
             rows={12}
             value={form.content}
             onChange={(e) => handleChange('content', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -205,7 +205,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
             type="text"
             value={form.coverImage}
             onChange={(e) => handleChange('coverImage', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
         </div>
 
@@ -213,7 +213,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2 bg-[#E91E8C] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
+            className="px-6 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
           >
             {saving ? 'Se salvează...' : 'Salvează'}
           </button>

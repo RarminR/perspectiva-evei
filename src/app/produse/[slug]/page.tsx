@@ -17,7 +17,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const userId = session?.user ? (session.user as any).id : null
 
   return (
-    <div className="min-h-screen bg-[#FDF2F8]">
+    <div className="min-h-screen bg-[#f5f0ff]">
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Product images */}
@@ -44,8 +44,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           {/* Product info + checkout */}
           <div>
-            <h1 className="text-3xl font-bold text-[#2D1B69] mb-3">{product.title}</h1>
-            <p className="text-2xl font-bold text-[#E91E8C] mb-4">€{product.price.toFixed(2)}</p>
+            <h1 className="text-3xl font-bold text-[#51087e] mb-3">{product.title}</h1>
+            <p className="text-2xl font-bold text-[#a007dc] mb-4">€{product.price.toFixed(2)}</p>
             {product.description && (
               <p className="text-gray-600 mb-6 leading-relaxed">{product.description}</p>
             )}

@@ -44,7 +44,7 @@ export default async function UsersPage({
           name="search"
           defaultValue={search ?? ''}
           placeholder="Caută după nume sau email..."
-          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent"
+          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#51087e] focus:border-transparent"
         />
       </form>
 
@@ -99,7 +99,7 @@ export default async function UsersPage({
                     <td className="px-6 py-4">
                       <Link
                         href={`/admin/utilizatori/${user.id}`}
-                        className="text-[#2D1B69] hover:text-[#E91E8C] font-medium text-sm"
+                        className="text-[#51087e] hover:text-[#a007dc] font-medium text-sm"
                       >
                         Vezi
                       </Link>

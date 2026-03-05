@@ -37,7 +37,7 @@ export default async function EditionEditPage({
       <div className="mt-6 flex gap-4">
         <Link
           href={`/admin/cursuri/${id}/editii/${editionId}/lectii`}
-          className="px-4 py-2 bg-[#E91E8C] text-white rounded-lg hover:bg-[#E91E8C]/90 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-[#a007dc] text-white rounded-lg hover:bg-[#a007dc]/90 transition-colors text-sm font-medium"
         >
           Lecții
         </Link>

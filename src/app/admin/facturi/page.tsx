@@ -116,7 +116,7 @@ export default async function InvoicesPage({
                     <td className="px-6 py-4">
                       <Link
                         href={`/admin/facturi/${invoice.id}`}
-                        className="text-[#2D1B69] hover:text-[#E91E8C] font-medium text-sm"
+                        className="text-[#51087e] hover:text-[#a007dc] font-medium text-sm"
                       >
                         Detalii
                       </Link>

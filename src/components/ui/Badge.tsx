@@ -7,8 +7,8 @@ interface BadgeProps {
 }
 
 const variants = {
-  pink: 'bg-[#E91E8C]/10 text-[#E91E8C]',
-  purple: 'bg-[#2D1B69]/10 text-[#2D1B69]',
+  pink: 'bg-[#a007dc]/10 text-[#a007dc]',
+  purple: 'bg-[#51087e]/10 text-[#51087e]',
   green: 'bg-green-100 text-green-700',
   gray: 'bg-gray-100 text-gray-600',
 }

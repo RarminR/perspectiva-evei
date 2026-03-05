@@ -5,9 +5,14 @@ import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
+const inputClasses =
+  "w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-4 py-3 text-[#f8f9fa] placeholder:text-white/30 focus:outline-none focus:border-[#a007dc] focus:ring-2 focus:ring-[#a007dc]/25 transition-colors duration-200 text-sm"
+
 function LogareForm() {
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/"
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+  const registered = searchParams.get("registered")
+  const reset = searchParams.get("reset")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -36,18 +41,41 @@ function LogareForm() {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur rounded-2xl p-8">
-      <h1 className="text-2xl font-bold text-center mb-6">Intră în cont</h1>
+    <div className="backdrop-blur-xl bg-white/[0.07] border border-white/[0.1] rounded-3xl p-8 sm:p-10 shadow-2xl shadow-purple-950/40">
+      <div className="w-16 h-1 bg-gradient-to-r from-[#a007dc] to-[#d063f0] rounded-full mx-auto mb-8" />
+
+      <p className="text-center text-[#f8f9fa]/40 text-xs font-semibold tracking-[0.2em] uppercase mb-6">
+        Perspectiva Evei
+      </p>
+
+      <h1 className="text-[#f8f9fa] text-2xl font-bold text-center mb-2">
+        Bine ai revenit
+      </h1>
+      <p className="text-[#f8f9fa]/60 text-sm text-center mb-8">
+        Loghează-te în contul tău pentru a continua.
+      </p>
+
+      {registered && (
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-emerald-300 text-sm mb-4">
+          Cont creat cu succes! Te poți logha acum.
+        </div>
+      )}
+
+      {reset && (
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-emerald-300 text-sm mb-4">
+          Parola a fost resetată cu succes!
+        </div>
+      )}
 
       {error && (
-        <div className="bg-red-500/20 border border-red-500/50 text-red-200 rounded-lg p-3 mb-4 text-sm">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-300 text-sm mb-4">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1">
+          <label htmlFor="email" className="block text-[#f8f9fa]/70 text-sm font-medium mb-1.5">
             Email
           </label>
           <input
@@ -55,13 +83,14 @@ function LogareForm() {
             name="email"
             type="email"
             required
-            className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            autoComplete="email"
+            className={inputClasses}
             placeholder="exemplu@email.com"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium mb-1">
+          <label htmlFor="password" className="block text-[#f8f9fa]/70 text-sm font-medium mb-1.5">
             Parolă
           </label>
           <input
@@ -69,7 +98,8 @@ function LogareForm() {
             name="password"
             type="password"
             required
-            className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            autoComplete="current-password"
+            className={inputClasses}
             placeholder="••••••••"
           />
         </div>
@@ -77,25 +107,25 @@ function LogareForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 px-4 rounded-lg bg-white text-brand-purple-dark font-semibold hover:bg-white/90 transition disabled:opacity-50"
+          className="w-full py-3 rounded-full bg-gradient-to-r from-[#a007dc] to-[#c23de6] text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-[#a007dc]/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
-          {loading ? "Se încarcă..." : "Intră în cont"}
+          {loading ? "Se încarcă..." : "Loghează-te"}
         </button>
       </form>
 
-      <div className="mt-6 text-center text-sm space-y-2">
-        <p>
-          Nu ai cont?{" "}
-          <Link href="/inregistrare" className="underline hover:text-white/80">
-            Creează cont
+      <div className="h-px bg-white/[0.1] my-6" />
+
+      <div className="text-center space-y-2 text-sm">
+        <p className="text-[#f8f9fa]/50">
+          Ți-ai uitat parola?{" "}
+          <Link href="/resetare-parola" className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
+            Resetează parola
           </Link>
         </p>
-        <p>
-          <Link
-            href="/resetare-parola"
-            className="underline hover:text-white/80"
-          >
-            Ai uitat parola?
+        <p className="text-[#f8f9fa]/50">
+          Nu ai cont?{" "}
+          <Link href="/inregistrare" className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
+            Creează unul
           </Link>
         </p>
       </div>
@@ -105,7 +135,7 @@ function LogareForm() {
 
 export default function LogarePage() {
   return (
-    <Suspense fallback={<div className="text-white text-center">Se încarcă...</div>}>
+    <Suspense fallback={<div className="text-[#f8f9fa]/50 text-center py-20">Se încarcă...</div>}>
       <LogareForm />
     </Suspense>
   )

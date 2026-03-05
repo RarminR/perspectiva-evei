@@ -13,7 +13,7 @@ export function Select({ label, error, options, id, className = '', ...props }: 
       {label && <label htmlFor={inputId} className="text-sm font-medium text-gray-700">{label}</label>}
       <select
         id={inputId}
-        className={`w-full px-4 py-2.5 rounded-lg border ${error ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-[#E91E8C] transition bg-white ${className}`}
+        className={`w-full px-4 py-2.5 rounded-lg border ${error ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-[#a007dc] transition bg-white ${className}`}
         {...props}
       >
         {options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}

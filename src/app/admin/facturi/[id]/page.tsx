@@ -114,7 +114,7 @@ export default async function InvoiceDetailPage({
             <p className="text-sm text-gray-500">Comandă</p>
             <Link
               href={`/admin/comenzi/${invoice.orderId}`}
-              className="text-[#2D1B69] hover:text-[#E91E8C] font-medium text-sm"
+              className="text-[#51087e] hover:text-[#a007dc] font-medium text-sm"
             >
               {invoice.orderId.slice(0, 8)}…
             </Link>

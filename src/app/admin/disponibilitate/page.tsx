@@ -26,7 +26,7 @@ export default async function DisponibilitatePage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-[#2D1B69]">Disponibilitate</h1>
+        <h1 className="text-2xl font-bold text-[#51087e]">Disponibilitate</h1>
       </div>
 
       {/* Add new slot form */}
@@ -40,7 +40,7 @@ export default async function DisponibilitatePage() {
             <select
               id="dayOfWeek"
               name="dayOfWeek"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#51087e] focus:border-transparent"
             >
               {DAY_NAMES.map((name, i) => (
                 <option key={i} value={i}>
@@ -58,7 +58,7 @@ export default async function DisponibilitatePage() {
               id="startTime"
               name="startTime"
               defaultValue="09:00"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#51087e] focus:border-transparent"
             />
           </div>
           <div>
@@ -70,12 +70,12 @@ export default async function DisponibilitatePage() {
               id="endTime"
               name="endTime"
               defaultValue="17:00"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2D1B69] focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#51087e] focus:border-transparent"
             />
           </div>
           <button
             type="submit"
-            className="px-6 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 text-sm font-medium"
+            className="px-6 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 text-sm font-medium"
           >
             Adaugă
           </button>
@@ -99,9 +99,9 @@ export default async function DisponibilitatePage() {
                   {daySlots.map((slot) => (
                     <div
                       key={slot.id}
-                      className="flex items-center gap-2 px-3 py-2 bg-[#2D1B69]/5 rounded-lg border border-[#2D1B69]/10"
+                      className="flex items-center gap-2 px-3 py-2 bg-[#51087e]/5 rounded-lg border border-[#51087e]/10"
                     >
-                      <span className="text-sm font-medium text-[#2D1B69]">
+                      <span className="text-sm font-medium text-[#51087e]">
                         {slot.startTime} – {slot.endTime}
                       </span>
                     </div>

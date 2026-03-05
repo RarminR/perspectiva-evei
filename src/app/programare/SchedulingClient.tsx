@@ -81,7 +81,7 @@ export default function SchedulingClient() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#E91E8C] border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#a007dc] border-t-transparent" />
         <span className="ml-3 text-gray-600">Se încarcă disponibilitatea...</span>
       </div>
     )
@@ -119,7 +119,7 @@ export default function SchedulingClient() {
               key={dateLabel}
               className="rounded-lg border border-gray-200 bg-white p-6"
             >
-              <h2 className="mb-4 text-lg font-semibold capitalize text-[#2D1B69]">
+              <h2 className="mb-4 text-lg font-semibold capitalize text-[#51087e]">
                 {dateLabel}
               </h2>
               <div className="flex flex-wrap gap-3">
@@ -136,7 +136,7 @@ export default function SchedulingClient() {
                       key={iso}
                       onClick={() => handleBook(iso)}
                       disabled={isBooking}
-                      className="rounded-lg border-2 border-[#E91E8C] px-5 py-2.5 text-sm font-medium text-[#E91E8C] transition-colors hover:bg-[#E91E8C] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="rounded-lg border-2 border-[#a007dc] px-5 py-2.5 text-sm font-medium text-[#a007dc] transition-colors hover:bg-[#a007dc] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isBooking ? 'Se programează...' : timeLabel}
                     </button>

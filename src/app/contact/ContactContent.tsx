@@ -20,7 +20,7 @@ function ContactForm() {
     e.preventDefault()
 
     if (!name.trim() || !email.trim() || !message.trim()) {
-      addToast('Toate câmpurile sunt obligatorii.', 'error')
+      addToast('Toate campurile sunt obligatorii.', 'error')
       return
     }
 
@@ -34,28 +34,28 @@ function ContactForm() {
 
       if (!res.ok) {
         const data = await res.json()
-        addToast(data.error || 'A apărut o eroare. Încearcă din nou.', 'error')
+        addToast(data.error || 'A aparut o eroare. Incearca din nou.', 'error')
         return
       }
 
-      addToast('Mesajul tău a fost trimis cu succes!', 'success')
+      addToast('Mesajul tau a fost trimis cu succes!', 'success')
       setName('')
       setEmail('')
       setMessage('')
     } catch {
-      addToast('A apărut o eroare de rețea. Încearcă din nou.', 'error')
+      addToast('A aparut o eroare de retea. Incearca din nou.', 'error')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-lg">
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '480px' }}>
       <Input
         label="Nume"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Numele tău complet"
+        placeholder="Numele tau complet"
         required
       />
       <Input
@@ -70,7 +70,7 @@ function ContactForm() {
         label="Mesaj"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Scrie mesajul tău aici..."
+        placeholder="Scrie mesajul tau aici..."
         rows={5}
         required
       />
@@ -88,59 +88,94 @@ export default function ContactContent() {
         <Navbar />
 
         {/* Hero */}
-        <section className="bg-[#2D1B69] text-white py-20 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-[#E91E8C] to-[#FDA4AF] bg-clip-text text-transparent">
-                Contact
-              </span>
+        <section style={{
+          backgroundImage: 'linear-gradient(#51087e, #a62bf1)',
+          padding: '100px 5%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'white',
+          textAlign: 'center',
+        }}>
+          <div style={{ maxWidth: '940px', width: '100%' }}>
+            <h1 style={{
+              backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
+              WebkitTextFillColor: 'transparent',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+              fontWeight: 700,
+              marginBottom: '1rem',
+            }}>
+              Contact
             </h1>
-            <p className="text-white/80 text-lg">
-              Ai o întrebare sau vrei să afli mai multe? Scrie-mi!
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem' }}>
+              Ai o intrebare sau vrei sa afli mai multe? Scrie-mi!
             </p>
           </div>
         </section>
 
         {/* Contact Content */}
-        <Section variant="white">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+        <Section variant="default">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem' }}>
             {/* Form */}
             <div>
-              <h2 className="text-2xl font-bold text-[#2D1B69] mb-6">Trimite un mesaj</h2>
+              <h2 style={{
+                backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
+                WebkitTextFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                fontSize: '1.5rem',
+                fontWeight: 700,
+                marginBottom: '1.5rem',
+              }}>
+                Trimite un mesaj
+              </h2>
               <ContactForm />
             </div>
 
             {/* Info */}
             <div>
-              <h2 className="text-2xl font-bold text-[#2D1B69] mb-6">Informații de contact</h2>
+              <h2 style={{
+                backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
+                WebkitTextFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                fontSize: '1.5rem',
+                fontWeight: 700,
+                marginBottom: '1.5rem',
+              }}>
+                Informatii de contact
+              </h2>
 
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <span className="text-[#E91E8C] text-xl mt-0.5">✉</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ backgroundColor: 'white', color: '#51087e', borderRadius: '12px', width: '48px', height: '48px', boxShadow: '0 0 15px rgba(81,8,126,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.2rem' }}>
+                    ✉
+                  </div>
                   <div>
-                    <p className="font-semibold text-[#2D1B69]">Email</p>
-                    <a
-                      href="mailto:estedespremine@gmail.com"
-                      className="text-gray-600 hover:text-[#E91E8C] transition"
-                    >
+                    <p style={{ fontWeight: 700, color: '#51087e', marginBottom: '0.25rem' }}>Email</p>
+                    <a href="mailto:estedespremine@gmail.com" style={{ color: '#666', textDecoration: 'none' }}>
                       estedespremine@gmail.com
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <span className="text-[#E91E8C] text-xl mt-0.5">⚑</span>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ backgroundColor: 'white', color: '#51087e', borderRadius: '12px', width: '48px', height: '48px', boxShadow: '0 0 15px rgba(81,8,126,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.2rem' }}>
+                    ⚑
+                  </div>
                   <div>
-                    <p className="font-semibold text-[#2D1B69]">Firma</p>
-                    <p className="text-gray-600">DECOR-IUTA SRL</p>
+                    <p style={{ fontWeight: 700, color: '#51087e', marginBottom: '0.25rem' }}>Firma</p>
+                    <p style={{ color: '#666' }}>DECOR-IUTA SRL</p>
                   </div>
                 </div>
 
-                <div className="mt-8 p-6 bg-[#FDF2F8] rounded-2xl">
-                  <p className="text-[#2D1B69] font-semibold mb-2">Timp de răspuns</p>
-                  <p className="text-gray-600 text-sm">
-                    De obicei răspund în maximum 24 de ore. Pentru urgențe,
-                    te rog să menționezi în subiect.
+                <div style={{ backgroundColor: 'rgba(81,8,126,0.1)', borderRadius: '20px', padding: '1.5rem', marginTop: '0.5rem' }}>
+                  <p style={{ color: '#51087e', fontWeight: 700, marginBottom: '0.5rem' }}>Timp de raspuns</p>
+                  <p style={{ color: '#444', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    De obicei raspund in maximum 24 de ore. Pentru urgente,
+                    te rog sa mentionezi in subiect.
                   </p>
                 </div>
               </div>

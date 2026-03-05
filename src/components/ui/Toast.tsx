@@ -20,7 +20,7 @@ export function useToast() { return useContext(ToastContext) }
 const typeClasses: Record<ToastType, string> = {
   success: 'bg-green-600',
   error: 'bg-red-600',
-  info: 'bg-[#2D1B69]',
+  info: 'bg-[#51087e]',
   warning: 'bg-yellow-500',
 }
 

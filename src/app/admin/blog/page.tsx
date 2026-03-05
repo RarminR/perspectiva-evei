@@ -22,7 +22,7 @@ export default async function BlogPage() {
         <h1 className="text-2xl font-bold text-gray-900">Blog</h1>
         <Link
           href="/admin/blog/new"
-          className="px-4 py-2 bg-[#E91E8C] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition"
+          className="px-4 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition"
         >
           Adaugă articol
         </Link>
@@ -67,7 +67,7 @@ export default async function BlogPage() {
                     <td className="p-4">
                       <Link
                         href={`/admin/blog/${post.id}`}
-                        className="text-[#E91E8C] hover:underline font-medium"
+                        className="text-[#a007dc] hover:underline font-medium"
                       >
                         Editează
                       </Link>

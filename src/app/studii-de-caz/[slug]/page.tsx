@@ -20,16 +20,16 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
       <article>
         {/* Header */}
-        <div className="bg-[#2D1B69] text-white">
+        <div className="bg-[#51087e] text-white">
           <div className="max-w-3xl mx-auto px-4 py-16 text-center">
             <Link
               href="/studii-de-caz"
-              className="inline-flex items-center gap-1 text-[#FDA4AF]/70 text-sm hover:text-[#FDA4AF] transition mb-6"
+              className="inline-flex items-center gap-1 text-[#e0b0ff]/70 text-sm hover:text-[#e0b0ff] transition mb-6"
             >
               <span>←</span> Înapoi la Studii de Caz
             </Link>
             {caseStudy.clientName && (
-              <span className="block text-[#FDA4AF]/60 text-sm mb-4">{caseStudy.clientName}</span>
+              <span className="block text-[#e0b0ff]/60 text-sm mb-4">{caseStudy.clientName}</span>
             )}
             <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
               {caseStudy.title}
@@ -54,12 +54,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         {caseStudy.testimonialQuote && (
           <Section variant="light-pink">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="text-5xl text-[#E91E8C]/30 mb-4">&ldquo;</div>
-              <p className="text-xl md:text-2xl text-[#2D1B69] italic leading-relaxed font-medium">
+              <div className="text-5xl text-[#a007dc]/30 mb-4">&ldquo;</div>
+              <p className="text-xl md:text-2xl text-[#51087e] italic leading-relaxed font-medium">
                 {caseStudy.testimonialQuote}
               </p>
               {caseStudy.clientName && (
-                <p className="mt-6 text-[#E91E8C] font-semibold">— {caseStudy.clientName}</p>
+                <p className="mt-6 text-[#a007dc] font-semibold">— {caseStudy.clientName}</p>
               )}
             </div>
           </Section>
@@ -79,7 +79,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
               <p className="text-gray-600 mb-4">Vrei să experimentezi o transformare similară?</p>
               <Link
                 href="/sedinte-1-la-1"
-                className="inline-flex items-center gap-2 bg-[#E91E8C] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#E91E8C]/90 transition-all"
+                className="inline-flex items-center gap-2 bg-[#a007dc] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#a007dc]/90 transition-all"
               >
                 Descoperă Ședințele 1:1 <span>→</span>
               </Link>

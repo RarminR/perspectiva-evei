@@ -64,7 +64,7 @@ export function UserAdminActions({
         <button
           onClick={handleToggleRole}
           disabled={loading}
-          className="px-4 py-2 bg-[#2D1B69] text-white rounded-lg hover:bg-[#2D1B69]/90 text-sm font-medium disabled:opacity-50"
+          className="px-4 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 text-sm font-medium disabled:opacity-50"
         >
           Schimbă rol → {currentRole === 'ADMIN' ? 'USER' : 'ADMIN'}
         </button>
@@ -109,7 +109,7 @@ export function UserAdminActions({
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-[#E91E8C] text-white rounded-lg hover:bg-[#E91E8C]/90 text-sm font-medium disabled:opacity-50"
+              className="px-4 py-2 bg-[#a007dc] text-white rounded-lg hover:bg-[#a007dc]/90 text-sm font-medium disabled:opacity-50"
             >
               Acordă acces
             </button>

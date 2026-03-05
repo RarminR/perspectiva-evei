@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar } from '@/components/ui/Navbar'
+import { CountUp } from '@/components/ui/CountUp'
+import { FadeIn } from '@/components/ui/FadeIn'
 import { Footer } from '@/components/ui/Footer'
 import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
 import { getCourseWithEditions } from '@/services/course'
@@ -235,7 +237,7 @@ export default async function Home() {
             {socialProofStats.map((stat) => (
               <div key={stat.label} style={{ textAlign: 'center', flex: 1 }}>
                 <p style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#ffffff' }}>
-                  {stat.value}
+                  <CountUp value={stat.value} />
                 </p>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
                   {stat.label}
@@ -251,7 +253,7 @@ export default async function Home() {
             {socialProofStats.map((stat) => (
               <div key={`mobile-${stat.label}`} style={{ textAlign: 'left' }}>
                 <p style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, color: '#ffffff' }}>
-                  {stat.value}
+                  <CountUp value={stat.value} />
                 </p>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
                   {stat.label}
@@ -302,63 +304,66 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {courseBenefits.map((benefit) => (
-                <div
-                  key={benefit}
-                  style={{
-                    backgroundColor: 'rgba(81,8,126,0.15)',
-                    borderRadius: '20px',
-                    padding: '30px',
-                    display: 'flex',
-                    gap: '20px',
-                    alignItems: 'center',
-                  }}
-                >
+              {courseBenefits.map((benefit, index) => (
+                <FadeIn key={benefit} delay={index * 120}>
                   <div
                     style={{
-                      width: '58px',
-                      height: '58px',
-                      minWidth: '58px',
-                      borderRadius: '14px',
-                      backgroundColor: '#ffffff',
-                      color: '#51087e',
+                      backgroundColor: 'rgba(81,8,126,0.15)',
+                      borderRadius: '20px',
+                      padding: '30px',
                       display: 'flex',
-                      justifyContent: 'center',
+                      gap: '20px',
                       alignItems: 'center',
-                      boxShadow: '0 12px 28px rgba(81,8,126,0.35)',
-                      fontSize: '24px',
                     }}
                   >
-                    ✦
+                    <div
+                      style={{
+                        width: '58px',
+                        height: '58px',
+                        minWidth: '58px',
+                        borderRadius: '14px',
+                        backgroundColor: '#ffffff',
+                        color: '#51087e',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        boxShadow: '0 12px 28px rgba(81,8,126,0.35)',
+                        fontSize: '24px',
+                      }}
+                    >
+                      ✦
+                    </div>
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontSize: '1.4rem',
+                        fontWeight: 700,
+                        lineHeight: 1.2,
+                        backgroundImage: 'linear-gradient(90deg, #51087e, #a007dc)',
+                        WebkitTextFillColor: 'transparent',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                      }}
+                    >
+                      {benefit}
+                    </h3>
                   </div>
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: '1.4rem',
-                      fontWeight: 700,
-                      lineHeight: 1.2,
-                      backgroundImage: 'linear-gradient(90deg, #51087e, #a007dc)',
-                      WebkitTextFillColor: 'transparent',
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                    }}
-                  >
-                    {benefit}
-                  </h3>
-                </div>
+                </FadeIn>
               ))}
             </div>
 
-            <div
-              style={{
-                backgroundColor: '#51087e',
-                borderRadius: '30px',
-                padding: '40px',
-                color: '#f8f9fa',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-            >
+            <FadeIn delay={200}>
+              <div
+                style={{
+                  backgroundColor: '#51087e',
+                  borderRadius: '30px',
+                  padding: '40px',
+                  color: '#f8f9fa',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  height: '100%',
+                }}
+              >
               <div
                 style={{
                   position: 'absolute',
@@ -460,6 +465,7 @@ export default async function Home() {
                 </p>
               </div>
             </div>
+            </FadeIn>
           </div>
         </div>
       </section>
@@ -499,54 +505,56 @@ export default async function Home() {
           </div>
 
           <div
-            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px' }}
-            className="md:grid-cols-3"
+            style={{ display: 'grid', gap: '30px' }}
+            className="grid-cols-1 md:grid-cols-3"
           >
-            {testimonials.map((item) => (
-              <div
-                key={item.name}
-                style={{
-                  backgroundColor: '#ffffff',
-                  borderRadius: '20px',
-                  padding: '30px',
-                  boxShadow: '0 16px 30px rgba(81,8,126,0.12)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                }}
-              >
-                <div style={{ display: 'flex', gap: '4px', color: '#f59e0b' }}>
-                  {[1, 2, 3, 4, 5].map((index) => (
-                    <StarSVG key={index} />
-                  ))}
-                </div>
-                <p style={{ margin: 0, color: '#2c0246', fontStyle: 'italic', lineHeight: 1.65 }}>
-                  &ldquo;{item.quote}&rdquo;
-                </p>
-                <div style={{ borderTop: '1px solid rgba(81,8,126,0.16)', paddingTop: '16px' }}>
-                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <div
-                      style={{
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '999px',
-                        backgroundImage: 'linear-gradient(135deg, #51087e, #a007dc)',
-                        color: '#ffffff',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 700,
-                      }}
-                    >
-                      {item.name[0]}
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: 700, color: '#2c0246' }}>{item.name}</p>
-                      <p style={{ margin: 0, fontSize: '0.85rem', color: '#6f5a81' }}>{item.role}</p>
+            {testimonials.map((item, index) => (
+              <FadeIn key={item.name} delay={index * 150}>
+                <div
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '20px',
+                    padding: '30px',
+                    boxShadow: '0 16px 30px rgba(81,8,126,0.12)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    height: '100%',
+                  }}
+                >
+                  <div style={{ display: 'flex', gap: '4px', color: '#f59e0b' }}>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <StarSVG key={i} />
+                    ))}
+                  </div>
+                  <p style={{ margin: 0, color: '#2c0246', fontStyle: 'italic', lineHeight: 1.65 }}>
+                    &ldquo;{item.quote}&rdquo;
+                  </p>
+                  <div style={{ borderTop: '1px solid rgba(81,8,126,0.16)', paddingTop: '16px' }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <div
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '999px',
+                          backgroundImage: 'linear-gradient(135deg, #51087e, #a007dc)',
+                          color: '#ffffff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {item.name[0]}
+                      </div>
+                      <div>
+                        <p style={{ margin: 0, fontWeight: 700, color: '#2c0246' }}>{item.name}</p>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#6f5a81' }}>{item.role}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </FadeIn>
             ))}
           </div>
 

@@ -31,13 +31,13 @@ export default async function GuideReaderPage({
 
   if (!access) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FDF2F8]">
+      <div className="flex min-h-screen items-center justify-center bg-[#f5f0ff]">
         <div className="max-w-md text-center">
-          <h1 className="mb-4 text-2xl font-bold text-[#2D1B69]">Acces interzis</h1>
+          <h1 className="mb-4 text-2xl font-bold text-[#51087e]">Acces interzis</h1>
           <p className="mb-6 text-gray-600">Nu ai achiziționat acest ghid.</p>
           <a
             href={`/ghiduri/${guide.slug}`}
-            className="rounded-full bg-[#E91E8C] px-6 py-3 font-semibold text-white hover:opacity-90"
+            className="rounded-full bg-[#a007dc] px-6 py-3 font-semibold text-white hover:opacity-90"
           >
             Cumpără ghidul
           </a>
@@ -49,7 +49,7 @@ export default async function GuideReaderPage({
   const audioUrl = guide.audioKey ? `/api/guides/${guide.id}/audio` : null
 
   return (
-    <div className="min-h-screen bg-[#FDF2F8]">
+    <div className="min-h-screen bg-[#f5f0ff]">
       {guide.audioKey && (
         <div className="sticky top-0 z-50 border-b border-gray-100 bg-white shadow-sm">
           <div className="mx-auto max-w-4xl px-4">
@@ -60,7 +60,7 @@ export default async function GuideReaderPage({
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="mb-6">
-          <a href="/ghidurile-mele" className="text-sm text-[#E91E8C] hover:underline">
+          <a href="/ghidurile-mele" className="text-sm text-[#a007dc] hover:underline">
             ← Înapoi la ghidurile mele
           </a>
         </div>

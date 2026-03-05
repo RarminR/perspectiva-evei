@@ -193,7 +193,7 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
         <div className="flex items-center gap-3">
           <button
             onClick={handlePlayPause}
-            className="text-white hover:text-[#E91E8C] transition"
+            className="text-white hover:text-[#a007dc] transition"
             aria-label={isPlaying ? 'Pauză' : 'Redă'}
             data-testid={isPlaying ? 'pause-button' : 'play-button'}
           >
@@ -220,7 +220,7 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
 
       {isLoading ? (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <div className="animate-spin text-[#E91E8C] text-2xl">⟳</div>
+          <div className="animate-spin text-[#a007dc] text-2xl">⟳</div>
         </div>
       ) : null}
     </div>

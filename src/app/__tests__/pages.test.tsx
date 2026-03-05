@@ -16,14 +16,16 @@ describe('Homepage', () => {
   it('renders brand title "Perspectiva Evei"', async () => {
     const { default: Home } = await import('../page')
     render(<Home />)
-    const elements = screen.getAllByText('Perspectiva Evei')
+    // Logo alt text or any text containing Perspectiva Evei
+    const elements = screen.getAllByAltText('Perspectiva Evei')
     expect(elements.length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders a CTA button linking to the course', async () => {
     const { default: Home } = await import('../page')
     render(<Home />)
-    expect(screen.getByRole('link', { name: /Descoperă Cursul A\.D\.O\./i })).toBeInTheDocument()
+    // Updated CTA text matches new Webflow design
+    expect(screen.getByRole('link', { name: /Vezi serviciile mele/i })).toBeInTheDocument()
   })
 
   it('renders testimonial section', async () => {
@@ -44,7 +46,9 @@ describe('About page', () => {
   it('renders "Despre mine" heading', async () => {
     const { default: DespreMine } = await import('../despre-mine/page')
     render(<DespreMine />)
-    expect(screen.getByText('Despre mine')).toBeInTheDocument()
+    // Use getAllByText since "Despre mine" may appear in navbar + heading
+    const elements = screen.getAllByText('Despre mine')
+    expect(elements.length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders Eva\'s name', async () => {
