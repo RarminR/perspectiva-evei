@@ -92,7 +92,7 @@ perspectiva-evei-video/
 └── thumbnails/            # Video thumbnails
 ```
 
-## CloudFront Distribution
+  ## CloudFront Distribution
 
 ### Origin Access Control (OAC) — NOT OAI
 

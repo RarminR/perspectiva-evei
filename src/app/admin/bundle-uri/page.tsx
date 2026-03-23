@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 function formatPrice(price: number): string {
-  return `€${price.toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  return `${price.toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 function formatDate(date: Date): string {
@@ -18,7 +18,7 @@ function formatDate(date: Date): string {
 export default async function BundleUriPage() {
   const bundles = await prisma.bundle.findMany({
     orderBy: { createdAt: 'desc' },
-    include: { items: true },
+    include: { items: { include: { guide: true } } },
   })
 
   return (
@@ -35,18 +35,19 @@ export default async function BundleUriPage() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         {bundles.length === 0 ? (
-          <p className="p-6 text-gray-500 text-sm">Niciun bundle încă.</p>
+          <p className="p-6 text-gray-500 text-sm">Niciun bundle.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-left text-gray-500">
                   <th className="p-4 font-medium">Titlu</th>
-                  <th className="p-4 font-medium">Preț</th>
-                  <th className="p-4 font-medium">Preț Original</th>
-                  <th className="p-4 font-medium">Produse</th>
+                  <th className="p-4 font-medium">Pret</th>
+                  <th className="p-4 font-medium">Pret Original</th>
+                  <th className="p-4 font-medium">Ghiduri</th>
                   <th className="p-4 font-medium">Creat</th>
                   <th className="p-4 font-medium">Status</th>
+                  <th className="p-4 font-medium">Actiuni</th>
                 </tr>
               </thead>
               <tbody>
@@ -55,7 +56,11 @@ export default async function BundleUriPage() {
                     <td className="p-4 font-medium text-gray-900">{bundle.title}</td>
                     <td className="p-4 text-gray-900">{formatPrice(bundle.price)}</td>
                     <td className="p-4 text-gray-500 line-through">{formatPrice(bundle.originalPrice)}</td>
-                    <td className="p-4 text-gray-600">{bundle.items.length} ghiduri</td>
+                    <td className="p-4 text-gray-600">
+                      {bundle.items.length === 0
+                        ? 'Niciun ghid'
+                        : bundle.items.map((item) => item.guide.title).join(', ')}
+                    </td>
                     <td className="p-4 text-gray-500">{formatDate(bundle.createdAt)}</td>
                     <td className="p-4">
                       <span
@@ -67,6 +72,14 @@ export default async function BundleUriPage() {
                       >
                         {bundle.active ? 'Activ' : 'Inactiv'}
                       </span>
+                    </td>
+                    <td className="p-4">
+                      <Link
+                        href={`/admin/bundle-uri/${bundle.id}`}
+                        className="text-[#a007dc] hover:underline font-medium"
+                      >
+                        Editeaza
+                      </Link>
                     </td>
                   </tr>
                 ))}

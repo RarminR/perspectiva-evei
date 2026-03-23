@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section, Badge } from '@/components/ui'
 import { prisma } from '@/lib/db'
+import { imgSrc } from '@/lib/image'
 
 export const metadata: Metadata = {
   title: 'Ghiduri de Manifestare | Perspectiva Evei',
@@ -171,7 +172,7 @@ export default async function GhiduriPage() {
               <div className="relative h-52 bg-gradient-to-br from-[#51087e] to-[#51087e]/80 overflow-hidden">
                 {guide.coverImage ? (
                   <Image
-                    src={guide.coverImage.startsWith('/') || guide.coverImage.startsWith('http') ? guide.coverImage : `/${guide.coverImage}`}
+                     src={imgSrc(guide.coverImage)}
                     alt={guide.title}
                     fill
                     unoptimized

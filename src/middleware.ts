@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth-edge"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { NextResponse } from "next/server"
 
-const AUTH_LIMIT = { limit: 10, windowMs: 60 * 1000 }
+const AUTH_LIMIT = { limit: 50, windowMs: 60 * 1000 }
 const CHECKOUT_LIMIT = { limit: 5, windowMs: 60 * 1000 }
 const CONTACT_LIMIT = { limit: 3, windowMs: 60 * 1000 }
 
@@ -86,6 +86,10 @@ export async function middlewareCallback(req: AuthRequest) {
       return NextResponse.redirect(new URL("/logare", nextUrl))
     }
     return NextResponse.json({ error: "Acces interzis" }, { status: 403 })
+  }
+
+  if (nextUrl.pathname === "/dashboard" && isAdmin) {
+    return NextResponse.redirect(new URL("/admin", nextUrl))
   }
 
   if (isProtected && !isLoggedIn) {

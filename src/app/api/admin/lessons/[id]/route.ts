@@ -32,7 +32,7 @@ export async function PUT(
 
   const { id } = await params
   const body = await req.json()
-  const { title, order, videoKey, duration, availableFrom } = body
+  const { title, order, videoKey, zoomLink, pdfKeys, duration, availableFrom } = body
 
   const lesson = await prisma.lesson.update({
     where: { id },
@@ -40,6 +40,8 @@ export async function PUT(
       ...(title !== undefined && { title }),
       ...(order !== undefined && { order: Number(order) }),
       ...(videoKey !== undefined && { videoKey: videoKey || null }),
+      ...(zoomLink !== undefined && { zoomLink: zoomLink || null }),
+      ...(pdfKeys !== undefined && { pdfKeys: Array.isArray(pdfKeys) ? pdfKeys : [] }),
       ...(duration !== undefined && { duration: duration ? Number(duration) : null }),
       ...(availableFrom !== undefined && { availableFrom: availableFrom ? new Date(availableFrom) : null }),
     },

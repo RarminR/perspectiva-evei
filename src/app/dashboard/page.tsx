@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   if (!session?.user) redirect('/logare')
   const userId = (session.user as any).id
 
-  const [user, enrollments, guides, allSessions, offers] = await Promise.all([
+  const [user, enrollments, guides, allSessions, offers, upcomingLessons] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId } }),
     prisma.courseEnrollment.findMany({
       where: { userId },
@@ -31,6 +31,14 @@ export default async function DashboardPage() {
     prisma.personalizedOffer.findMany({
       where: { userId, active: true },
       orderBy: { createdAt: 'desc' },
+    }),
+    prisma.lesson.findMany({
+      where: {
+        edition: { enrollments: { some: { userId } } },
+        availableFrom: { not: null },
+      },
+      include: { edition: { include: { course: { select: { title: true, slug: true } } } } },
+      orderBy: { availableFrom: 'asc' },
     }),
   ])
 
@@ -72,6 +80,18 @@ export default async function DashboardPage() {
     linkUrl: o.linkUrl,
     linkLabel: o.linkLabel,
     validUntil: o.validUntil?.toISOString() ?? null,
+  }))
+
+  const serializedLessons = upcomingLessons.map((l) => ({
+    id: l.id,
+    title: l.title,
+    duration: l.duration,
+    availableFrom: l.availableFrom?.toISOString() ?? null,
+    zoomLink: l.zoomLink,
+    videoKey: l.videoKey,
+    courseTitle: l.edition.course.title,
+    courseSlug: l.edition.course.slug,
+    editionId: l.editionId,
   }))
 
   return (
@@ -131,6 +151,7 @@ export default async function DashboardPage() {
         guides={serializedGuides}
         upcomingSessions={serializedSessions}
         offers={serializedOffers}
+        lessons={serializedLessons}
       />
 
       <Footer />

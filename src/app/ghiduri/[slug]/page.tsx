@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Navbar, Footer, Section, Badge } from '@/components/ui'
 import { prisma } from '@/lib/db'
+import { imgSrc } from '@/lib/image'
 
 const FALLBACK_GUIDES = [
   {
@@ -186,7 +187,7 @@ export default async function GuideDetailPage({
               <div className="relative w-full max-w-md">
                 {guide.coverImage ? (
                   <Image
-                    src={guide.coverImage}
+                     src={imgSrc(guide.coverImage)}
                     alt={guide.title}
                     width={440}
                     height={580}
@@ -245,7 +246,7 @@ export default async function GuideDetailPage({
                 <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#51087e]/80">
                   {related.coverImage ? (
                     <Image
-                      src={related.coverImage}
+                       src={imgSrc(related.coverImage)}
                       alt={related.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"

@@ -4,6 +4,7 @@ import { Navbar } from '@/components/ui/Navbar'
 import { Footer } from '@/components/ui/Footer'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { LessonCard } from './components/LessonCard'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,14 +19,39 @@ export default async function CoursePage({
   const { editionSlug } = await params
   const userId = (session.user as any).id
 
-  const edition = await prisma.courseEdition.findUnique({
-    where: { id: editionSlug },
-    include: {
-      course: true,
-      lessons: { orderBy: { order: 'asc' } },
-      enrollments: { where: { userId } },
-    },
+  const course = await prisma.course.findUnique({
+    where: { slug: editionSlug },
+    select: { id: true },
   })
+
+  let edition
+  if (course) {
+    const enrollment = await prisma.courseEnrollment.findFirst({
+      where: { userId, edition: { courseId: course.id } },
+      orderBy: { createdAt: 'desc' },
+      select: { editionId: true },
+    })
+
+    if (enrollment) {
+      edition = await prisma.courseEdition.findUnique({
+        where: { id: enrollment.editionId },
+        include: {
+          course: true,
+          lessons: { orderBy: { order: 'asc' } },
+          enrollments: { where: { userId } },
+        },
+      })
+    }
+  } else {
+    edition = await prisma.courseEdition.findUnique({
+      where: { id: editionSlug },
+      include: {
+        course: true,
+        lessons: { orderBy: { order: 'asc' } },
+        enrollments: { where: { userId } },
+      },
+    })
+  }
 
   if (!edition) {
     return (
@@ -92,7 +118,6 @@ export default async function CoursePage({
   })
 
   const watchedLessonIds = new Set(progress.filter((e) => e.completed).map((e) => e.lessonId))
-  const now = new Date()
   const completedCount = watchedLessonIds.size
   const totalCount = edition.lessons.length
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
@@ -101,7 +126,6 @@ export default async function CoursePage({
     <main>
       <Navbar />
 
-      {/* Hero section — matches Webflow section-hero style */}
       <section style={{
         backgroundImage: 'linear-gradient(135deg, #51087e 0%, #a007dc 100%)',
         padding: '60px 5%',
@@ -123,7 +147,6 @@ export default async function CoursePage({
           }}>{edition.course.title}</h1>
           <p style={{ color: 'rgba(255,255,255,0.7)', margin: '0 0 1.5rem' }}>Ediția {edition.editionNumber}</p>
 
-          {/* Progress bar */}
           <div style={{ maxWidth: '400px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
               <span style={{ color: 'rgba(255,255,255,0.8)' }}>{completedCount} din {totalCount} lecții completate</span>
@@ -142,7 +165,6 @@ export default async function CoursePage({
         </div>
       </section>
 
-      {/* Lessons list — white/light gradient background */}
       <section style={{
         backgroundImage: 'linear-gradient(180deg, white, #e8c2ff)',
         padding: '60px 5%',
@@ -150,80 +172,21 @@ export default async function CoursePage({
       }}>
         <div style={{ maxWidth: '940px', margin: '0 auto' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {edition.lessons.map((lesson, idx) => {
-              const isAvailable = !lesson.availableFrom || lesson.availableFrom <= now
-              const isWatched = watchedLessonIds.has(lesson.id)
-
-              return (
-                <div
-                  key={lesson.id}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '20px',
-                    padding: '20px 24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px',
-                    boxShadow: '0 2px 12px rgba(81,8,126,0.08)',
-                    opacity: isAvailable ? 1 : 0.6,
-                    transition: 'all .2s',
-                  }}
-                >
-                  {/* Number / check */}
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.875rem',
-                    fontWeight: 700,
-                    flexShrink: 0,
-                    backgroundColor: isWatched ? '#027a48' : 'rgba(81,8,126,0.1)',
-                    color: isWatched ? 'white' : '#51087e',
-                  }}>
-                    {isWatched ? '✓' : idx + 1}
-                  </div>
-
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontWeight: 600, color: '#51087e', margin: '0 0 2px' }}>{lesson.title}</p>
-                    {lesson.duration ? (
-                      <p style={{ fontSize: '0.8rem', color: '#666', margin: 0 }}>{lesson.duration} min</p>
-                    ) : null}
-                    {!isAvailable && lesson.availableFrom ? (
-                      <p style={{ fontSize: '0.8rem', color: '#b45309', margin: 0 }}>
-                        Disponibil din {lesson.availableFrom.toLocaleDateString('ro-RO')}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  {isAvailable ? (
-                    <Link
-                      href={`/curs/${editionSlug}/lectia/${lesson.id}`}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        color: 'white',
-                        backgroundColor: '#a007dc',
-                        border: '1px solid #a007dc',
-                        borderRadius: '999px',
-                        padding: '0.5rem 1.25rem',
-                        textDecoration: 'none',
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {isWatched ? 'Revizuiește' : 'Urmărește'} →
-                    </Link>
-                  ) : (
-                    <span style={{ color: '#aaa', fontSize: '1.25rem' }}>🔒</span>
-                  )}
-                </div>
-              )
-            })}
+            {edition.lessons.map((lesson, idx) => (
+              <LessonCard
+                key={lesson.id}
+                index={idx}
+                lessonId={lesson.id}
+                editionSlug={edition.id}
+                title={lesson.title}
+                duration={lesson.duration}
+                availableFrom={lesson.availableFrom?.toISOString() ?? null}
+                zoomLink={lesson.zoomLink}
+                videoKey={lesson.videoKey}
+                pdfKeys={lesson.pdfKeys}
+                isWatched={watchedLessonIds.has(lesson.id)}
+              />
+            ))}
           </div>
         </div>
       </section>

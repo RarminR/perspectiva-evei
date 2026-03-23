@@ -9,6 +9,8 @@ interface Lesson {
   title: string
   order: number
   videoKey: string | null
+  zoomLink: string | null
+  pdfKeys: string[]
   duration: number | null
   availableFrom: Date | null
   createdAt: Date
@@ -32,11 +34,14 @@ export function LessonManager({
     setError('')
 
     const formData = new FormData(e.currentTarget)
+    const pdfKeysRaw = (formData.get('pdfKeys') as string) || ''
     const data = {
       editionId,
       title: formData.get('title'),
       order: Number(formData.get('order')),
       videoKey: formData.get('videoKey') || null,
+      zoomLink: formData.get('zoomLink') || null,
+      pdfKeys: pdfKeysRaw ? pdfKeysRaw.split('\n').map((k) => k.trim()).filter(Boolean) : [],
       duration: formData.get('duration') ? Number(formData.get('duration')) : null,
       availableFrom: formData.get('availableFrom') || null,
     }
@@ -153,23 +158,50 @@ export function LessonManager({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="videoKey" className="block text-sm font-medium text-gray-700 mb-1">
-                  Video key
+                  Video key (HLS)
                 </label>
                 <input
                   type="text"
                   id="videoKey"
                   name="videoKey"
+                  placeholder="video/hls/lesson-1/master.m3u8"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 />
               </div>
+              <div>
+                <label htmlFor="zoomLink" className="block text-sm font-medium text-gray-700 mb-1">
+                  Zoom Link
+                </label>
+                <input
+                  type="url"
+                  id="zoomLink"
+                  name="zoomLink"
+                  placeholder="https://zoom.us/j/..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="availableFrom" className="block text-sm font-medium text-gray-700 mb-1">
                   Disponibil din
                 </label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   id="availableFrom"
                   name="availableFrom"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                />
+              </div>
+              <div>
+                <label htmlFor="pdfKeys" className="block text-sm font-medium text-gray-700 mb-1">
+                  PDF Keys (una per linie)
+                </label>
+                <textarea
+                  id="pdfKeys"
+                  name="pdfKeys"
+                  rows={3}
+                  placeholder={"resources/lesson-1/material.pdf\nresources/lesson-1/exercitii.pdf"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 />
               </div>
@@ -203,6 +235,8 @@ export function LessonManager({
                 <th className="px-6 py-4 font-medium">Titlu</th>
                 <th className="px-6 py-4 font-medium">Durată</th>
                 <th className="px-6 py-4 font-medium">Video</th>
+                <th className="px-6 py-4 font-medium">Zoom</th>
+                <th className="px-6 py-4 font-medium">PDF</th>
                 <th className="px-6 py-4 font-medium">Disponibil din</th>
                 <th className="px-6 py-4 font-medium">Acțiuni</th>
               </tr>
@@ -217,6 +251,12 @@ export function LessonManager({
                   </td>
                   <td className="px-6 py-4 text-gray-500">
                     {lesson.videoKey ? '✓' : '—'}
+                  </td>
+                  <td className="px-6 py-4 text-gray-500">
+                    {lesson.zoomLink ? '✓' : '—'}
+                  </td>
+                  <td className="px-6 py-4 text-gray-500">
+                    {lesson.pdfKeys?.length > 0 ? lesson.pdfKeys.length : '—'}
                   </td>
                   <td className="px-6 py-4 text-gray-500">{formatDate(lesson.availableFrom)}</td>
                   <td className="px-6 py-4">
@@ -251,7 +291,7 @@ export function LessonManager({
               ))}
               {initialLessons.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
                     Nicio lecție încă.
                   </td>
                 </tr>

@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 import { createOrder } from '@/services/revolut'
+import { fulfillOrder } from '@/services/order-fulfillment'
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -34,9 +35,38 @@ export async function POST(req: Request) {
   }
 
   const totalAmount = product.price * quantity
+
+  if (process.env.BYPASS_PAYMENT === 'true') {
+    const order = await prisma.order.create({
+      data: {
+        userId,
+        revolutOrderId: `dev-bypass-${Date.now()}`,
+        status: 'PENDING',
+        totalAmount,
+        currency: 'EUR',
+        shippingAddress,
+        items: {
+          create: [{
+            productId,
+            productType: 'PRODUCT',
+            quantity,
+            unitPrice: product.price,
+          }],
+        },
+      },
+    })
+
+    await fulfillOrder(order.id)
+
+    return NextResponse.json({
+      checkoutUrl: `/checkout/success?orderId=${order.id}`,
+      orderId: order.id,
+      bypassed: true,
+    })
+  }
+
   const totalCents = Math.round(totalAmount * 100)
 
-  // Create Revolut order
   const revolutOrder = await createOrder({
     amount: totalCents,
     currency: 'EUR',
@@ -44,7 +74,6 @@ export async function POST(req: Request) {
     merchantOrderReference: `physical-${userId}-${Date.now()}`,
   })
 
-  // Create DB order with shipping address
   const order = await prisma.order.create({
     data: {
       userId,
@@ -55,14 +84,12 @@ export async function POST(req: Request) {
       currency: 'EUR',
       shippingAddress,
       items: {
-        create: [
-          {
-            productId,
-            productType: 'PRODUCT',
-            quantity,
-            unitPrice: product.price,
-          },
-        ],
+        create: [{
+          productId,
+          productType: 'PRODUCT',
+          quantity,
+          unitPrice: product.price,
+        }],
       },
     },
   })

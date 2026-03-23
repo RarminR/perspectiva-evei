@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
+import { imgSrc } from '@/lib/image'
 
 export const metadata: Metadata = {
   title: 'Blog | Perspectiva Evei',
@@ -75,7 +76,7 @@ export default async function BlogPage() {
                 {post.coverImage && (
                   <div className="aspect-video overflow-hidden">
                     <Image
-                      src={post.coverImage}
+                      src={imgSrc(post.coverImage)}
                       alt={post.title}
                       width={600}
                       height={340}

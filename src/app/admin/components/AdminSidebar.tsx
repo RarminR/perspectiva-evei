@@ -8,6 +8,8 @@ const NAV_ITEMS = [
   { href: '/admin/cursuri', label: 'Cursuri', icon: '🎓' },
   { href: '/admin/ghiduri', label: 'Ghiduri', icon: '📚' },
   { href: '/admin/produse', label: 'Produse', icon: '🛍️' },
+  { href: '/admin/bundle-uri', label: 'Bundle-uri', icon: '📦' },
+  { href: '/admin/clienti', label: 'Clienți (CRM)', icon: '📋' },
   { href: '/admin/utilizatori', label: 'Utilizatori', icon: '👥' },
   { href: '/admin/comenzi', label: 'Comenzi', icon: '📦' },
   { href: '/admin/facturi', label: 'Facturi', icon: '🧾' },
@@ -15,6 +17,8 @@ const NAV_ITEMS = [
   { href: '/admin/studii-de-caz', label: 'Studii de caz', icon: '💼' },
   { href: '/admin/promo-coduri', label: 'Promo coduri', icon: '🏷️' },
   { href: '/admin/programari', label: 'Programări', icon: '📅' },
+  { href: '/admin/disponibilitate', label: 'Disponibilitate', icon: '🕐' },
+  { href: '/admin/activitate', label: 'Activitate', icon: '🛡️' },
   { href: '/admin/setari', label: 'Setări', icon: '⚙️' },
 ]
 

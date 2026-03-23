@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
+import { imgSrc } from '@/lib/image'
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('ro-RO', {
@@ -51,7 +52,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {post.coverImage && (
           <div className="max-w-4xl mx-auto px-4 -mt-8">
             <Image
-              src={post.coverImage}
+               src={imgSrc(post.coverImage)}
               alt={post.title}
               width={1200}
               height={600}

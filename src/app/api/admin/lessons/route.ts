@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { editionId, title, order, videoKey, duration, availableFrom } = body
+  const { editionId, title, order, videoKey, zoomLink, pdfKeys, duration, availableFrom } = body
 
   if (!editionId || !title || order === undefined) {
     return NextResponse.json(
@@ -24,6 +24,8 @@ export async function POST(req: Request) {
       title,
       order: Number(order),
       videoKey: videoKey || null,
+      zoomLink: zoomLink || null,
+      pdfKeys: Array.isArray(pdfKeys) ? pdfKeys : [],
       duration: duration ? Number(duration) : null,
       availableFrom: availableFrom ? new Date(availableFrom) : null,
     },

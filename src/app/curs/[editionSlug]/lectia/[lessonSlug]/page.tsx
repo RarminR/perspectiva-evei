@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { SecureVideoPlayer } from '@/components/SecureVideoPlayer'
+import { PdfDownloadList } from '../../components/PdfDownloadList'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
@@ -76,7 +77,6 @@ export default async function LessonPage({
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0d0d0d', display: 'flex', flexDirection: 'column' }}>
-      {/* Top bar — dark navbar for video context */}
       <div style={{
         backgroundColor: '#1a0030',
         borderBottom: '1px solid rgba(160,7,220,0.3)',
@@ -102,9 +102,7 @@ export default async function LessonPage({
         <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>{lesson.title}</span>
       </div>
 
-      {/* Main content */}
       <div style={{ maxWidth: '1100px', width: '100%', margin: '0 auto', padding: '2rem 5%', flex: 1 }}>
-        {/* Video player */}
         <div style={{ marginBottom: '2rem' }}>
           {lesson.videoKey ? (
             <SecureVideoPlayer hlsSrc={lesson.videoKey} editionId={lesson.edition.id} lessonId={lesson.id} />
@@ -124,13 +122,19 @@ export default async function LessonPage({
           )}
         </div>
 
-        {/* Lesson info */}
         <h1 style={{ color: 'white', fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.5rem' }}>{lesson.title}</h1>
-        {lesson.duration ? (
-          <p style={{ color: '#aaa', marginBottom: '2rem' }}>{lesson.duration} minute</p>
-        ) : null}
+        <p style={{ color: '#aaa', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+          {lesson.availableFrom && lesson.availableFrom.toLocaleDateString('ro-RO', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+          {lesson.duration ? ` · ${lesson.duration} minute` : ''}
+        </p>
 
-        {/* Prev / Next navigation */}
+        <PdfDownloadList lessonId={lesson.id} pdfKeys={lesson.pdfKeys} />
+
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',

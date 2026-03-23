@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
+import { imgSrc } from '@/lib/image'
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -41,7 +42,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         {caseStudy.coverImage && (
           <div className="max-w-4xl mx-auto px-4 -mt-8">
             <Image
-              src={caseStudy.coverImage}
+               src={imgSrc(caseStudy.coverImage)}
               alt={caseStudy.title}
               width={1200}
               height={600}

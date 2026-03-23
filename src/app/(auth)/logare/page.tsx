@@ -36,6 +36,7 @@ function LogareForm() {
       setError("Email sau parolă incorectă")
       setLoading(false)
     } else if (result?.url) {
+      fetch('/api/auth/activity', { method: 'POST' }).catch(() => {})
       window.location.href = result.url
     }
   }

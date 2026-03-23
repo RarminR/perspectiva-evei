@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MessageThread } from './MessageThread'
+import { imgSrc } from '@/lib/image'
 
 type Tab = 'principal' | 'oferte' | 'calendar' | 'mesaje'
 
@@ -39,18 +39,30 @@ interface Offer {
   validUntil: string | null
 }
 
+interface UpcomingLesson {
+  id: string
+  title: string
+  duration: number | null
+  availableFrom: string | null
+  zoomLink: string | null
+  videoKey: string | null
+  courseTitle: string
+  courseSlug: string
+  editionId: string
+}
+
 interface DashboardTabsProps {
   enrollments: Enrollment[]
   guides: Guide[]
   upcomingSessions: Session[]
   offers: Offer[]
+  lessons: UpcomingLesson[]
 }
 
 const tabs: { id: Tab; label: string; icon: string }[] = [
   { id: 'principal', label: 'Pagina Principală', icon: '🏠' },
   { id: 'oferte', label: 'Oferte Personalizate', icon: '🎁' },
   { id: 'calendar', label: 'Calendar', icon: '📅' },
-  { id: 'mesaje', label: 'Mesaje cu Eva', icon: '💬' },
 ]
 
 const sectionStyle: React.CSSProperties = {
@@ -90,7 +102,20 @@ const ctaLinkStyle: React.CSSProperties = {
   textDecoration: 'none',
 }
 
-export function DashboardTabs({ enrollments, guides, upcomingSessions, offers }: DashboardTabsProps) {
+function getLessonState(lesson: UpcomingLesson): 'locked' | 'join' | 'pending' | 'recording' {
+  if (lesson.videoKey) return 'recording'
+  if (!lesson.availableFrom) return 'locked'
+  const now = Date.now()
+  const start = new Date(lesson.availableFrom).getTime()
+  const durationMs = (lesson.duration ?? 120) * 60 * 1000
+  const end = start + durationMs
+  const joinWindow = start - 15 * 60 * 1000
+  if (now < joinWindow) return 'locked'
+  if (now <= end) return 'join'
+  return 'pending'
+}
+
+export function DashboardTabs({ enrollments, guides, upcomingSessions, offers, lessons }: DashboardTabsProps) {
   const [active, setActive] = useState<Tab>('principal')
   const now = new Date()
 
@@ -204,7 +229,77 @@ export function DashboardTabs({ enrollments, guides, upcomingSessions, offers }:
                 )}
               </div>
 
-              {/* Guides */}
+              {lessons.length > 0 && (
+                <div style={sectionStyle}>
+                  <h2 style={sectionHeadingStyle}>Lecții programate</h2>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {lessons.filter((l) => l.availableFrom).map((lesson) => {
+                      const state = getLessonState(lesson)
+                      const date = lesson.availableFrom ? new Date(lesson.availableFrom) : null
+                      return (
+                        <li key={lesson.id} style={listItemStyle}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.2rem' }}>
+                              <p style={{ fontWeight: 600, color: '#51087e', margin: 0 }}>
+                                {lesson.title}
+                              </p>
+                              <span style={{
+                                padding: '0.15rem 0.5rem',
+                                borderRadius: '999px',
+                                fontSize: '0.7rem',
+                                fontWeight: 600,
+                                backgroundColor:
+                                  state === 'join' ? 'rgba(160,7,220,0.15)' :
+                                  state === 'recording' ? 'rgba(34,197,94,0.1)' :
+                                  state === 'pending' ? 'rgba(245,158,11,0.1)' :
+                                  'rgba(107,114,128,0.1)',
+                                color:
+                                  state === 'join' ? '#a007dc' :
+                                  state === 'recording' ? '#16a34a' :
+                                  state === 'pending' ? '#d97706' :
+                                  '#6b7280',
+                              }}>
+                                {state === 'join' ? 'Live' :
+                                 state === 'recording' ? 'Disponibil' :
+                                 state === 'pending' ? 'În așteptare' :
+                                 'Programat'}
+                              </span>
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: '#666', margin: 0 }}>
+                              {lesson.courseTitle}
+                              {date && ` · ${date.toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`}
+                            </p>
+                          </div>
+                          {state === 'join' && lesson.zoomLink ? (
+                            <a
+                              href={lesson.zoomLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                backgroundColor: '#a007dc',
+                                color: '#ffffff',
+                                padding: '0.5rem 1rem',
+                                borderRadius: '999px',
+                                textDecoration: 'none',
+                                fontWeight: 600,
+                                fontSize: '0.8rem',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              Intră pe Zoom →
+                            </a>
+                          ) : state === 'recording' ? (
+                            <Link href={`/curs/${lesson.courseSlug}`} style={ctaLinkStyle}>
+                              Urmărește →
+                            </Link>
+                          ) : null}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )}
+
               <div style={sectionStyle}>
                 <h2 style={sectionHeadingStyle}>Ghidurile mele</h2>
                 {guides.length === 0 ? (
@@ -231,7 +326,7 @@ export function DashboardTabs({ enrollments, guides, upcomingSessions, offers }:
                       >
                         {guide.coverImage && (
                           <Image
-                            src={guide.coverImage}
+                             src={imgSrc(guide.coverImage)}
                             alt={guide.title}
                             width={400}
                             height={160}
@@ -409,13 +504,6 @@ export function DashboardTabs({ enrollments, guides, upcomingSessions, offers }:
             </div>
           )}
 
-          {/* TAB: Mesaje cu Eva */}
-          {active === 'mesaje' && (
-            <div style={sectionStyle}>
-              <h2 style={sectionHeadingStyle}>Mesaje cu Eva</h2>
-              <MessageThread />
-            </div>
-          )}
 
         </div>
       </section>

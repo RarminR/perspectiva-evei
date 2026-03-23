@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
+import { imgSrc } from '@/lib/image'
 
 export const metadata: Metadata = {
   title: 'Studii de Caz | Perspectiva Evei',
@@ -65,7 +66,7 @@ export default async function CaseStudiesPage() {
                 {cs.coverImage && (
                   <div className="aspect-video overflow-hidden">
                     <Image
-                      src={cs.coverImage}
+                       src={imgSrc(cs.coverImage)}
                       alt={cs.title}
                       width={600}
                       height={340}

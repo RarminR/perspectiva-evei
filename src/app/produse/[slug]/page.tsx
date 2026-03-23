@@ -2,6 +2,7 @@ import { prisma } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { ProductCheckoutForm } from './components/ProductCheckoutForm'
 import Image from 'next/image'
+import { imgSrc } from '@/lib/image'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,7 +25,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div>
             {product.images && product.images.length > 0 ? (
               <div className="aspect-square relative rounded-2xl overflow-hidden bg-white shadow-sm">
-                <Image src={product.images[0]} alt={product.title} fill className="object-cover" />
+                 <Image src={imgSrc(product.images[0])} alt={product.title} fill className="object-cover" />
               </div>
             ) : (
               <div className="aspect-square bg-white rounded-2xl flex items-center justify-center text-gray-300 text-6xl shadow-sm">
@@ -35,7 +36,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <div className="grid grid-cols-4 gap-2 mt-3">
                 {product.images.slice(1, 5).map((img, i) => (
                   <div key={i} className="aspect-square relative rounded-lg overflow-hidden bg-white">
-                    <Image src={img} alt={`${product.title} ${i + 2}`} fill className="object-cover" />
+                     <Image src={imgSrc(img)} alt={`${product.title} ${i + 2}`} fill className="object-cover" />
                   </div>
                 ))}
               </div>

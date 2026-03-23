@@ -3,6 +3,7 @@ import { OrderItemType } from '@prisma/client'
 import { prisma } from '@/lib/db'
 import { createOrder, getOrder } from '@/services/revolut'
 import { createInvoice } from '@/services/smartbill'
+import { fulfillOrder } from '@/services/order-fulfillment'
 import type { CreateOrderParams } from '@/types/revolut'
 
 export interface CheckoutItem {
@@ -18,6 +19,7 @@ export interface CreateCheckoutResult {
   revolutOrderId: string
   checkoutToken: string
   checkoutUrl: string
+  bypassed?: boolean
 }
 
 function parseExpirePendingAfter(duration: string): Date | null {
@@ -41,6 +43,37 @@ export async function createCheckout(
   _promoCode?: string
 ): Promise<CreateCheckoutResult> {
   const totalCents = items.reduce((sum, item) => sum + item.priceEurCents * item.quantity, 0)
+
+  if (process.env.BYPASS_PAYMENT === 'true') {
+    const order = await prisma.order.create({
+      data: {
+        userId,
+        revolutOrderId: `dev-bypass-${Date.now()}`,
+        status: 'PENDING',
+        totalAmount: totalCents / 100,
+        currency: 'EUR',
+        items: {
+          create: items.map((item) => ({
+            productId: item.productId,
+            productType: item.productType as OrderItemType,
+            quantity: item.quantity,
+            unitPrice: item.priceEurCents / 100,
+          })),
+        },
+      },
+    })
+
+    await fulfillOrder(order.id)
+
+    return {
+      orderId: order.id,
+      revolutOrderId: order.revolutOrderId ?? '',
+      checkoutToken: '',
+      checkoutUrl: '',
+      bypassed: true,
+    }
+  }
+
   const expirePendingAfter = 'PT24H'
 
   const orderParams: CreateOrderParams = {

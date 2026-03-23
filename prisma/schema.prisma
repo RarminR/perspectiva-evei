@@ -76,6 +76,7 @@ model User {
   progress           LessonProgress[]
   messages           Message[]
   personalizedOffers PersonalizedOffer[]
+  loginActivity      LoginActivity[]
 }
 
 model Device {
@@ -144,6 +145,8 @@ model Lesson {
   title         String
   order         Int
   videoKey      String?
+  zoomLink      String?
+  pdfKeys       String[]
   duration      Int?
   availableFrom DateTime?
   createdAt     DateTime  @default(now())
@@ -309,11 +312,13 @@ model Session1on1 {
 
 model Availability {
   id        String   @id @default(cuid())
-  dayOfWeek Int
+  date      DateTime
   startTime String
   endTime   String
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
+
+  @@index([date])
 }
 
 model BlogPost {
@@ -365,4 +370,22 @@ model PersonalizedOffer {
   createdAt   DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model LoginActivity {
+  id         String   @id @default(cuid())
+  userId     String
+  ip         String
+  lat        Float?
+  lng        Float?
+  city       String?
+  country    String?
+  userAgent  String?
+  flagged    Boolean  @default(false)
+  flagReason String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

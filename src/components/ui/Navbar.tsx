@@ -1,11 +1,11 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 
-const navLinks = [
-  { href: '/cursul-ado', label: 'Cursul A.D.O.' },
+const BASE_NAV_LINKS = [
+  { href: '/cursul-ado', enrolledHref: '/curs/cursul-ado', courseSlug: 'cursul-ado', label: 'Cursul A.D.O.' },
   { href: '/ghiduri', label: 'Ghiduri' },
   { href: '/sedinte-1-la-1', label: 'Ședințe 1:1' },
   { href: '/despre-mine', label: 'Despre Eva' },
@@ -16,6 +16,26 @@ export function Navbar() {
   const { data: session } = useSession()
   const user = session?.user
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [enrolledSlugs, setEnrolledSlugs] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!user) return
+    fetch('/api/me/enrollments')
+      .then((r) => r.json())
+      .then((data) => setEnrolledSlugs(data.courseSlugs || []))
+      .catch(() => {})
+  }, [user])
+
+  const navLinks = useMemo(
+    () =>
+      BASE_NAV_LINKS.map((link) => {
+        if (link.courseSlug && link.enrolledHref && enrolledSlugs.includes(link.courseSlug)) {
+          return { href: link.enrolledHref, label: link.label }
+        }
+        return { href: link.href, label: link.label }
+      }),
+    [enrolledSlugs]
+  )
 
   return (
     <nav
