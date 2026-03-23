@@ -9,7 +9,7 @@ const BASE_NAV_LINKS = [
   { href: '/ghiduri', label: 'Ghiduri' },
   { href: '/sedinte-1-la-1', label: 'Ședințe 1:1' },
   { href: '/despre-mine', label: 'Despre Eva' },
-  { href: '/blog', label: 'Blog' },
+
 ]
 
 export function Navbar() {
