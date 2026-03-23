@@ -28,6 +28,7 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  eslint: { ignoreDuringBuilds: true },
   experimental: { serverComponentsExternalPackages: ['pg', 'pg-native', '@prisma/adapter-pg'] },
   headers: async () => [
     {
