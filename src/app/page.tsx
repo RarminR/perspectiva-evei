@@ -558,14 +558,7 @@ export default async function Home() {
             ))}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-            <Link
-              href="/studii-de-caz"
-              style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
-            >
-              Vezi toate studiile de caz →
-            </Link>
-          </div>
+
         </div>
       </section>
 
