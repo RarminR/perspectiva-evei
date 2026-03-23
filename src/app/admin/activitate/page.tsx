@@ -24,12 +24,12 @@ function formatDate(date: Date): string {
 }
 
 export default async function ActivitatePage() {
-  const [activities, flaggedCount, userStats] = await Promise.all([
-    prisma.loginActivity.findMany({
-      take: 100,
-      orderBy: { createdAt: 'desc' },
-      include: { user: { select: { name: true, email: true } } },
-    }),
+  const activities = await prisma.loginActivity.findMany({
+    take: 100,
+    orderBy: { createdAt: 'desc' },
+    include: { user: { select: { name: true, email: true } } },
+  })
+  const [flaggedCount, userStats] = await Promise.all([
     prisma.loginActivity.count({ where: { flagged: true } }),
     prisma.loginActivity.groupBy({
       by: ['userId'],
