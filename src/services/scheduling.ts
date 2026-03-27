@@ -42,10 +42,13 @@ export async function getAvailableSlots(
   startDate: Date,
   endDate: Date
 ): Promise<Date[]> {
+  // Extend range by 1 day on each side to catch dates stored with timezone offset
+  const queryStart = new Date(startDate.getTime() - 24 * 60 * 60 * 1000)
+  const queryEnd = new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
   const availabilities = await prisma.availability.findMany({
     where: {
       active: true,
-      date: { gte: startDate, lte: endDate },
+      date: { gte: queryStart, lte: queryEnd },
     },
   })
 
@@ -72,7 +75,14 @@ export async function getAvailableSlots(
     let hour = startH
     let minute = startM
 
-    const dateStr = av.date.toISOString().slice(0, 10) // YYYY-MM-DD
+    // Format date in Bucharest timezone to get correct YYYY-MM-DD
+    // (stored dates may be offset from UTC midnight)
+    const dateStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Bucharest',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(av.date)
 
     while (hour < endH || (hour === endH && minute < endM)) {
       const slotDate = bucharestToUTC(dateStr, hour, minute)

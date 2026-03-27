@@ -123,7 +123,7 @@ export function AvailabilityCalendar() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          date: new Date(addForm.date + 'T00:00:00').toISOString(),
+          date: new Date(addForm.date + 'T12:00:00Z').toISOString(),
           startTime: addForm.startTime,
           endTime: addForm.endTime,
         }),
