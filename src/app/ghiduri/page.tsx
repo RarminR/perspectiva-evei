@@ -162,7 +162,7 @@ export default async function GhiduriPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${guides.length > 4 ? 'lg:grid-cols-3' : 'lg:grid-cols-2 max-w-4xl mx-auto'} gap-8 mb-12`}>
           {guides.map((guide) => (
             <div
               key={guide.id}
