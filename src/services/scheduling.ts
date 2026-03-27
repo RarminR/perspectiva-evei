@@ -13,7 +13,6 @@ export interface TimeSlot {
  */
 function getRomaniaOffsetHours(date: Date): number {
   const year = date.getUTCFullYear()
-  const month = date.getUTCMonth() // 0-based
 
   // Find last Sunday of March
   const marchLast = new Date(Date.UTC(year, 2, 31))
