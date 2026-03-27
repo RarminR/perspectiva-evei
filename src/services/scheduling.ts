@@ -63,6 +63,7 @@ export async function getAvailableSlots(
   )
 
   const slots: Date[] = []
+  const now = new Date()
 
   for (const av of availabilities) {
     const [startH, startM] = av.startTime.split(':').map(Number)
@@ -76,7 +77,7 @@ export async function getAvailableSlots(
     while (hour < endH || (hour === endH && minute < endM)) {
       const slotDate = bucharestToUTC(dateStr, hour, minute)
 
-      if (!bookedTimes.has(slotDate.getTime())) {
+      if (slotDate > now && !bookedTimes.has(slotDate.getTime())) {
         slots.push(slotDate)
       }
 
