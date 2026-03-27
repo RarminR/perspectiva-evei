@@ -54,9 +54,16 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Ensure date is stored as noon UTC to avoid timezone day-boundary issues
+  // body.date can be "YYYY-MM-DD" string or ISO string
+  const dateStr = typeof body.date === 'string' && body.date.length === 10
+    ? body.date
+    : new Date(body.date).toISOString().slice(0, 10)
+  const dateUTC = new Date(`${dateStr}T12:00:00Z`)
+
   const slot = await prisma.availability.create({
     data: {
-      date: new Date(body.date),
+      date: dateUTC,
       startTime: body.startTime,
       endTime: body.endTime,
     },
