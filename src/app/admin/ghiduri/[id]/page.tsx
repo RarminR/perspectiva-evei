@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import ImageUpload from '@/components/ImageUpload'
+import PdfUpload from '@/components/PdfUpload'
 
 function slugify(text: string): string {
   return text
@@ -25,6 +26,7 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
     shortDescription: '',
     price: '',
     coverImage: '',
+    pdfKey: '',
     audioKey: '',
     contentJson: '',
   })
@@ -42,6 +44,7 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
           shortDescription: data.shortDescription || '',
           price: String(data.price || ''),
           coverImage: data.coverImage || '',
+          pdfKey: data.pdfKey || '',
           audioKey: data.audioKey || '',
           contentJson: data.contentJson ? JSON.stringify(data.contentJson, null, 2) : '',
         })
@@ -216,6 +219,12 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
           label="Imagine copertă"
           value={form.coverImage}
           onChange={(url) => handleChange('coverImage', url)}
+        />
+
+        <PdfUpload
+          label="PDF ghid"
+          value={form.pdfKey}
+          onChange={(key) => handleChange('pdfKey', key)}
         />
 
         <div>

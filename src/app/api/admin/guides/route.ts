@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { title, slug, description, price, coverImage, audioKey, contentJson } = body
+  const { title, slug, description, price, coverImage, pdfKey, audioKey, contentJson } = body
 
   const guide = await prisma.guide.create({
     data: {
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       description: description || null,
       price: parseFloat(price),
       coverImage: coverImage || null,
+      pdfKey: pdfKey || null,
       audioKey: audioKey || null,
       contentJson: contentJson || null,
     },

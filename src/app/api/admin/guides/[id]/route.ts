@@ -33,7 +33,7 @@ export async function PUT(
 
   const { id } = await params
   const body = await req.json()
-  const { title, slug, description, price, coverImage, audioKey, contentJson } = body
+  const { title, slug, description, price, coverImage, pdfKey, audioKey, contentJson } = body
 
   const guide = await prisma.guide.update({
     where: { id },
@@ -43,6 +43,7 @@ export async function PUT(
       description: description || null,
       price: parseFloat(price),
       coverImage: coverImage || null,
+      pdfKey: pdfKey || null,
       audioKey: audioKey || null,
       contentJson: contentJson || null,
     },

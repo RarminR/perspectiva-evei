@@ -179,6 +179,7 @@ model Guide {
   price         Float
   coverImage    String?
   contentJson   Json?
+  pdfKey        String?
   audioKey      String?
   audioDuration Int?
   createdAt     DateTime @default(now())

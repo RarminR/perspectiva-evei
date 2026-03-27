@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ImageUpload from '@/components/ImageUpload'
+import PdfUpload from '@/components/PdfUpload'
 
 function slugify(text: string): string {
   return text
@@ -24,6 +25,7 @@ export default function NewGuidePage() {
     shortDescription: '',
     price: '',
     coverImage: '',
+    pdfKey: '',
     audioKey: '',
     contentJson: '',
   })
@@ -161,6 +163,12 @@ export default function NewGuidePage() {
           label="Imagine copertă"
           value={form.coverImage}
           onChange={(url) => handleChange('coverImage', url)}
+        />
+
+        <PdfUpload
+          label="PDF ghid"
+          value={form.pdfKey}
+          onChange={(key) => handleChange('pdfKey', key)}
         />
 
         <div>

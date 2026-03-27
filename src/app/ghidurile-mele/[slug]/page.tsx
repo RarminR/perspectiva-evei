@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { GuideReader } from '@/components/GuideReader'
+import { SecurePdfViewer } from '@/components/SecurePdfViewer'
 import { AudiobookPlayer } from '@/components/AudiobookPlayer'
 
 export const dynamic = 'force-dynamic'
@@ -65,15 +66,25 @@ export default async function GuideReaderPage({
           </a>
         </div>
 
-        <GuideReader
-          guide={{
-            id: guide.id,
-            title: guide.title,
-            contentJson: guide.contentJson,
-          }}
-          userEmail={userEmail}
-          userId={userId}
-        />
+        <h1 className="mb-6 text-2xl font-bold text-[#51087e]">{guide.title}</h1>
+
+        {guide.pdfKey ? (
+          <SecurePdfViewer
+            guideId={guide.id}
+            userEmail={userEmail}
+            userId={userId}
+          />
+        ) : (
+          <GuideReader
+            guide={{
+              id: guide.id,
+              title: guide.title,
+              contentJson: guide.contentJson,
+            }}
+            userEmail={userEmail}
+            userId={userId}
+          />
+        )}
       </div>
     </div>
   )
