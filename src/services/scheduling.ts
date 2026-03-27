@@ -7,35 +7,52 @@ export interface TimeSlot {
 }
 
 /**
- * Convert a date string (YYYY-MM-DD) and local Bucharest hour/minute
- * to a proper UTC Date object.
+ * Get Romania's UTC offset in hours for a given date.
+ * Romania uses EET (UTC+2) in winter and EEST (UTC+3) in summer.
+ * DST starts last Sunday of March, ends last Sunday of October.
+ */
+function getRomaniaOffsetHours(date: Date): number {
+  const year = date.getUTCFullYear()
+  const month = date.getUTCMonth() // 0-based
+
+  // Find last Sunday of March
+  const marchLast = new Date(Date.UTC(year, 2, 31))
+  while (marchLast.getUTCDay() !== 0) marchLast.setUTCDate(marchLast.getUTCDate() - 1)
+
+  // Find last Sunday of October
+  const octLast = new Date(Date.UTC(year, 9, 31))
+  while (octLast.getUTCDay() !== 0) octLast.setUTCDate(octLast.getUTCDate() - 1)
+
+  // DST is active from last Sunday of March 03:00 local (01:00 UTC)
+  // to last Sunday of October 04:00 local (01:00 UTC)
+  const dstStart = new Date(Date.UTC(year, 2, marchLast.getUTCDate(), 1, 0, 0))
+  const dstEnd = new Date(Date.UTC(year, 9, octLast.getUTCDate(), 1, 0, 0))
+
+  if (date >= dstStart && date < dstEnd) {
+    return 3 // EEST
+  }
+  return 2 // EET
+}
+
+/**
+ * Create a UTC Date from a date string and Bucharest local time.
  */
 function bucharestToUTC(dateStr: string, hour: number, minute: number): Date {
-  // Create an ISO string with the Bucharest time, then use the timezone
-  // offset to compute the correct UTC timestamp
-  const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`
-  // Parse as UTC first to get a reference point
-  const utcRef = new Date(`${dateStr}T${timeStr}Z`)
-  // Format that UTC instant as Bucharest local time
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Europe/Bucharest',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  })
-  const parts = formatter.formatToParts(utcRef)
-  const get = (t: string) => parts.find((p) => p.type === t)?.value || '0'
-  const bucharestAtUtcRef = new Date(
-    `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}Z`
-  )
-  // The offset is the difference: Bucharest = UTC + offset
-  const offsetMs = bucharestAtUtcRef.getTime() - utcRef.getTime()
-  // To get "dateStr hour:minute in Bucharest" as UTC, subtract the offset
-  return new Date(utcRef.getTime() - offsetMs)
+  // First create as if UTC
+  const asUtc = new Date(`${dateStr}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00Z`)
+  // Get Romania offset for this approximate date
+  const offset = getRomaniaOffsetHours(asUtc)
+  // Subtract offset to convert Bucharest local -> UTC
+  return new Date(asUtc.getTime() - offset * 60 * 60 * 1000)
+}
+
+/**
+ * Get YYYY-MM-DD string for a Date interpreted in Romania timezone.
+ */
+function dateToRomaniaDateStr(date: Date): string {
+  const offset = getRomaniaOffsetHours(date)
+  const romaniaTime = new Date(date.getTime() + offset * 60 * 60 * 1000)
+  return romaniaTime.toISOString().slice(0, 10)
 }
 
 export async function getAvailableSlots(
@@ -56,7 +73,7 @@ export async function getAvailableSlots(
 
   const bookedSessions = await prisma.session1on1.findMany({
     where: {
-      scheduledAt: { gte: startDate, lte: endDate },
+      scheduledAt: { gte: queryStart, lte: queryEnd },
       status: 'BOOKED',
     },
   })
@@ -75,14 +92,8 @@ export async function getAvailableSlots(
     let hour = startH
     let minute = startM
 
-    // Format date in Bucharest timezone to get correct YYYY-MM-DD
-    // (stored dates may be offset from UTC midnight)
-    const dateStr = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Europe/Bucharest',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(av.date)
+    // Get the correct date string in Romania timezone
+    const dateStr = dateToRomaniaDateStr(av.date)
 
     while (hour < endH || (hour === endH && minute < endM)) {
       const slotDate = bucharestToUTC(dateStr, hour, minute)
