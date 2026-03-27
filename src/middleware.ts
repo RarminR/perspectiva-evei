@@ -70,8 +70,7 @@ export async function middlewareCallback(req: AuthRequest) {
   // Protected user routes
   const protectedPaths = [
     "/profilul-meu",
-    "/curs",
-    "/ghiduri",
+    "/curs/",
     "/programare",
   ]
   const isProtected = protectedPaths.some((p) =>
