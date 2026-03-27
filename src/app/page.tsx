@@ -108,7 +108,7 @@ export default async function Home() {
     })
   } catch {}
 
-  const displayedGuides = guides.slice(0, 3)
+  const displayedGuides = guides
 
   return (
     <main>
@@ -596,101 +596,104 @@ export default async function Home() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-              {displayedGuides.length > 0 ? (
-                displayedGuides.map((guide) => (
-                  <div
-                    key={guide.id}
-                    style={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: '24px',
-                      padding: '16px',
-                      display: 'flex',
-                      gap: '16px',
-                      alignItems: 'center',
-                      boxShadow: '0 12px 24px rgba(81,8,126,0.1)',
-                    }}
-                  >
-                    <div style={{ borderRadius: '16px', overflow: 'hidden', width: '80px', height: '112px' }}>
-                      <Image
-                        src={guide.coverImage || '/images/Cine-manifesta.png'}
-                        alt={guide.title}
-                        width={80}
-                        height={112}
-                        unoptimized
-                        style={{ width: '80px', height: '112px', objectFit: 'cover', display: 'block' }}
-                      />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <p style={{ margin: 0, fontWeight: 700, color: '#2c0246', fontSize: '1.05rem' }}>
-                        {guide.title}
-                      </p>
-                      <p style={{ margin: 0, color: '#51087e' }}>{formatEur(guide.price)}</p>
-                      <Link
-                        href={`/ghiduri/${guide.slug}`}
-                        style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
-                      >
-                        Cumpără →
-                      </Link>
-                    </div>
-                  </div>
-                ))
-              ) : (
+          {/* Guides 2x2 grid */}
+          {displayedGuides.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {displayedGuides.map((guide) => (
                 <div
+                  key={guide.id}
                   style={{
                     backgroundColor: '#ffffff',
                     borderRadius: '24px',
-                    padding: '28px',
-                    color: '#2c0246',
+                    padding: '16px',
+                    display: 'flex',
+                    gap: '16px',
+                    alignItems: 'center',
                     boxShadow: '0 12px 24px rgba(81,8,126,0.1)',
                   }}
                 >
-                  Ghidurile sunt în curs de actualizare. Revino în scurt timp pentru noile resurse.
+                  <div style={{ borderRadius: '16px', overflow: 'hidden', width: '80px', height: '112px', minWidth: '80px' }}>
+                    <Image
+                      src={guide.coverImage || '/images/Cine-manifesta.png'}
+                      alt={guide.title}
+                      width={80}
+                      height={112}
+                      unoptimized
+                      style={{ width: '80px', height: '112px', objectFit: 'cover', display: 'block' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <p style={{ margin: 0, fontWeight: 700, color: '#2c0246', fontSize: '1.05rem' }}>
+                      {guide.title}
+                    </p>
+                    <p style={{ margin: 0, color: '#51087e' }}>{formatEur(guide.price)}</p>
+                    <Link
+                      href={`/checkout?product=GUIDE&id=${guide.id}`}
+                      style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
+                    >
+                      Cumpără →
+                    </Link>
+                  </div>
                 </div>
-              )}
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '24px',
+                padding: '28px',
+                color: '#2c0246',
+                boxShadow: '0 12px 24px rgba(81,8,126,0.1)',
+                marginBottom: '32px',
+              }}
+            >
+              Ghidurile sunt în curs de actualizare. Revino în scurt timp pentru noile resurse.
+            </div>
+          )}
 
-              {bundle ? (
-                <div
+          {/* Bundle + Sessions row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {bundle ? (
+              <div
+                style={{
+                  backgroundColor: '#51087e',
+                  borderRadius: '24px',
+                  padding: '24px',
+                  color: '#ffffff',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <p style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>Pachet promoțional activ</p>
+                <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{formatEur(bundle.price)}</p>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', textDecoration: 'line-through' }}>
+                  {formatEur(bundle.originalPrice)}
+                </p>
+                <Link
+                  href={`/checkout?product=BUNDLE&id=${bundle.id}`}
                   style={{
-                    backgroundColor: '#51087e',
-                    borderRadius: '24px',
-                    padding: '24px',
+                    marginTop: '8px',
+                    width: 'fit-content',
+                    backgroundColor: '#a007dc',
+                    borderRadius: '999px',
+                    padding: '.7rem 1.3rem',
+                    textDecoration: 'none',
                     color: '#ffffff',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
+                    fontWeight: 700,
                   }}
                 >
-                  <p style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>Pachet promoțional activ</p>
-                  <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{formatEur(bundle.price)}</p>
-                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', textDecoration: 'line-through' }}>
-                    {formatEur(bundle.originalPrice)}
-                  </p>
-                  <Link
-                    href={`/checkout?product=BUNDLE&id=${bundle.id}`}
-                    style={{
-                      marginTop: '8px',
-                      width: 'fit-content',
-                      backgroundColor: '#a007dc',
-                      borderRadius: '999px',
-                      padding: '.7rem 1.3rem',
-                      textDecoration: 'none',
-                      color: '#ffffff',
-                      fontWeight: 700,
-                    }}
-                  >
-                    Cumpără pachetul →
-                  </Link>
-                </div>
-              ) : null}
-            </div>
+                  Cumpără pachetul →
+                </Link>
+              </div>
+            ) : null}
 
             <div
               style={{
                 borderRadius: '30px',
                 overflow: 'hidden',
-                minHeight: '420px',
+                minHeight: '280px',
                 display: 'flex',
                 alignItems: 'flex-end',
                 backgroundImage:
