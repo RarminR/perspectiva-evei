@@ -14,21 +14,21 @@ const HOURS = Array.from({ length: 16 }, (_, i) => i + 7)
 
 function getMonday(d: Date): Date {
   const date = new Date(d)
-  const day = date.getDay()
+  const day = date.getUTCDay()
   const diff = day === 0 ? -6 : 1 - day
-  date.setDate(date.getDate() + diff)
-  date.setHours(0, 0, 0, 0)
+  date.setUTCDate(date.getUTCDate() + diff)
+  date.setUTCHours(12, 0, 0, 0)
   return date
 }
 
 function addDays(d: Date, n: number): Date {
   const result = new Date(d)
-  result.setDate(result.getDate() + n)
+  result.setUTCDate(result.getUTCDate() + n)
   return result
 }
 
 function formatDateShort(d: Date): string {
-  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  return `${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}`
 }
 
 function formatWeekRange(monday: Date): string {
@@ -37,11 +37,11 @@ function formatWeekRange(monday: Date): string {
     'Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun',
     'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ]
-  return `${monday.getDate()} ${months[monday.getMonth()]} – ${sunday.getDate()} ${months[sunday.getMonth()]} ${sunday.getFullYear()}`
+  return `${monday.getUTCDate()} ${months[monday.getUTCMonth()]} – ${sunday.getUTCDate()} ${months[sunday.getUTCMonth()]} ${sunday.getUTCFullYear()}`
 }
 
 function toDateKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
 }
 
 function timeToRow(time: string): number {
@@ -156,7 +156,7 @@ export function AvailabilityCalendar() {
   function getAddFormDayLabel(): string {
     if (!addForm) return ''
     const d = new Date(addForm.date + 'T00:00:00')
-    return `${DAY_LABELS[d.getDay()]} ${formatDateShort(d)}`
+    return `${DAY_LABELS[d.getUTCDay()]} ${formatDateShort(d)}`
   }
 
   return (
@@ -256,7 +256,7 @@ export function AvailabilityCalendar() {
                       className={`p-3 text-center border-l border-gray-100 ${isToday ? 'bg-[#51087e]/5' : ''}`}
                     >
                       <div className={`text-xs font-semibold uppercase tracking-wider ${isToday ? 'text-[#a007dc]' : 'text-[#51087e]'}`}>
-                        {DAY_LABELS[dayDate.getDay()]}
+                        {DAY_LABELS[dayDate.getUTCDay()]}
                       </div>
                       <div className={`text-xs mt-0.5 ${isToday ? 'text-[#a007dc] font-bold' : 'text-gray-400'}`}>
                         {formatDateShort(dayDate)}
