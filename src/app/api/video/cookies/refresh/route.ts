@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { refreshSignedCookies } from '@/services/aws-video'
 import { checkAccess } from '@/services/course'
 import { validateDevice } from '@/services/device'
 
+/**
+ * Legacy refresh endpoint - Bunny Stream uses token-based auth.
+ * Validates that user still has access.
+ */
 export async function GET(req: NextRequest) {
   const session = await auth()
 
@@ -33,12 +36,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Accesul a expirat.' }, { status: 403 })
   }
 
-  const { cookies, cookieOptions } = await refreshSignedCookies(userId)
-  const response = NextResponse.json({ success: true })
-
-  response.cookies.set('CloudFront-Policy', cookies['CloudFront-Policy']!, cookieOptions)
-  response.cookies.set('CloudFront-Signature', cookies['CloudFront-Signature']!, cookieOptions)
-  response.cookies.set('CloudFront-Key-Pair-Id', cookies['CloudFront-Key-Pair-Id']!, cookieOptions)
-
-  return response
+  return NextResponse.json({ success: true })
 }

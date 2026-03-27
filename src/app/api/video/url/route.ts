@@ -2,11 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { checkAccess } from '@/services/course'
 import { validateDevice } from '@/services/device'
+import { getStreamPlaylistUrl } from '@/services/bunny'
 
-/**
- * Legacy cookie endpoint - Bunny Stream uses token-based auth instead.
- * Kept for compatibility but now just validates access.
- */
 export async function GET(req: NextRequest) {
   const session = await auth()
 
@@ -16,9 +13,10 @@ export async function GET(req: NextRequest) {
 
   const userId = (session.user as any).id as string
   const editionId = req.nextUrl.searchParams.get('editionId')
+  const videoId = req.nextUrl.searchParams.get('videoId')
 
-  if (!editionId) {
-    return NextResponse.json({ error: 'editionId lipsă' }, { status: 400 })
+  if (!editionId || !videoId) {
+    return NextResponse.json({ error: 'Parametri lipsă' }, { status: 400 })
   }
 
   const fingerprint = req.headers.get('x-device-fingerprint')
@@ -36,5 +34,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Nu ai acces la acest curs.' }, { status: 403 })
   }
 
-  return NextResponse.json({ success: true })
+  const url = getStreamPlaylistUrl(videoId, 7200)
+
+  return NextResponse.json({ url })
 }

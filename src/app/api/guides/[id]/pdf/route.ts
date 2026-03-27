@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
-
-const URL_TTL_SECONDS = 300
+import { getSignedCdnUrl } from '@/services/bunny'
 
 export async function GET(
   _req: Request,
@@ -34,24 +32,7 @@ export async function GET(
     return NextResponse.json({ error: 'Nu ai acces la acest ghid' }, { status: 403 })
   }
 
-  const domain = process.env.AWS_CLOUDFRONT_DOMAIN
-  const keyPairId = process.env.AWS_CLOUDFRONT_KEY_PAIR_ID
-  const privateKeyBase64 = process.env.AWS_CLOUDFRONT_PRIVATE_KEY
+  const url = getSignedCdnUrl(guide.pdfKey, 300)
 
-  if (!domain || !keyPairId || !privateKeyBase64) {
-    return NextResponse.json({ error: 'Configurare lipsă' }, { status: 500 })
-  }
-
-  const privateKey = Buffer.from(privateKeyBase64, 'base64').toString('utf-8')
-  const resourceUrl = `https://${domain}/${guide.pdfKey}`
-  const expires = new Date(Date.now() + URL_TTL_SECONDS * 1000)
-
-  const signedUrl = getSignedUrl({
-    url: resourceUrl,
-    keyPairId,
-    privateKey,
-    dateLessThan: expires.toISOString(),
-  })
-
-  return NextResponse.json({ url: signedUrl })
+  return NextResponse.json({ url })
 }

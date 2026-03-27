@@ -1,17 +1,8 @@
 import { auth } from '@/lib/auth'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { uploadToStorage, getCdnUrl } from '@/services/bunny'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 
-const s3 = new S3Client({
-  region: process.env.AWS_REGION || 'eu-central-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-})
-
-const BUCKET = process.env.AWS_S3_BUCKET!
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 
 export async function POST(req: Request) {
@@ -36,23 +27,11 @@ export async function POST(req: Request) {
   }
 
   const ext = file.name.split('.').pop() || 'jpg'
-  const key = `images/${randomUUID()}.${ext}`
-
+  const path = `images/${randomUUID()}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: BUCKET,
-      Key: key,
-      Body: buffer,
-      ContentType: file.type,
-    })
-  )
-
-  const cfDomain = process.env.AWS_CLOUDFRONT_DOMAIN
-  const url = cfDomain
-    ? `https://${cfDomain}/${key}`
-    : `https://${BUCKET}.s3.${process.env.AWS_REGION || 'eu-central-1'}.amazonaws.com/${key}`
+  await uploadToStorage(buffer, path, file.type)
+  const url = getCdnUrl(path)
 
   return NextResponse.json({ url })
 }

@@ -33,33 +33,48 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
   const [quality, setQuality] = useState('720')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!hlsSrc) {
-      return
+  // Fetch signed video URL from our API
+  const fetchVideoUrl = useCallback(async () => {
+    if (!hlsSrc) return null
+    try {
+      const res = await fetch(
+        `/api/video/url?editionId=${editionId}&videoId=${encodeURIComponent(hlsSrc)}`,
+        { headers: { 'x-device-fingerprint': localStorage.getItem('device-fingerprint') || '' } }
+      )
+      if (res.status === 403) {
+        setError('Accesul tău a expirat. Te rugăm să contactezi suportul.')
+        return null
+      }
+      if (!res.ok) return null
+      const data = await res.json()
+      return data.url as string
+    } catch {
+      return null
     }
-
-    const refreshCookies = async () => {
-      try {
-        const response = await fetch(`/api/video/cookies/refresh?editionId=${editionId}`)
-        if (response.status === 403) {
-          setError('Accesul tău a expirat. Te rugăm să contactezi suportul.')
-          try {
-            videoRef.current?.pause()
-          } catch {}
-          hlsRef.current?.destroy()
-        }
-      } catch {}
-    }
-
-    const timer = setInterval(refreshCookies, REFRESH_INTERVAL_MS)
-    return () => clearInterval(timer)
   }, [hlsSrc, editionId])
 
+  // Initial fetch
   useEffect(() => {
-    if (!hlsSrc || !videoRef.current) {
-      return
-    }
+    if (!hlsSrc) return
+    fetchVideoUrl().then((url) => {
+      if (url) setVideoUrl(url)
+    })
+  }, [hlsSrc, fetchVideoUrl])
+
+  // Refresh URL periodically
+  useEffect(() => {
+    if (!hlsSrc) return
+    const timer = setInterval(async () => {
+      const url = await fetchVideoUrl()
+      if (url) setVideoUrl(url)
+    }, REFRESH_INTERVAL_MS)
+    return () => clearInterval(timer)
+  }, [hlsSrc, fetchVideoUrl])
+
+  useEffect(() => {
+    if (!videoUrl || !videoRef.current) return
 
     let active = true
 
@@ -67,33 +82,23 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
       const hlsModule = await import('hls.js')
       const Hls = hlsModule.default
 
-      if (!active || !videoRef.current) {
-        return
-      }
+      if (!active || !videoRef.current) return
 
       if (Hls.isSupported()) {
-        const hls = new Hls({
-          xhrSetup: (xhr: XMLHttpRequest) => {
-            xhr.withCredentials = true
-          },
-        }) as HlsInstance
+        const hls = new Hls() as HlsInstance
 
         hlsRef.current = hls
-        hls.loadSource(hlsSrc)
+        hls.loadSource(videoUrl)
         hls.attachMedia(videoRef.current)
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          if (!active) {
-            return
-          }
+          if (!active) return
           setIsLoading(false)
         })
 
         hls.on(Hls.Events.ERROR, (...args: unknown[]) => {
           const data = (args[1] as { fatal?: boolean; response?: { code?: number } } | undefined) ?? {}
-          if (!active) {
-            return
-          }
+          if (!active) return
 
           if (data?.response?.code === 403) {
             hls.destroy()
@@ -110,7 +115,7 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
       }
 
       if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-        videoRef.current.src = hlsSrc
+        videoRef.current.src = videoUrl
         setIsLoading(false)
       } else {
         setError('Browser-ul tău nu suportă redarea acestui video.')
@@ -124,12 +129,10 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
       hlsRef.current?.destroy()
       hlsRef.current = null
     }
-  }, [hlsSrc])
+  }, [videoUrl])
 
   const handlePlayPause = useCallback(() => {
-    if (!videoRef.current) {
-      return
-    }
+    if (!videoRef.current) return
 
     if (isPlaying) {
       videoRef.current.pause()
@@ -145,9 +148,7 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
     setQuality(newQuality)
 
     const hls = hlsRef.current
-    if (!hls?.levels?.length) {
-      return
-    }
+    if (!hls?.levels?.length) return
 
     const targetHeight = Number(newQuality)
     const levelIndex = hls.levels.findIndex((level) => level.height === targetHeight)
