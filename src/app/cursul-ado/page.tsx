@@ -29,7 +29,7 @@ export const dynamic = 'force-dynamic'
 
 
 // ─── Pricing Constants (from shared) ─────────────────────────────
-const { FULL_PRICE, FULL_PRICE_CROSSED, INSTALLMENT_PRICE, INSTALLMENT_TOTAL, MAX_PARTICIPANTS, SAVINGS_PERCENT } = COURSE_PRICING
+const { FULL_PRICE, FULL_PRICE_CROSSED, INSTALLMENT_PRICE, INSTALLMENT_TOTAL, SAVINGS_PERCENT } = COURSE_PRICING
 
 // ─── FAQ Content (from Webflow reference) ──────────────────────
 const FAQ_ITEMS = [
@@ -106,10 +106,6 @@ export default async function CursulAdoPage() {
   // Fetch course data with enrollment counts
   const course = await getCourseWithEditions('cursul-ado')
   const activeEdition = course?.editions?.find((e) => e.enrollmentOpen)
-  const enrollmentCount = activeEdition?._count?.enrollments ?? 0
-  const spotsText = activeEdition
-    ? `${enrollmentCount}/${MAX_PARTICIPANTS} locuri disponibile`
-    : null
 
   return (
     <>
@@ -152,17 +148,9 @@ export default async function CursulAdoPage() {
               Fără tehnici. Fără meditații. Fără teme. Doar tu, într-o postură complet nouă — cea a centrului realității tale!
             </p>
 
-            {/* Enrollment counter */}
+            {/* Enrollment status */}
             <div className="flex flex-wrap items-center gap-4 mb-10">
-              {spotsText ? (
-                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5">
-                  <div className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e0b0ff] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#a007dc]" />
-                  </div>
-                  <span className="text-sm font-medium">{spotsText}</span>
-                </div>
-              ) : (
+              {!activeEdition && (
                 <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5">
                   <span className="text-sm font-medium">Înscrierea se deschide în curând</span>
                 </div>

@@ -198,10 +198,13 @@ export default async function GhiduriPage() {
                   {guide.title}
                 </h3>
                 {guide.description && (
-                  <p className="text-[#51087e]/60 text-sm mb-5 line-clamp-2">
+                  <p className="text-[#51087e]/60 text-sm mb-3 line-clamp-2">
                     {guide.description}
                   </p>
                 )}
+                <p className="text-2xl font-bold text-[#51087e] mb-4">
+                  €{guide.price}
+                </p>
                 <Link
                   href={`/checkout?product=GUIDE&id=${guide.id}`}
                   className="inline-flex items-center justify-center w-full gap-2 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-3 rounded-xl hover:bg-[#a007dc] hover:text-white hover:border-[#a007dc] transition-all duration-200 text-sm"
