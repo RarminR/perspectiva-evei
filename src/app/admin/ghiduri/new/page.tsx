@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import ImageUpload from '@/components/ImageUpload'
 
 function slugify(text: string): string {
   return text
@@ -156,18 +157,11 @@ export default function NewGuidePage() {
           />
         </div>
 
-        <div>
-          <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700 mb-1">
-            Imagine copertă (URL)
-          </label>
-          <input
-            id="coverImage"
-            type="text"
-            value={form.coverImage}
-            onChange={(e) => handleChange('coverImage', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
-          />
-        </div>
+        <ImageUpload
+          label="Imagine copertă"
+          value={form.coverImage}
+          onChange={(url) => handleChange('coverImage', url)}
+        />
 
         <div>
           <label htmlFor="audioKey" className="block text-sm font-medium text-gray-700 mb-1">

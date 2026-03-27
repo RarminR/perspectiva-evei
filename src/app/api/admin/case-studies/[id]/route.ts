@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET(
@@ -46,6 +47,7 @@ export async function PUT(
     },
   })
 
+  revalidatePath('/')
   return NextResponse.json(caseStudy)
 }
 
@@ -60,6 +62,7 @@ export async function DELETE(
 
   const { id } = await params
   await prisma.caseStudy.delete({ where: { id } })
+  revalidatePath('/')
   return NextResponse.json({ success: true })
 }
 
@@ -81,6 +84,7 @@ export async function POST(
       where: { id },
       data: { published: true },
     })
+    revalidatePath('/')
     return NextResponse.json(caseStudy)
   }
 
@@ -89,6 +93,7 @@ export async function POST(
       where: { id },
       data: { published: false },
     })
+    revalidatePath('/')
     return NextResponse.json(caseStudy)
   }
 

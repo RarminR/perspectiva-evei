@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET(
@@ -60,6 +61,8 @@ export async function PATCH(
     include: { items: { include: { guide: true } } },
   })
 
+  revalidatePath('/ghiduri')
+  revalidatePath('/')
   return NextResponse.json(updated)
 }
 
@@ -75,5 +78,7 @@ export async function DELETE(
   const { id } = await params
   await prisma.bundleItem.deleteMany({ where: { bundleId: id } })
   await prisma.bundle.delete({ where: { id } })
+  revalidatePath('/ghiduri')
+  revalidatePath('/')
   return NextResponse.json({ success: true })
 }

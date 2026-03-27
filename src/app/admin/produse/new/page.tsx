@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import MultiImageUpload from '@/components/MultiImageUpload'
 
 function slugify(text: string): string {
   return text
@@ -16,13 +17,13 @@ export default function NewProductPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [images, setImages] = useState<string[]>([])
   const [form, setForm] = useState({
     title: '',
     slug: '',
     description: '',
     price: '',
     stock: '',
-    images: '',
     active: true,
   })
 
@@ -49,10 +50,7 @@ export default function NewProductPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          images: form.images
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean),
+          images,
         }),
       })
 
@@ -148,18 +146,11 @@ export default function NewProductPage() {
           />
         </div>
 
-        <div>
-          <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-1">
-            Imagini (URL-uri separate prin virgulă)
-          </label>
-          <input
-            id="images"
-            type="text"
-            value={form.images}
-            onChange={(e) => handleChange('images', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
-          />
-        </div>
+        <MultiImageUpload
+          label="Imagini"
+          value={images}
+          onChange={setImages}
+        />
 
         <div className="flex items-center gap-2">
           <input

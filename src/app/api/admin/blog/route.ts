@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -33,5 +34,6 @@ export async function POST(req: Request) {
     },
   })
 
+  revalidatePath('/blog')
   return NextResponse.json(post, { status: 201 })
 }
