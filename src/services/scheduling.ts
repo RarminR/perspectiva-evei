@@ -6,6 +6,38 @@ export interface TimeSlot {
   available: boolean
 }
 
+/**
+ * Convert a date string (YYYY-MM-DD) and local Bucharest hour/minute
+ * to a proper UTC Date object.
+ */
+function bucharestToUTC(dateStr: string, hour: number, minute: number): Date {
+  // Create an ISO string with the Bucharest time, then use the timezone
+  // offset to compute the correct UTC timestamp
+  const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`
+  // Parse as UTC first to get a reference point
+  const utcRef = new Date(`${dateStr}T${timeStr}Z`)
+  // Format that UTC instant as Bucharest local time
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Bucharest',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  })
+  const parts = formatter.formatToParts(utcRef)
+  const get = (t: string) => parts.find((p) => p.type === t)?.value || '0'
+  const bucharestAtUtcRef = new Date(
+    `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}Z`
+  )
+  // The offset is the difference: Bucharest = UTC + offset
+  const offsetMs = bucharestAtUtcRef.getTime() - utcRef.getTime()
+  // To get "dateStr hour:minute in Bucharest" as UTC, subtract the offset
+  return new Date(utcRef.getTime() - offsetMs)
+}
+
 export async function getAvailableSlots(
   startDate: Date,
   endDate: Date
@@ -39,9 +71,10 @@ export async function getAvailableSlots(
     let hour = startH
     let minute = startM
 
+    const dateStr = av.date.toISOString().slice(0, 10) // YYYY-MM-DD
+
     while (hour < endH || (hour === endH && minute < endM)) {
-      const slotDate = new Date(av.date)
-      slotDate.setUTCHours(hour, minute, 0, 0)
+      const slotDate = bucharestToUTC(dateStr, hour, minute)
 
       if (!bookedTimes.has(slotDate.getTime())) {
         slots.push(slotDate)
