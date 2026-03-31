@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import * as tus from 'tus-js-client'
 
 interface VideoUploadProps {
   label?: string
@@ -15,7 +14,7 @@ export function VideoUpload({ label = 'Video', value, onChange }: VideoUploadPro
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const uploadRef = useRef<tus.Upload | null>(null)
+  const uploadRef = useRef<{ abort: () => void } | null>(null)
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -48,7 +47,8 @@ export function VideoUpload({ label = 'Video', value, onChange }: VideoUploadPro
 
       setStatus('Se încarcă videoclipul...')
 
-      // Step 2: Upload directly to Bunny via TUS
+      // Step 2: Upload directly to Bunny via TUS (dynamic import to avoid SSR issues)
+      const tus = await import('tus-js-client')
       const upload = new tus.Upload(file, {
         endpoint: tusEndpoint,
         retryDelays: [0, 3000, 5000, 10000, 20000],
