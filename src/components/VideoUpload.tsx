@@ -14,7 +14,7 @@ export function VideoUpload({ label = 'Video', value, onChange }: VideoUploadPro
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const uploadRef = useRef<{ abort: () => void } | null>(null)
+  const xhrRef = useRef<XMLHttpRequest | null>(null)
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -47,52 +47,60 @@ export function VideoUpload({ label = 'Video', value, onChange }: VideoUploadPro
 
       setStatus('Se încarcă videoclipul...')
 
-      // Step 2: Upload directly to Bunny via TUS (dynamic import to avoid SSR issues)
-      const tus = await import('tus-js-client')
-      const upload = new tus.Upload(file, {
-        endpoint: tusEndpoint,
-        retryDelays: [0, 3000, 5000, 10000, 20000],
-        chunkSize: 5 * 1024 * 1024, // 5MB chunks
-        metadata: {
-          filetype: file.type,
-          title: file.name,
-        },
-        headers: {
-          AuthorizationSignature: authSignature,
-          AuthorizationExpire: String(authExpire),
-          VideoId: videoId,
-          LibraryId: libraryId,
-        },
-        onError(err) {
-          setError(`Eroare la încărcare: ${err.message}`)
-          setUploading(false)
-          setStatus('')
-        },
-        onProgress(bytesUploaded, bytesTotal) {
-          const pct = Math.round((bytesUploaded / bytesTotal) * 100)
-          setProgress(pct)
-        },
-        onSuccess() {
-          setUploading(false)
-          setProgress(100)
-          setStatus('')
-          onChange(videoId)
-        },
+      // Step 2: Upload directly to Bunny via TUS protocol (plain XHR, no library)
+      // TUS creation request
+      const xhr = new XMLHttpRequest()
+      xhrRef.current = xhr
+
+      await new Promise<void>((resolve, reject) => {
+        xhr.open('POST', tusEndpoint, true)
+        xhr.setRequestHeader('Content-Type', 'application/offset+octet-stream')
+        xhr.setRequestHeader('Upload-Length', String(file.size))
+        xhr.setRequestHeader('Upload-Offset', '0')
+        xhr.setRequestHeader('AuthorizationSignature', authSignature)
+        xhr.setRequestHeader('AuthorizationExpire', String(authExpire))
+        xhr.setRequestHeader('VideoId', videoId)
+        xhr.setRequestHeader('LibraryId', libraryId)
+        xhr.setRequestHeader('Upload-Metadata', `filetype ${btoa(file.type)},title ${btoa(file.name)}`)
+        xhr.setRequestHeader('Tus-Resumable', '1.0.0')
+
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            setProgress(Math.round((e.loaded / e.total) * 100))
+          }
+        }
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve()
+          } else {
+            reject(new Error(`Upload eșuat: ${xhr.status}`))
+          }
+        }
+
+        xhr.onerror = () => reject(new Error('Eroare de rețea la încărcare'))
+        xhr.onabort = () => reject(new Error('Încărcare anulată'))
+
+        xhr.send(file)
       })
 
-      uploadRef.current = upload
-      upload.start()
+      setUploading(false)
+      setProgress(100)
+      setStatus('')
+      onChange(videoId)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Eroare la încărcare')
+      if ((err as Error).message !== 'Încărcare anulată') {
+        setError(err instanceof Error ? err.message : 'Eroare la încărcare')
+      }
       setUploading(false)
       setStatus('')
     }
   }
 
   function handleCancel() {
-    if (uploadRef.current) {
-      uploadRef.current.abort()
-      uploadRef.current = null
+    if (xhrRef.current) {
+      xhrRef.current.abort()
+      xhrRef.current = null
     }
     setUploading(false)
     setProgress(0)
