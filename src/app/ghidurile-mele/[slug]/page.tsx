@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { Navbar } from '@/components/ui/Navbar'
 import { GuideReader } from '@/components/GuideReader'
 import { SecurePdfViewer } from '@/components/SecurePdfViewer'
 import { AudiobookPlayer } from '@/components/AudiobookPlayer'
@@ -51,13 +52,7 @@ export default async function GuideReaderPage({
 
   return (
     <div className="min-h-screen bg-[#f5f0ff]">
-      {guide.audioKey && (
-        <div className="sticky top-0 z-50 border-b border-gray-100 bg-white shadow-sm">
-          <div className="mx-auto max-w-4xl px-4">
-            <AudiobookPlayer guideId={guide.id} audioUrl={audioUrl} />
-          </div>
-        </div>
-      )}
+      <Navbar />
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="mb-6">
@@ -84,6 +79,13 @@ export default async function GuideReaderPage({
             userEmail={userEmail}
             userId={userId}
           />
+        )}
+
+        {guide.audioKey && (
+          <div className="mt-8 rounded-xl bg-white p-6 shadow-sm border border-gray-100">
+            <h2 className="mb-4 text-lg font-semibold text-[#51087e]">Audiobook</h2>
+            <AudiobookPlayer guideId={guide.id} audioUrl={audioUrl} />
+          </div>
         )}
       </div>
     </div>
