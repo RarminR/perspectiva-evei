@@ -8,6 +8,7 @@ import { Footer } from '@/components/ui/Footer'
 import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
 import { getCourseWithEditions } from '@/services/course'
 import { prisma } from '@/lib/db'
+import { auth } from '@/lib/auth'
 
 export const metadata: Metadata = {
   title: 'Acasă | Perspectiva Evei',
@@ -107,6 +108,20 @@ export default async function Home() {
       select: { id: true, price: true, originalPrice: true },
     })
   } catch {}
+
+  const session = await auth()
+  const userId = session?.user?.id
+
+  let ownedGuideIds: Set<string> = new Set()
+  if (userId) {
+    try {
+      const access = await prisma.guideAccess.findMany({
+        where: { userId },
+        select: { guideId: true },
+      })
+      ownedGuideIds = new Set(access.map((a) => a.guideId))
+    } catch {}
+  }
 
   const displayedGuides = guides
 
@@ -629,12 +644,21 @@ export default async function Home() {
                         {guide.title}
                       </p>
                       <p style={{ margin: 0, color: '#51087e' }}>{formatEur(guide.price)}</p>
-                      <Link
-                        href={`/checkout?product=GUIDE&id=${guide.id}`}
-                        style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
-                      >
-                        Cumpără →
-                      </Link>
+                      {ownedGuideIds.has(guide.id) ? (
+                        <Link
+                          href={`/ghidurile-mele/${guide.slug}`}
+                          style={{ color: '#16a34a', textDecoration: 'none', fontWeight: 700 }}
+                        >
+                          Mergi la ghid →
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/checkout?product=GUIDE&id=${guide.id}`}
+                          style={{ color: '#a007dc', textDecoration: 'none', fontWeight: 700 }}
+                        >
+                          Cumpără →
+                        </Link>
+                      )}
                     </div>
                   </div>
                 ))

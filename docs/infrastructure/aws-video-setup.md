@@ -159,6 +159,7 @@ aws cloudfront create-origin-access-control \
   "MaxTTL": 31536000,
   "MinTTL": 0,
   "ParametersInCacheKeyAndForwardedToOrigin": {
+    
     "EnableAcceptEncodingGzip": true,
     "EnableAcceptEncodingBrotli": true,
     "HeadersConfig": {
