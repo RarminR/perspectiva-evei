@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { VideoUpload } from '@/components/VideoUpload'
 
 interface Lesson {
   id: string
@@ -27,6 +28,7 @@ export function LessonManager({
   const [showForm, setShowForm] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [videoKey, setVideoKey] = useState<string | null>(null)
 
   async function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -39,7 +41,7 @@ export function LessonManager({
       editionId,
       title: formData.get('title'),
       order: Number(formData.get('order')),
-      videoKey: formData.get('videoKey') || null,
+      videoKey: videoKey || null,
       zoomLink: formData.get('zoomLink') || null,
       pdfKeys: pdfKeysRaw ? pdfKeysRaw.split('\n').map((k) => k.trim()).filter(Boolean) : [],
       duration: formData.get('duration') ? Number(formData.get('duration')) : null,
@@ -59,6 +61,7 @@ export function LessonManager({
       }
 
       setShowForm(false)
+      setVideoKey(null)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Eroare la creare')
@@ -157,15 +160,10 @@ export function LessonManager({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="videoKey" className="block text-sm font-medium text-gray-700 mb-1">
-                  Video key (HLS)
-                </label>
-                <input
-                  type="text"
-                  id="videoKey"
-                  name="videoKey"
-                  placeholder="video/hls/lesson-1/master.m3u8"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                <VideoUpload
+                  label="Video"
+                  value={videoKey}
+                  onChange={setVideoKey}
                 />
               </div>
               <div>
