@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ImageUpload from '@/components/ImageUpload'
 import PdfUpload from '@/components/PdfUpload'
+import AudioUpload from '@/components/AudioUpload'
 
 function slugify(text: string): string {
   return text
@@ -171,18 +172,11 @@ export default function NewGuidePage() {
           onChange={(key) => handleChange('pdfKey', key)}
         />
 
-        <div>
-          <label htmlFor="audioKey" className="block text-sm font-medium text-gray-700 mb-1">
-            Cheie audio S3
-          </label>
-          <input
-            id="audioKey"
-            type="text"
-            value={form.audioKey}
-            onChange={(e) => handleChange('audioKey', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
-          />
-        </div>
+        <AudioUpload
+          label="Audiobook"
+          value={form.audioKey}
+          onChange={(key) => handleChange('audioKey', key)}
+        />
 
         <div>
           <label htmlFor="contentJson" className="block text-sm font-medium text-gray-700 mb-1">

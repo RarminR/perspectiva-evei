@@ -19,7 +19,7 @@ const securityHeaders = [
       "img-src 'self' data: https:",
       "font-src 'self'",
       "connect-src 'self' https://www.google-analytics.com https://api.revolut.com https://sandbox-merchant.revolut.com",
-      "media-src 'self' https://*.cloudfront.net",
+      "media-src 'self' blob: https://*.cloudfront.net",
       "frame-src 'self' blob: https://merchant.revolut.com https://sandbox-merchant.revolut.com https://iframe.mediadelivery.net",
     ].join('; '),
   },
