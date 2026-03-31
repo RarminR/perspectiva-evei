@@ -40,13 +40,15 @@ export async function GET(
     return NextResponse.json({ error: 'Eroare la încărcarea PDF-ului' }, { status: 502 })
   }
 
-  const pdfBuffer = await pdfRes.arrayBuffer()
-
-  return new NextResponse(pdfBuffer, {
+  // Stream the response to handle large PDFs without buffering
+  return new NextResponse(pdfRes.body, {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'inline',
       'Cache-Control': 'private, no-store',
+      ...(pdfRes.headers.get('content-length')
+        ? { 'Content-Length': pdfRes.headers.get('content-length')! }
+        : {}),
     },
   })
 }
