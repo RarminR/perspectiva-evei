@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Watermark } from './Watermark'
 
 interface SecurePdfViewerProps {
@@ -11,6 +11,7 @@ interface SecurePdfViewerProps {
 
 export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [pageCount, setPageCount] = useState(0)
@@ -18,75 +19,93 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
 
   const watermarkText = `${userEmail} • ${userId.slice(0, 8)}`
 
-  const renderPdf = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/guides/${guideId}/pdf`)
-      if (!res.ok) {
-        let msg = 'Eroare la încărcarea PDF-ului'
-        try {
-          const data = await res.json()
-          msg = data.error || msg
-        } catch {}
-        throw new Error(msg)
-      }
-
-      const arrayBuffer = await res.arrayBuffer()
-
-      const pdfjsLib = await import('pdfjs-dist')
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
-
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-      setPageCount(pdf.numPages)
-
-      const container = containerRef.current
-      if (!container) return
-
-      // Clear previous renders
-      container.innerHTML = ''
-
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i)
-        const containerWidth = container.clientWidth
-        const unscaledViewport = page.getViewport({ scale: 1 })
-        const scale = containerWidth / unscaledViewport.width
-        const viewport = page.getViewport({ scale })
-
-        const canvas = document.createElement('canvas')
-        canvas.width = viewport.width * window.devicePixelRatio
-        canvas.height = viewport.height * window.devicePixelRatio
-        canvas.style.width = '100%'
-        canvas.style.height = 'auto'
-        canvas.style.display = 'block'
-        canvas.dataset.page = String(i)
-
-        container.appendChild(canvas)
-
-        const ctx = canvas.getContext('2d')!
-        ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-        await page.render({ canvasContext: ctx, viewport, canvas } as any).promise
-      }
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }, [guideId])
-
+  // Fetch and render PDF
   useEffect(() => {
-    renderPdf()
-  }, [renderPdf])
+    let cancelled = false
+
+    async function load() {
+      try {
+        const res = await fetch(`/api/guides/${guideId}/pdf`)
+        if (!res.ok) {
+          let msg = 'Eroare la încărcarea PDF-ului'
+          try {
+            const data = await res.json()
+            msg = data.error || msg
+          } catch {}
+          throw new Error(msg)
+        }
+
+        const arrayBuffer = await res.arrayBuffer()
+        if (cancelled) return
+
+        const pdfjsLib = await import('pdfjs-dist')
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
+
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+        if (cancelled) return
+
+        setPageCount(pdf.numPages)
+        setLoading(false)
+
+        // Wait for the container to be in the DOM and have layout
+        await new Promise((r) => requestAnimationFrame(r))
+        await new Promise((r) => requestAnimationFrame(r))
+
+        const container = containerRef.current
+        if (!container || cancelled) return
+
+        const containerWidth = container.parentElement?.clientWidth || container.clientWidth || 600
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (cancelled) return
+          const page = await pdf.getPage(i)
+          const unscaledViewport = page.getViewport({ scale: 1 })
+          const scale = containerWidth / unscaledViewport.width
+          const viewport = page.getViewport({ scale })
+
+          const dpr = window.devicePixelRatio || 1
+          const canvas = document.createElement('canvas')
+          canvas.width = Math.floor(viewport.width * dpr)
+          canvas.height = Math.floor(viewport.height * dpr)
+          canvas.style.width = `${Math.floor(viewport.width)}px`
+          canvas.style.maxWidth = '100%'
+          canvas.style.height = 'auto'
+          canvas.style.display = 'block'
+          canvas.style.margin = '0 auto'
+          canvas.dataset.page = String(i)
+
+          container.appendChild(canvas)
+
+          const ctx = canvas.getContext('2d')!
+          ctx.scale(dpr, dpr)
+          await page.render({
+            canvasContext: ctx,
+            viewport,
+            canvas,
+          } as any).promise
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          setError(err.message)
+          setLoading(false)
+        }
+      }
+    }
+
+    load()
+    return () => { cancelled = true }
+  }, [guideId])
 
   // Track current page on scroll
   useEffect(() => {
-    const scrollContainer = containerRef.current?.parentElement
-    if (!scrollContainer || pageCount === 0) return
+    const scrollEl = scrollRef.current
+    if (!scrollEl || pageCount === 0) return
 
     function handleScroll() {
       const container = containerRef.current
-      const parent = container?.parentElement
-      if (!container || !parent) return
+      if (!container || !scrollEl) return
 
-      const scrollTop = parent.scrollTop
+      const scrollTop = scrollEl.scrollTop
       const canvases = container.querySelectorAll('canvas')
       let page = 1
 
@@ -100,8 +119,8 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
       setCurrentPage(page)
     }
 
-    scrollContainer.addEventListener('scroll', handleScroll)
-    return () => scrollContainer.removeEventListener('scroll', handleScroll)
+    scrollEl.addEventListener('scroll', handleScroll)
+    return () => scrollEl.removeEventListener('scroll', handleScroll)
   }, [pageCount])
 
   // Prevent right-click and text selection
@@ -117,15 +136,6 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
       document.removeEventListener('selectstart', preventSelect)
     }
   }, [])
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#a007dc] border-t-transparent" />
-        <span className="ml-3 text-gray-600">Se încarcă ghidul...</span>
-      </div>
-    )
-  }
 
   if (error) {
     return (
@@ -146,12 +156,21 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
         </div>
       )}
 
+      {loading && (
+        <div className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#a007dc] border-t-transparent" />
+          <span className="ml-3 text-gray-600">Se încarcă ghidul...</span>
+        </div>
+      )}
+
       <div
-        className="relative mx-auto max-w-full overflow-y-auto rounded-2xl bg-white shadow-lg"
+        ref={scrollRef}
+        className="relative mx-auto w-full overflow-y-auto rounded-2xl bg-white shadow-lg"
         style={{
           userSelect: 'none',
           WebkitUserSelect: 'none',
           maxHeight: 'calc(100vh - 220px)',
+          display: loading ? 'none' : 'block',
         }}
       >
         <Watermark text={watermarkText} />
