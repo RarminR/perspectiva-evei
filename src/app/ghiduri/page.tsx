@@ -267,6 +267,7 @@ export default async function GhiduriPage() {
               </div>
             </div>
           )}
+        </div>
       </Section>
 
       <Footer />
