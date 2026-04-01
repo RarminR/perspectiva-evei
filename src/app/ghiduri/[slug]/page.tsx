@@ -218,7 +218,7 @@ export default async function GuideDetailPage({
 
             {/* Price pill + badges */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white text-sm font-bold px-5 py-2 rounded-full">
+              <div className="inline-flex items-center gap-2 bg-[#a007dc] text-white text-sm font-bold px-5 py-2 rounded-full">
                 <span className="text-xs">✦</span>
                 <span>Preț:</span>
                 <span className="text-lg">€{guide.price}</span>
@@ -316,7 +316,7 @@ export default async function GuideDetailPage({
             {/* CTA */}
             <Link
               href={`/checkout?product=GUIDE&id=${guide.id}`}
-              className="inline-flex items-center justify-center w-full gap-2 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity text-lg shadow-lg shadow-[#a007dc]/25"
+              className="inline-flex items-center justify-center w-full gap-2 bg-[#a007dc] text-white font-bold py-4 rounded-xl hover:bg-[#51087e] transition-colors text-lg"
             >
               Cumpără — €{guide.price}
               <span>→</span>
