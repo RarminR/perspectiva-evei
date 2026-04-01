@@ -146,7 +146,7 @@ export default function SedinteOneLaOnePage() {
             Beneficii
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
           {benefits.map((b) => (
             <div key={b.title} style={{ backgroundColor: 'rgba(81,8,126,0.15)', borderRadius: '20px', padding: '24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
               <div style={{ backgroundColor: 'white', color: '#51087e', borderRadius: '15px', width: '48px', height: '48px', minWidth: '48px', boxShadow: '0 0 15px rgba(81,8,126,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem' }}>
