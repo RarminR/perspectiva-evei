@@ -61,12 +61,19 @@ const steps = [
 
 const testimonials = [
   {
-    quote: 'Eva, te iubesc! Daca ai sti cat de mult s-a schimbat tot dupa cursul tau... Voi fi mereu recunoscatoare!',
-    name: 'Roxana',
+    quote: 'Am venit în curs confuză și blocată. În câteva săptămâni am învățat să-mi schimb complet raportarea și să aleg conștient ce trăiesc.',
+    name: 'Roxana M.',
+    role: 'Antreprenoare',
   },
   {
-    quote: 'Tu in realitatea mea faci o treaba minunata, realmente schimbi vietile oamenilor iar eu ma bucur cand vad schimbarile pozitive in atatea persoane!',
-    name: 'Diana',
+    quote: 'Cel mai valoros lucru pentru mine a fost claritatea. Nu mai alerg după tehnici, ci îmi asum postura de creator în fiecare zi.',
+    name: 'Loredana P.',
+    role: 'Manager HR',
+  },
+  {
+    quote: 'Fiecare sesiune a fost practică, aplicată și directă. Rezultatele au apărut atât în relații, cât și în felul în care mă văd pe mine.',
+    name: 'Andreea C.',
+    role: 'Consultant',
   },
 ]
 
@@ -245,12 +252,57 @@ export default function SedinteOneLaOnePage() {
             Ce spun clientii mei
           </h2>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', maxWidth: '800px', margin: '0 auto' }}>
-          {testimonials.map((t) => (
-            <div key={t.name} style={{ backgroundColor: 'white', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 20px rgba(81,8,126,0.1)' }}>
-              <div style={{ color: '#f59e0b', marginBottom: '1rem', fontSize: '1.1rem' }}>★★★★★</div>
-              <p style={{ color: '#444', fontStyle: 'italic', lineHeight: 1.7, marginBottom: '1.5rem' }}>&ldquo;{t.quote}&rdquo;</p>
-              <p style={{ color: '#51087e', fontWeight: 700 }}>{t.name}</p>
+        <div
+          style={{ display: 'grid', gap: '30px' }}
+          className="grid-cols-1 md:grid-cols-3"
+        >
+          {testimonials.map((item) => (
+            <div
+              key={item.name}
+              style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '20px',
+                padding: '30px',
+                boxShadow: '0 16px 30px rgba(81,8,126,0.12)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                height: '100%',
+              }}
+            >
+              <div style={{ display: 'flex', gap: '4px', color: '#f59e0b' }}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <svg key={i} width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.16379 0.551109C8.47316 -0.183704 9.52684 -0.183703 9.83621 0.551111L11.6621 4.88811C11.7926 5.19789 12.0875 5.40955 12.426 5.43636L17.1654 5.81173C17.9684 5.87533 18.294 6.86532 17.6822 7.38306L14.0713 10.4388C13.8134 10.6571 13.7007 10.9996 13.7795 11.3259L14.8827 15.8949C15.0696 16.669 14.2172 17.2809 13.5297 16.8661L9.47208 14.4176C9.18225 14.2427 8.81775 14.2427 8.52793 14.4176L4.47029 16.8661C3.7828 17.2809 2.93036 16.669 3.11727 15.8949L4.22048 11.3259C4.29928 10.9996 4.18664 10.6571 3.92873 10.4388L0.317756 7.38306C-0.294046 6.86532 0.0315611 5.87533 0.834562 5.81173L5.57402 5.43636C5.91255 5.40955 6.20744 5.19789 6.33786 4.88811L8.16379 0.551109Z" fill="currentColor" />
+                  </svg>
+                ))}
+              </div>
+              <p style={{ margin: 0, color: '#2c0246', fontStyle: 'italic', lineHeight: 1.65 }}>
+                &ldquo;{item.quote}&rdquo;
+              </p>
+              <div style={{ borderTop: '1px solid rgba(81,8,126,0.16)', paddingTop: '16px' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <div
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '999px',
+                      backgroundImage: 'linear-gradient(135deg, #51087e, #a007dc)',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {item.name[0]}
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: 700, color: '#2c0246' }}>{item.name}</p>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#6f5a81' }}>{item.role}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
