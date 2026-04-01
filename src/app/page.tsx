@@ -101,11 +101,11 @@ export default async function Home() {
     })
   } catch {}
 
-  let bundle: { id: string; title: string; price: number; originalPrice: number } | null = null
+  let bundle: { id: string; title: string; price: number; originalPrice: number; items: { guide: { title: string } }[] } | null = null
   try {
     bundle = await prisma.bundle.findFirst({
       where: { active: true },
-      select: { id: true, title: true, price: true, originalPrice: true },
+      select: { id: true, title: true, price: true, originalPrice: true, items: { include: { guide: { select: { title: true } } } } },
     })
   } catch {}
 
@@ -694,6 +694,9 @@ export default async function Home() {
                 >
                   <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Pachet promoțional activ</p>
                   <p style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>{bundle.title}</p>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
+                    {bundle.items.map((item) => item.guide.title).join(' + ')}
+                  </p>
                   <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{formatEur(bundle.price)}</p>
                   <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', textDecoration: 'line-through' }}>
                     {formatEur(bundle.originalPrice)}
