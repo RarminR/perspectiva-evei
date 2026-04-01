@@ -141,13 +141,13 @@ export default function SedinteOneLaOnePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {benefits.map((b) => (
-            <div key={b.title} style={{ backgroundColor: 'rgba(81,8,126,0.15)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '14px' }}>
-              <div style={{ backgroundColor: 'white', color: '#51087e', borderRadius: '15px', width: '56px', height: '56px', boxShadow: '0 0 15px rgba(81,8,126,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.5rem' }}>
+            <div key={b.title} style={{ backgroundColor: 'rgba(81,8,126,0.15)', borderRadius: '20px', padding: '24px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+              <div style={{ backgroundColor: 'white', color: '#51087e', borderRadius: '15px', width: '48px', height: '48px', minWidth: '48px', boxShadow: '0 0 15px rgba(81,8,126,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem' }}>
                 {b.icon}
               </div>
               <div>
-                <h3 style={{ color: '#51087e', fontWeight: 700, fontSize: '1rem', marginBottom: '0.5rem' }}>{b.title}</h3>
-                <p style={{ color: '#444', lineHeight: 1.6, fontSize: '0.9rem' }}>{b.description}</p>
+                <h3 style={{ color: '#51087e', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.4rem' }}>{b.title}</h3>
+                <p style={{ color: '#444', lineHeight: 1.5, fontSize: '0.85rem', margin: 0 }}>{b.description}</p>
               </div>
             </div>
           ))}
