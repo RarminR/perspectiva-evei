@@ -319,10 +319,9 @@ export default async function GuideDetailPage({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedGuides.map((related) => (
-              <Link
+              <div
                 key={related.id}
-                href={`/ghiduri/${related.slug}`}
-                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1"
+                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20"
               >
                 <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#51087e]/80">
                   {related.coverImage ? (
@@ -330,7 +329,7 @@ export default async function GuideDetailPage({
                        src={imgSrc(related.coverImage)}
                       alt={related.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -344,22 +343,29 @@ export default async function GuideDetailPage({
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-[#51087e] group-hover:text-[#a007dc] transition-colors">
-                    {related.title}
-                  </h3>
-                  <span className="text-sm text-[#a007dc] mt-2 inline-flex items-center gap-1 font-medium">
-                    Descoperă <span>→</span>
-                  </span>
+                  <h3 className="font-bold text-[#51087e] mb-1">{related.title}</h3>
+                  <p className="text-xl font-bold text-[#51087e] mb-4">€{related.price}</p>
+                  <div className="flex gap-3">
+                    <Link
+                      href={`/ghiduri/${related.slug}`}
+                      className="inline-flex items-center justify-center flex-1 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-2.5 rounded-xl hover:bg-[#51087e]/5 transition-all duration-200 text-sm"
+                    >
+                      Despre
+                    </Link>
+                    <Link
+                      href={`/checkout?product=GUIDE&id=${related.id}`}
+                      className="inline-flex items-center justify-center flex-1 gap-1 bg-[#a007dc] text-white font-semibold py-2.5 rounded-xl hover:bg-[#51087e] transition-all duration-200 text-sm"
+                    >
+                      Cumpără <span className="text-xs">→</span>
+                    </Link>
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))}
 
             {/* Bundle card */}
             {bundle && (
-              <Link
-                href={`/checkout?product=BUNDLE&id=${bundle.id}`}
-                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1"
-              >
+              <div className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20">
                 <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#a007dc]">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-5xl opacity-20">📦</div>
@@ -376,19 +382,20 @@ export default async function GuideDetailPage({
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-[#51087e] group-hover:text-[#a007dc] transition-colors">
-                    {bundle.title}
-                  </h3>
-                  <p className="text-[#51087e]/50 text-xs mt-1">{bundle.guideNames.join(' + ')}</p>
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-sm text-[#a007dc] font-bold">€{bundle.price}</span>
-                    <span className="text-xs text-[#51087e]/40 line-through">€{bundle.originalPrice}</span>
+                  <h3 className="font-bold text-[#51087e] mb-1">{bundle.title}</h3>
+                  <p className="text-[#51087e]/50 text-xs mb-1">{bundle.guideNames.join(' + ')}</p>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span className="text-xl font-bold text-[#51087e]">€{bundle.price}</span>
+                    <span className="text-sm text-[#51087e]/40 line-through">€{bundle.originalPrice}</span>
                   </div>
-                  <span className="text-sm text-[#a007dc] mt-2 inline-flex items-center gap-1 font-medium">
-                    Cumpără pachetul <span>→</span>
-                  </span>
+                  <Link
+                    href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+                    className="inline-flex items-center justify-center w-full gap-1 bg-[#a007dc] text-white font-semibold py-2.5 rounded-xl hover:bg-[#51087e] transition-all duration-200 text-sm"
+                  >
+                    Cumpără pachetul <span className="text-xs">→</span>
+                  </Link>
                 </div>
-              </Link>
+              </div>
             )}
           </div>
         </Section>
