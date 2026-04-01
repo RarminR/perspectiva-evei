@@ -74,6 +74,37 @@ interface RelatedGuide {
   coverImage: string | null
 }
 
+interface BundleCard {
+  id: string
+  title: string
+  price: number
+  originalPrice: number
+  guideNames: string[]
+}
+
+async function getActiveBundle(): Promise<BundleCard | null> {
+  try {
+    const bundle = await prisma.bundle.findFirst({
+      where: { active: true },
+      include: {
+        items: {
+          include: { guide: { select: { title: true } } },
+        },
+      },
+    })
+    if (!bundle) return null
+    return {
+      id: bundle.id,
+      title: bundle.title,
+      price: bundle.price,
+      originalPrice: bundle.originalPrice,
+      guideNames: bundle.items.map((i) => i.guide.title),
+    }
+  } catch {
+    return null
+  }
+}
+
 async function getRelatedGuides(currentSlug: string): Promise<RelatedGuide[]> {
   try {
     const guides = await prisma.guide.findMany({
@@ -129,6 +160,7 @@ export default async function GuideDetailPage({
   }
 
   const relatedGuides = await getRelatedGuides(slug)
+  const bundle = await getActiveBundle()
   const toc = extractToc(guide.contentJson)
 
   return (
@@ -228,8 +260,8 @@ export default async function GuideDetailPage({
         </Section>
       )}
 
-      {/* Related Guides */}
-      {relatedGuides.length > 0 && (
+      {/* Related Guides + Bundle */}
+      {(relatedGuides.length > 0 || bundle) && (
         <Section variant="light-pink" className="py-16">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-[#51087e] mb-2">
@@ -272,6 +304,43 @@ export default async function GuideDetailPage({
                 </div>
               </Link>
             ))}
+
+            {/* Bundle card */}
+            {bundle && (
+              <Link
+                href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1"
+              >
+                <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#a007dc]">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-5xl opacity-20">📦</div>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <span className="inline-flex items-center gap-1 bg-[#a007dc] text-white text-xs font-bold px-3 py-1 rounded-full">
+                      €{bundle.price}
+                    </span>
+                  </div>
+                  <div className="absolute top-3 left-3">
+                    <span className="inline-flex items-center bg-green-500/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      -{Math.round(((bundle.originalPrice - bundle.price) / bundle.originalPrice) * 100)}%
+                    </span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-bold text-[#51087e] group-hover:text-[#a007dc] transition-colors">
+                    {bundle.title}
+                  </h3>
+                  <p className="text-[#51087e]/50 text-xs mt-1">{bundle.guideNames.join(' + ')}</p>
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <span className="text-sm text-[#a007dc] font-bold">€{bundle.price}</span>
+                    <span className="text-xs text-[#51087e]/40 line-through">€{bundle.originalPrice}</span>
+                  </div>
+                  <span className="text-sm text-[#a007dc] mt-2 inline-flex items-center gap-1 font-medium">
+                    Cumpără pachetul <span>→</span>
+                  </span>
+                </div>
+              </Link>
+            )}
           </div>
         </Section>
       )}
