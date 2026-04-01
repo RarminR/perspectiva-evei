@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { Navbar, Footer, Section, Badge } from '@/components/ui'
+import { Navbar, Footer, Section } from '@/components/ui'
 import { prisma } from '@/lib/db'
 import { imgSrc } from '@/lib/image'
 
