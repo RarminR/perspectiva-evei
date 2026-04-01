@@ -104,8 +104,19 @@ async function getRelatedGuides(currentSlug: string): Promise<RelatedGuide[]> {
   }
 }
 
-function extractContent(contentJson: unknown) {
-  if (!contentJson || typeof contentJson !== 'object') return { toc: [], features: [], quote: null }
+interface GuideContent {
+  subtitle: string | null
+  aboutText: string | null
+  quote: string | null
+  highlights: string[]
+  features: { title: string; description?: string }[]
+  toc: string[]
+  badges: string[]
+}
+
+function extractContent(contentJson: unknown): GuideContent {
+  const empty: GuideContent = { subtitle: null, aboutText: null, quote: null, highlights: [], features: [], toc: [], badges: [] }
+  if (!contentJson || typeof contentJson !== 'object') return empty
   const data = contentJson as Record<string, unknown>
 
   let toc: string[] = []
@@ -116,12 +127,26 @@ function extractContent(contentJson: unknown) {
   }
 
   const features = Array.isArray(data.features)
-    ? (data.features as { title?: string; description?: string }[]).filter((f) => f.title)
+    ? (data.features as { title: string; description?: string }[]).filter((f) => f.title)
     : []
 
-  const quote = typeof data.quote === 'string' ? data.quote : null
+  const highlights = Array.isArray(data.highlights)
+    ? (data.highlights as string[]).filter((h) => typeof h === 'string')
+    : []
 
-  return { toc, features, quote }
+  const badges = Array.isArray(data.badges)
+    ? (data.badges as string[]).filter((b) => typeof b === 'string')
+    : []
+
+  return {
+    subtitle: typeof data.subtitle === 'string' ? data.subtitle : null,
+    aboutText: typeof data.aboutText === 'string' ? data.aboutText : null,
+    quote: typeof data.quote === 'string' ? data.quote : null,
+    highlights,
+    features,
+    toc,
+    badges,
+  }
 }
 
 export default async function GuideDetailPage({
@@ -138,7 +163,7 @@ export default async function GuideDetailPage({
 
   const relatedGuides = await getRelatedGuides(slug)
   const bundle = await getActiveBundle()
-  const { toc, features, quote } = extractContent(guide.contentJson)
+  const content = extractContent(guide.contentJson)
 
   return (
     <>
@@ -162,8 +187,8 @@ export default async function GuideDetailPage({
           <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight text-center">
             {guide.title}
           </h1>
-          {guide.shortDescription && (
-            <p className="text-white/60 text-lg mt-3 text-center">{guide.shortDescription}</p>
+          {(content.subtitle || guide.shortDescription) && (
+            <p className="text-white/60 text-lg mt-3 text-center">{content.subtitle || guide.shortDescription}</p>
           )}
         </div>
       </div>
@@ -193,31 +218,46 @@ export default async function GuideDetailPage({
           <div>
             <h2 className="text-2xl font-bold text-[#51087e] mb-2">Despre ghid:</h2>
 
-            {/* Price pill */}
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white text-sm font-bold px-5 py-2 rounded-full mb-6">
-              <span className="text-xs">✦</span>
-              <span>Preț:</span>
-              <span className="text-lg">€{guide.price}</span>
+            {/* Price pill + badges */}
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white text-sm font-bold px-5 py-2 rounded-full">
+                <span className="text-xs">✦</span>
+                <span>Preț:</span>
+                <span className="text-lg">€{guide.price}</span>
+              </div>
+              {content.badges.map((badge, i) => (
+                <div key={i} className="inline-flex items-center gap-2 border-2 border-[#a007dc]/30 text-[#51087e] text-sm font-semibold px-5 py-2 rounded-full">
+                  <span className="text-xs">✦</span>
+                  <span>{badge}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Description */}
-            {guide.description && (
+            {/* About text (rich) or fallback to description */}
+            {(content.aboutText || guide.description) && (
               <p className="text-[#2c0246] leading-relaxed text-base mb-6 whitespace-pre-line">
-                {guide.description}
+                {content.aboutText || guide.description}
               </p>
             )}
 
-            {/* Quote highlight */}
-            {quote && (
+            {/* Quote / highlight block */}
+            {content.quote && (
               <div className="bg-gradient-to-r from-[#51087e]/10 to-[#a007dc]/5 border-l-4 border-[#a007dc] rounded-r-xl px-5 py-4 mb-6">
-                <p className="text-[#51087e] font-semibold italic">{quote}</p>
+                <p className="text-[#51087e] font-semibold">{content.quote}</p>
               </div>
             )}
 
+            {/* Highlight blocks */}
+            {content.highlights.map((hl, i) => (
+              <div key={i} className="bg-gradient-to-r from-[#51087e]/10 to-[#a007dc]/5 border-l-4 border-[#a007dc] rounded-r-xl px-5 py-4 mb-6">
+                <p className="text-[#51087e] font-semibold">{hl}</p>
+              </div>
+            ))}
+
             {/* Feature cards */}
-            {features.length > 0 && (
+            {content.features.length > 0 && (
               <div className="space-y-4 mb-6">
-                {features.map((feature, i) => (
+                {content.features.map((feature, i) => (
                   <div
                     key={i}
                     className="bg-[#f5f0ff] rounded-xl p-5 border border-[#a007dc]/10"
@@ -288,12 +328,12 @@ export default async function GuideDetailPage({
       </Section>
 
       {/* Table of Contents */}
-      {toc.length > 0 && (
+      {content.toc.length > 0 && (
         <Section variant="white" className="py-16">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold text-[#51087e] mb-6">Ce vei descoperi</h2>
             <div className="space-y-3">
-              {toc.map((item, index) => (
+              {content.toc.map((item, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-4 p-4 rounded-xl bg-[#f5f0ff] border border-[#a007dc]/10"
