@@ -207,6 +207,25 @@ function CheckoutContent() {
   return (
     <div style={{ minHeight: '100vh', backgroundImage: 'linear-gradient(180deg, white, #e8c2ff)', padding: '60px 5%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
       <div style={{ maxWidth: '520px', width: '100%' }}>
+        <button
+          onClick={() => router.back()}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#a007dc',
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            padding: 0,
+            marginBottom: '1rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          ← Înapoi
+        </button>
+
         <h1 style={{
           backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
           WebkitTextFillColor: 'transparent',
