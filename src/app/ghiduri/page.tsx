@@ -205,13 +205,21 @@ export default async function GhiduriPage() {
                 <p className="text-2xl font-bold text-[#51087e] mb-4">
                   €{guide.price}
                 </p>
-                <Link
-                  href={`/checkout?product=GUIDE&id=${guide.id}`}
-                  className="inline-flex items-center justify-center w-full gap-2 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-3 rounded-xl hover:bg-[#a007dc] hover:text-white hover:border-[#a007dc] transition-all duration-200 text-sm"
-                >
-                  Cumpără
-                  <span className="text-xs">→</span>
-                </Link>
+                <div className="flex gap-3">
+                  <Link
+                    href={`/ghiduri/${guide.slug}`}
+                    className="inline-flex items-center justify-center flex-1 gap-2 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-3 rounded-xl hover:bg-[#51087e]/5 transition-all duration-200 text-sm"
+                  >
+                    Despre
+                  </Link>
+                  <Link
+                    href={`/checkout?product=GUIDE&id=${guide.id}`}
+                    className="inline-flex items-center justify-center flex-1 gap-2 bg-[#a007dc] text-white font-semibold py-3 rounded-xl hover:bg-[#51087e] transition-all duration-200 text-sm"
+                  >
+                    Cumpără
+                    <span className="text-xs">→</span>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
