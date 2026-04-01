@@ -63,7 +63,7 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
 
         const ctx = canvas.getContext('2d')!
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-        await page.render({ canvasContext: ctx, viewport }).promise
+        await page.render({ canvasContext: ctx, viewport, canvas } as any).promise
       }
     } catch (err: any) {
       setError(err.message)
