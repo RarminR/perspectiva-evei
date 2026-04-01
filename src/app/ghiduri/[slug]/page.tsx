@@ -12,7 +12,6 @@ const FALLBACK_GUIDES = [
     slug: 'cine-manifesta',
     price: 99,
     description: 'Ghidul care îți dezvăluie secretele manifestării conștiente.',
-    shortDescription: null,
     coverImage: null,
     contentJson: null,
     audioKey: null,
@@ -27,7 +26,6 @@ interface GuideDetail {
   slug: string
   price: number
   description: string | null
-  shortDescription: string | null
   coverImage: string | null
   contentJson: unknown
   audioKey: string | null
@@ -187,8 +185,8 @@ export default async function GuideDetailPage({
           <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight text-center">
             {guide.title}
           </h1>
-          {(content.subtitle || guide.shortDescription) && (
-            <p className="text-white/60 text-lg mt-3 text-center">{content.subtitle || guide.shortDescription}</p>
+          {content.subtitle && (
+            <p className="text-white/60 text-lg mt-3 text-center">{content.subtitle}</p>
           )}
         </div>
       </div>
