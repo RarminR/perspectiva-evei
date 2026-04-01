@@ -612,9 +612,9 @@ export default async function Home() {
           </div>
 
           {/* Guides (left) + Bundle & Sessions (right) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" style={{ alignItems: 'stretch' }}>
             {/* Left: 3 guides stacked */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
               {displayedGuides.length > 0 ? (
                 displayedGuides.map((guide) => (
                   <div
@@ -627,6 +627,7 @@ export default async function Home() {
                       gap: '16px',
                       alignItems: 'center',
                       boxShadow: '0 12px 24px rgba(81,8,126,0.1)',
+                      flex: 1,
                     }}
                   >
                     <div style={{ borderRadius: '16px', overflow: 'hidden', width: '80px', height: '112px', minWidth: '80px' }}>
@@ -678,7 +679,7 @@ export default async function Home() {
             </div>
 
             {/* Right: Bundle + Sessions stacked */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
               {bundle ? (
                 <div
                   style={{
