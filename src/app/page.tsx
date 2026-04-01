@@ -697,10 +697,12 @@ export default async function Home() {
                   <p style={{ margin: 0, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
                     {bundle.items.map((item) => item.guide.title).join(' + ')}
                   </p>
-                  <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{formatEur(bundle.price)}</p>
-                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', textDecoration: 'line-through' }}>
-                    {formatEur(bundle.originalPrice)}
-                  </p>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', margin: 0 }}>
+                    <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{formatEur(bundle.price)}</p>
+                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through', fontSize: '1.1rem' }}>
+                      {formatEur(bundle.originalPrice)}
+                    </p>
+                  </div>
                   <Link
                     href={`/checkout?product=BUNDLE&id=${bundle.id}`}
                     style={{
