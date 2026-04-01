@@ -76,12 +76,15 @@ export async function createCheckout(
 
   const expirePendingAfter = 'PT24H'
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://perspectiva-evei.vercel.app'
+
   const orderParams: CreateOrderParams = {
     amount: totalCents,
     currency: 'EUR',
     description: items.map((item) => item.name).join(', '),
     expirePendingAfter,
     merchantOrderReference: `user-${userId}-${Date.now()}`,
+    redirectUrl: `${appUrl}/checkout/success`,
   }
 
   const revolutOrder = await createOrder(orderParams)

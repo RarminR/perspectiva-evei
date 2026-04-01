@@ -1,6 +1,5 @@
 'use client'
 
-import RevolutCheckout from '@revolut/checkout'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 
@@ -27,6 +26,7 @@ function CheckoutContent() {
   const [error, setError] = useState<string | null>(null)
   const [product, setProduct] = useState<ResolvedProduct | null>(null)
   const [loading, setLoading] = useState(true)
+  const [redirecting, setRedirecting] = useState(false)
 
   const rawProductType = searchParams.get('product') || searchParams.get('productType')
   const rawId = searchParams.get('id') || searchParams.get('productId')
@@ -67,75 +67,45 @@ function CheckoutContent() {
     return () => { mounted = false }
   }, [rawProductType, rawId, paymentType])
 
-  useEffect(() => {
+  async function handlePay() {
     if (!product) return
-    let mounted = true
+    setRedirecting(true)
+    setError(null)
 
-    async function initCheckout() {
-      if (!product) return
-      try {
-        const response = await fetch('/api/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            items: [{
-              productId: product.productId,
-              productType: product.productType,
-              name: product.name,
-              priceEurCents: product.priceEurCents,
-              quantity: 1,
-            }],
-          }),
-        })
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            productId: product.productId,
+            productType: product.productType,
+            name: product.name,
+            priceEurCents: product.priceEurCents,
+            quantity: 1,
+          }],
+        }),
+      })
 
-        if (!response.ok) {
-          const payload = await response.json()
-          throw new Error(payload.error || 'Nu am putut inițializa checkout-ul.')
-        }
-
-        const payload = (await response.json()) as CheckoutApiResponse
-        if (!mounted) return
-
-        if (payload.bypassed) {
-          router.push(`/checkout/success?orderId=${payload.orderId}`)
-          return
-        }
-
-        const mode = process.env.NEXT_PUBLIC_REVOLUT_MODE === 'production' ? 'prod' : 'sandbox'
-        const checkout = await RevolutCheckout(payload.checkoutToken, mode)
-        const target = document.getElementById('revolut-checkout')
-        if (!target) throw new Error('Containerul checkout nu este disponibil.')
-
-        checkout.revolutPay({
-          target,
-          locale: 'ro',
-          buttonStyle: {
-            size: 'large',
-            radius: 'large',
-            variant: 'dark',
-            action: 'pay',
-            height: '48px',
-          },
-          onSuccess: () => {
-            router.push(`/checkout/success?orderId=${payload.orderId}`)
-          },
-          onError: () => {
-            setError('Plata a eșuat. Te rugăm să încerci din nou.')
-          },
-          onCancel: () => {
-            setError('Plata a fost anulată.')
-          },
-        })
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : 'Eroare la checkout.')
-        }
+      if (!response.ok) {
+        const payload = await response.json()
+        throw new Error(payload.error || 'Nu am putut inițializa checkout-ul.')
       }
-    }
 
-    void initCheckout()
-    return () => { mounted = false }
-  }, [product, router])
+      const payload = (await response.json()) as CheckoutApiResponse
+
+      if (payload.bypassed) {
+        router.push(`/checkout/success?orderId=${payload.orderId}`)
+        return
+      }
+
+      // Redirect to Revolut's hosted checkout page
+      window.location.href = payload.checkoutUrl
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Eroare la checkout.')
+      setRedirecting(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -192,12 +162,29 @@ function CheckoutContent() {
           <strong>Notă:</strong> Prețul este în EUR. Echivalentul în RON poate varia în funcție de cursul valutar la data plății.
         </div>
 
-        <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(81,8,126,0.1)' }}>
-          <div id="revolut-checkout" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
-            Se încarcă metoda de plată...
-          </div>
-          {error ? <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#dc2626' }}>{error}</p> : null}
-        </div>
+        <button
+          onClick={handlePay}
+          disabled={redirecting}
+          style={{
+            width: '100%',
+            backgroundColor: '#a007dc',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '999px',
+            padding: '1rem 2rem',
+            fontSize: '1.1rem',
+            fontWeight: 700,
+            cursor: redirecting ? 'wait' : 'pointer',
+            opacity: redirecting ? 0.7 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
+          {redirecting ? 'Se redirecționează...' : `Plătește EUR ${displayPrice}`}
+        </button>
+
+        {error && (
+          <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#dc2626', textAlign: 'center' }}>{error}</p>
+        )}
       </div>
     </div>
   )
