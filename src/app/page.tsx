@@ -166,7 +166,7 @@ export default async function Home() {
                 }}
               >
                 <span style={{ color: '#a007dc' }}>●</span>
-                <span>Grupuri restrânse</span>
+                <span>Locuri restrânse</span>
               </div>
               <div
                 style={{
