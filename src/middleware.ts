@@ -29,7 +29,7 @@ export async function middlewareCallback(req: AuthRequest) {
     const result = checkRateLimit(`auth:${ip}`, AUTH_LIMIT)
     if (!result.allowed) {
       return NextResponse.json(
-        { error: "Prea multe incercari. Incearca din nou mai tarziu." },
+        { error: "Prea multe încercări. Încearcă din nou mai târziu." },
         {
           status: 429,
           headers: { "Retry-After": String(result.retryAfter ?? 0) },
@@ -42,7 +42,7 @@ export async function middlewareCallback(req: AuthRequest) {
     const result = checkRateLimit(`checkout:${ip}`, CHECKOUT_LIMIT)
     if (!result.allowed) {
       return NextResponse.json(
-        { error: "Prea multe cereri. Incearca din nou mai tarziu." },
+        { error: "Prea multe cereri. Încearcă din nou mai târziu." },
         {
           status: 429,
           headers: { "Retry-After": String(result.retryAfter ?? 0) },
@@ -55,7 +55,7 @@ export async function middlewareCallback(req: AuthRequest) {
     const result = checkRateLimit(`contact:${ip}`, CONTACT_LIMIT)
     if (!result.allowed) {
       return NextResponse.json(
-        { error: "Prea multe mesaje. Incearca din nou mai tarziu." },
+        { error: "Prea multe mesaje. Încearcă din nou mai târziu." },
         {
           status: 429,
           headers: { "Retry-After": String(result.retryAfter ?? 0) },

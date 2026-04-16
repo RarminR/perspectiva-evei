@@ -52,7 +52,7 @@ export function Footer() {
                   { href: '/ghiduri', label: 'Ghiduri' },
                   { href: '/sedinte-1-la-1', label: 'Ședințe 1:1' },
                   { href: '/blog', label: 'Blog' },
-                  { href: '/despre-mine', label: 'Despre mine' },
+                  { href: 'https://www.perspectivaevei.com/', label: 'Despre mine' },
                 ].map((link) => (
                   <Link
                     key={link.href}

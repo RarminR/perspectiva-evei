@@ -97,7 +97,7 @@ export default async function ProfilulMeuPage() {
 
           {/* Profile section */}
           <div style={sectionStyle}>
-            <h2 style={sectionHeadingStyle}>Informatii personale</h2>
+            <h2 style={sectionHeadingStyle}>Informații personale</h2>
             <ProfileForm
               user={{
                 id: user.id,
@@ -118,7 +118,7 @@ export default async function ProfilulMeuPage() {
           <div style={sectionStyle}>
             <h2 style={sectionHeadingStyle}>Cursurile mele</h2>
             {enrollments.length === 0 ? (
-              <p style={{ color: '#666' }}>Nu esti inscris la niciun curs.</p>
+              <p style={{ color: '#666' }}>Nu ești înscris la niciun curs.</p>
             ) : (
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {enrollments.map((e) => (
@@ -128,12 +128,12 @@ export default async function ProfilulMeuPage() {
                         {e.edition.course.title}
                       </p>
                       <p style={{ fontSize: '0.85rem', color: '#666' }}>
-                        Editia {e.edition.editionNumber} · Acces pana la{' '}
+                        Ediția {e.edition.editionNumber} · Acces până la{' '}
                         {new Date(e.accessExpiresAt).toLocaleDateString('ro-RO')}
                       </p>
                     </div>
                     <a href={`/curs/${e.edition.course.slug}`} style={{ color: '#a007dc', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
-                      Acceseaza →
+                      Accesează →
                     </a>
                   </li>
                 ))}
@@ -145,14 +145,14 @@ export default async function ProfilulMeuPage() {
           <div style={sectionStyle}>
             <h2 style={sectionHeadingStyle}>Ghidurile mele</h2>
             {guideAccesses.length === 0 ? (
-              <p style={{ color: '#666' }}>Nu ai achizitionat niciun ghid.</p>
+              <p style={{ color: '#666' }}>Nu ai achiziționat niciun ghid.</p>
             ) : (
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {guideAccesses.map((ga) => (
                   <li key={ga.id} style={listItemStyle}>
                     <p style={{ fontWeight: 600, color: '#51087e' }}>{ga.guide.title}</p>
                     <a href={`/ghidurile-mele/${ga.guide.slug}`} style={{ color: '#a007dc', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
-                      Citeste →
+                      Citește →
                     </a>
                   </li>
                 ))}
@@ -164,7 +164,7 @@ export default async function ProfilulMeuPage() {
           <div style={sectionStyle}>
             <h2 style={sectionHeadingStyle}>Istoricul comenzilor</h2>
             {orders.length === 0 ? (
-              <p style={{ color: '#666' }}>Nu ai nicio comanda.</p>
+              <p style={{ color: '#666' }}>Nu ai nicio comandă.</p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', fontSize: '0.9rem', borderCollapse: 'collapse' }}>

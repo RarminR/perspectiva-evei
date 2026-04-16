@@ -62,17 +62,17 @@ const testimonials = [
 ]
 
 const courseBenefits = [
-  'Înțelegi manifestarea conștientă',
-  'Te bucuri de atenție personalizată',
-  'Deprinzi un nou mod de gândire',
-  'Ajungi la cârma propriei vieți',
+  'Înțelegi cum și de ce trăiești realitatea actuală',
+  'Deprinzi un nou mod de gândire - unul favorabil ție',
+  'Te bucuri de o nouă realitate - una creată conștient',
+  'Ești susținut constant, pe tot parcursul procesului',
 ]
 
 const socialProofStats = [
-  { value: '100+', label: 'cursanți mulțumiți' },
-  { value: '4+', label: 'ani de experiență' },
-  { value: '8', label: 'săptămâni de transformare' },
-  { value: '15', label: 'participanți max / ediție' },
+  { value: '1000+', label: 'ore de coaching' },
+  { value: '4', label: 'ani de experiență' },
+  { value: '11', label: 'ediții de succes' },
+  { value: '0', label: 'teme, meditații sau afirmații' },
 ]
 
 const formatEur = (value: number) =>
@@ -166,7 +166,7 @@ export default async function Home() {
                 }}
               >
                 <span style={{ color: '#a007dc' }}>●</span>
-                <span>Locuri limitate</span>
+                <span>Grupuri restrânse</span>
               </div>
               <div
                 style={{
@@ -179,7 +179,7 @@ export default async function Home() {
                   fontSize: '0.9rem',
                 }}
               >
-                <span>Sesiuni live pe Zoom</span>
+                <span>Ediția 12: 9 iunie - 28 iulie</span>
               </div>
             </div>
 
@@ -195,12 +195,13 @@ export default async function Home() {
                 margin: 0,
               }}
             >
-              Transformă-ți viața în 8 săptămâni.
+              Un nou „TU” în doar 8 săptămâni.
             </h1>
 
             <p style={{ color: '#ffffff', maxWidth: '480px', margin: 0, lineHeight: 1.65 }}>
-              Cursul A.D.O. te învață să devii Creatorul realității tale. Fără tehnici. Fără
-              meditații. Doar tu, într-o postură complet nouă.
+              Cursul A.D.O.! este locul în care perspectiva ta se schimbă complet. Fără tehnici.
+              Fără meditații. Fără teme. Doar tu, într-o postură complet nouă - cea a centrului
+              realității tale.
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
@@ -217,7 +218,7 @@ export default async function Home() {
                   display: 'inline-flex',
                 }}
               >
-                Înscrie-te — {COURSE_PRICING.FULL_PRICE}
+                Înscrie-te acum!
               </Link>
               <Link
                 href="#produs"
@@ -232,7 +233,7 @@ export default async function Home() {
                   display: 'inline-flex',
                 }}
               >
-                Vezi ce include ↓
+                Vezi ce include – Află mai multe
               </Link>
             </div>
 
@@ -310,10 +311,10 @@ export default async function Home() {
                 backgroundClip: 'text',
               }}
             >
-              Ce primești în Cursul A.D.O.
+              De ce A.D.O.!?
             </h2>
-            <p style={{ margin: 0, color: '#2c0246' }}>
-              8 săptămâni de transformare autentică, live pe Zoom
+            <p style={{ margin: 0, color: '#2c0246', fontStyle: 'italic', maxWidth: '640px' }}>
+              „Schimbă-ți percepția despre tine și vei schimba automat și lumea în care trăiești.” — Neville Goddard
             </p>
           </div>
 
@@ -607,8 +608,11 @@ export default async function Home() {
                 backgroundClip: 'text',
               }}
             >
-              Explorează și alte resurse
+              Explorează mai multe resurse
             </h2>
+            <p style={{ margin: 0, color: '#2c0246' }}>
+              …și alege-o pe cea mai potrivită pentru tine!
+            </p>
           </div>
 
           {/* Guides (left) + Bundle & Sessions (right) */}
@@ -803,10 +807,10 @@ export default async function Home() {
               backgroundClip: 'text',
             }}
           >
-            Ești gata să trăiești o altă realitate?
+            Ești gata să trăiești o nouă realitate?
           </h2>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '1.05rem' }}>
-            Cursul A.D.O. — {COURSE_PRICING.FULL_PRICE} (sau 2 × {COURSE_PRICING.INSTALLMENT_PRICE})
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.85)', fontSize: '1.2rem', fontWeight: 500 }}>
+            Eu sunt aici pentru tine!
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center' }}>
             <Link
@@ -821,10 +825,10 @@ export default async function Home() {
                 border: '1px solid #ffffff',
               }}
             >
-              Înscrie-te acum
+              Înscrie-te la A.D.O.!
             </Link>
             <Link
-              href="/ghiduri"
+              href="/sedinte-1-la-1"
               style={{
                 borderRadius: '999px',
                 backgroundColor: 'transparent',
@@ -835,7 +839,7 @@ export default async function Home() {
                 border: '1px solid #ffffff',
               }}
             >
-              Explorează ghidurile
+              Programează ședință individuală
             </Link>
           </div>
         </div>

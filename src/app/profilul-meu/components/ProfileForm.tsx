@@ -42,7 +42,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
         setMessage(data.error || 'Eroare la salvare.')
       }
     } catch {
-      setMessage('Eroare de retea.')
+      setMessage('Eroare de rețea.')
     } finally {
       setSaving(false)
     }
@@ -65,7 +65,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       })
 
       if (res.ok) {
-        setPasswordMessage('Parola a fost schimbata.')
+        setPasswordMessage('Parola a fost schimbată.')
         setCurrentPassword('')
         setNewPassword('')
         setConfirmPassword('')
@@ -134,17 +134,17 @@ export function ProfileForm({ user }: ProfileFormProps) {
           disabled={saving}
           className="px-6 py-2 bg-[#a007dc] text-white font-medium rounded-lg hover:bg-[#D11A7D] transition-colors disabled:opacity-50"
         >
-          {saving ? 'Se salveaza...' : 'Salveaza'}
+          {saving ? 'Se salvează...' : 'Salvează'}
         </button>
       </form>
 
       {/* Password change */}
       <div className="border-t pt-6">
-        <h3 className="text-lg font-semibold text-[#51087e] mb-4">Schimba parola</h3>
+        <h3 className="text-lg font-semibold text-[#51087e] mb-4">Schimbă parola</h3>
         <form onSubmit={handlePasswordSubmit} className="space-y-4">
           <div>
             <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
-              Parola curenta
+              Parola curentă
             </label>
             <input
               id="current-password"
@@ -157,7 +157,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
           <div>
             <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
-              Parola noua
+              Parola nouă
             </label>
             <input
               id="new-password"
@@ -170,7 +170,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
           <div>
             <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
-              Confirma parola noua
+              Confirmă parola nouă
             </label>
             <input
               id="confirm-password"
@@ -182,7 +182,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </div>
 
           {passwordMessage && (
-            <p className={`text-sm ${passwordMessage.includes('schimbata') ? 'text-green-600' : 'text-red-600'}`}>
+            <p className={`text-sm ${passwordMessage.includes('schimbată') ? 'text-green-600' : 'text-red-600'}`}>
               {passwordMessage}
             </p>
           )}
@@ -192,7 +192,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             disabled={savingPassword}
             className="px-6 py-2 bg-[#51087e] text-white font-medium rounded-lg hover:bg-[#231456] transition-colors disabled:opacity-50"
           >
-            {savingPassword ? 'Se schimba...' : 'Schimba parola'}
+            {savingPassword ? 'Se schimbă...' : 'Schimbă parola'}
           </button>
         </form>
       </div>

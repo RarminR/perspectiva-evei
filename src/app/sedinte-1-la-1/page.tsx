@@ -7,10 +7,10 @@ import { Section } from '@/components/ui/Section'
 export const metadata: Metadata = {
   title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
   description:
-    'Sedinte individuale de coaching cu Eva Popescu. Indrumare personalizata in manifestare constienta si Legea Asumptiei.',
+    'Ședințe individuale de coaching cu Eva Popescu. Îndrumare personalizată în manifestare conștientă și Legea Asumpției.',
   openGraph: {
     title: 'Ședințe 1:1 cu Eva | Perspectiva Evei',
-    description: 'Coaching personalizat cu Eva Popescu. Sedinte individuale de manifestare constienta.',
+    description: 'Coaching personalizat cu Eva Popescu. Ședințe individuale de manifestare conștientă.',
     url: 'https://perspectivaevei.com/sedinte-1-la-1',
     siteName: 'Perspectiva Evei',
     locale: 'ro_RO',
@@ -21,23 +21,23 @@ export const metadata: Metadata = {
 const benefits = [
   {
     icon: '✦',
-    title: 'Claritate Personalizata',
-    description: 'Analizam impreuna circumstantele tale actuale si identificam exact ce trebuie schimbat pentru a obtine rezultatele dorite.',
+    title: 'Claritate Personalizată',
+    description: 'Analizăm împreună circumstanțele tale actuale și identificăm exact ce trebuie schimbat pentru a obține rezultatele dorite.',
   },
   {
     icon: '◈',
-    title: 'Ghidare in Manifestare',
-    description: 'Inveti cum functioneaza Legea Asumptiei aplicata situatiei tale specifice — nu teorie generala, ci practica reala.',
+    title: 'Ghidare în Manifestare',
+    description: 'Înveți cum funcționează Legea Asumpției aplicată situației tale specifice - nu teorie generală, ci practică reală.',
   },
   {
     icon: '❋',
-    title: 'Transformare Constienta',
-    description: 'Descoperi cum poti schimba situatiile cu care te confrunti acum prin puterea constiintei si a asumptiei corecte.',
+    title: 'Transformare Conștientă',
+    description: 'Descoperi cum poți schimba situațiile cu care te confrunți acum prin puterea conștiinței și a asumpției corecte.',
   },
   {
     icon: '✧',
     title: 'Suport Continuu',
-    description: 'Primesti instrumente si tehnici pe care le poti aplica imediat, cu rezultate vizibile in viata de zi cu zi.',
+    description: 'Primești instrumente și tehnici pe care le poți aplica imediat, cu rezultate vizibile în viața de zi cu zi.',
   },
 ]
 
@@ -49,7 +49,7 @@ const steps = [
   },
   {
     number: '02',
-    title: 'Sedinta',
+    title: 'Ședința',
     description: 'În 60 de minute, lucrăm împreună pe situația ta. Primești claritate, direcție și tehnici concrete.',
   },
   {
@@ -95,7 +95,7 @@ export default function SedinteOneLaOnePage() {
       }}>
         <div style={{ maxWidth: '940px', width: '100%', textAlign: 'center' }}>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 500, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '0.85rem', marginBottom: '1rem' }}>
-            Coaching Personalizat
+            Coaching Individual
           </p>
           <h1 style={{
             backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
@@ -110,9 +110,9 @@ export default function SedinteOneLaOnePage() {
             Ședințe 1:1 cu Eva
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
-            In sedintele individuale, despicam circumstantele tale actuale, iti explic cum functioneaza
-            manifestarea si Legea Asumptiei, cum poti manifesta constient ceea ce traiesti si implicit
-            cum poti schimba situatiile cu care te confrunti acum.
+            În ședințele individuale, despicăm circumstanțele tale actuale, îți explic cum
+            funcționează manifestarea și Legea Asumpției, cum poți manifesta conștient ceea ce
+            trăiești și implicit cum poți schimba situațiile cu care te confrunți acum.
           </p>
           <Link href="/programare" style={{
             backgroundColor: 'white',
@@ -127,13 +127,13 @@ export default function SedinteOneLaOnePage() {
             fontWeight: 600,
             fontSize: '1.1rem',
           }}>
-            Rezervă o Ședință
+            Programează ședință
           </Link>
         </div>
       </section>
 
       {/* Benefits */}
-      <Section variant="default">
+      <Section variant="default" style={{ padding: '60px 30px' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h2 style={{
             backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
@@ -162,7 +162,7 @@ export default function SedinteOneLaOnePage() {
       </Section>
 
       {/* How it works */}
-      <Section variant="alt">
+      <Section variant="alt" style={{ padding: '60px 30px' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h2 style={{
             backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
@@ -201,7 +201,7 @@ export default function SedinteOneLaOnePage() {
       </Section>
 
       {/* Pricing */}
-      <Section variant="dark">
+      <Section variant="dark" style={{ padding: '60px 30px' }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{
             backgroundImage: 'linear-gradient(90deg, white, #e0e0e0)',
@@ -212,13 +212,10 @@ export default function SedinteOneLaOnePage() {
             fontWeight: 700,
             marginBottom: '1.5rem',
           }}>
-            O sedinta, o transformare
+            60 de minute. O viață transformată.
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1rem' }}>
-            Fiecare sedinta dureaza aproximativ 60 de minute si este personalizata in functie de nevoile tale specifice.
-          </p>
-          <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.05rem', marginBottom: '2rem' }}>
-            Contacteaza-ma pentru detalii despre preturi si disponibilitate.
+          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '2rem' }}>
+            Investește această oră și descoperă cât de simplu este să trăiești o realitate complet transformată.
           </p>
           <Link href="/programare" style={{
             backgroundColor: 'white',
@@ -233,13 +230,13 @@ export default function SedinteOneLaOnePage() {
             fontWeight: 600,
             fontSize: '1.1rem',
           }}>
-            Rezervă o Ședință
+            Programează ședință
           </Link>
         </div>
       </Section>
 
       {/* Testimonials */}
-      <Section variant="default">
+      <Section variant="default" style={{ padding: '60px 30px' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h2 style={{
             backgroundImage: 'linear-gradient(90deg, #51087e, #8f0edf)',
@@ -249,7 +246,7 @@ export default function SedinteOneLaOnePage() {
             fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
             fontWeight: 700,
           }}>
-            Ce spun clientii mei
+            Ce spun clienții mei?
           </h2>
         </div>
         <div

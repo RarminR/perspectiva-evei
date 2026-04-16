@@ -40,9 +40,9 @@ export default async function CourseEditPage({
       <div className="flex items-center justify-between mb-8">
         <div>
           <Link href="/admin/cursuri" className="text-sm text-gray-500 hover:text-gray-700 mb-1 inline-block">
-            ← Inapoi la cursuri
+            ← Înapoi la cursuri
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Editeaza curs</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Editează curs</h1>
         </div>
         <Link
           href={`/admin/cursuri/${id}/editii`}

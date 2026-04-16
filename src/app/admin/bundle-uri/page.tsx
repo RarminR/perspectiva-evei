@@ -78,7 +78,7 @@ export default async function BundleUriPage() {
                         href={`/admin/bundle-uri/${bundle.id}`}
                         className="text-[#a007dc] hover:underline font-medium"
                       >
-                        Editeaza
+                        Editează
                       </Link>
                     </td>
                   </tr>

@@ -250,7 +250,7 @@ export default function EditBundlePage({ params }: { params: Promise<{ id: strin
             disabled={saving}
             className="px-6 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#d4177e] transition disabled:opacity-50"
           >
-            {saving ? 'Se salveaza...' : 'Salveaza'}
+            {saving ? 'Se salvează...' : 'Salvează'}
           </button>
           <button
             type="button"

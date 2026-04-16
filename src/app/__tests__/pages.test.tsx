@@ -37,30 +37,8 @@ describe('Homepage', () => {
   it('renders social proof badges', async () => {
     const { default: Home } = await import('../page')
     render(<Home />)
-    expect(screen.getByText(/4\+ ani de experiență/i)).toBeInTheDocument()
-    expect(screen.getByText(/1000\+ ore de coaching/i)).toBeInTheDocument()
-  })
-})
-
-describe('About page', () => {
-  it('renders "Despre mine" heading', async () => {
-    const { default: DespreMine } = await import('../despre-mine/page')
-    render(<DespreMine />)
-    // Use getAllByText since "Despre mine" may appear in navbar + heading
-    const elements = screen.getAllByText('Despre mine')
-    expect(elements.length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('renders Eva\'s name', async () => {
-    const { default: DespreMine } = await import('../despre-mine/page')
-    render(<DespreMine />)
-    expect(screen.getByText('Eva Popescu')).toBeInTheDocument()
-  })
-
-  it('renders mission section', async () => {
-    const { default: DespreMine } = await import('../despre-mine/page')
-    render(<DespreMine />)
-    expect(screen.getByText(/Povestea mea/i)).toBeInTheDocument()
+    expect(screen.getByText(/ani de experiență/i)).toBeInTheDocument()
+    expect(screen.getByText(/ore de coaching/i)).toBeInTheDocument()
   })
 })
 

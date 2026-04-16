@@ -20,7 +20,7 @@ function ContactForm() {
     e.preventDefault()
 
     if (!name.trim() || !email.trim() || !message.trim()) {
-      addToast('Toate campurile sunt obligatorii.', 'error')
+      addToast('Toate câmpurile sunt obligatorii.', 'error')
       return
     }
 
@@ -34,16 +34,16 @@ function ContactForm() {
 
       if (!res.ok) {
         const data = await res.json()
-        addToast(data.error || 'A aparut o eroare. Incearca din nou.', 'error')
+        addToast(data.error || 'A apărut o eroare. Încearcă din nou.', 'error')
         return
       }
 
-      addToast('Mesajul tau a fost trimis cu succes!', 'success')
+      addToast('Mesajul tău a fost trimis cu succes!', 'success')
       setName('')
       setEmail('')
       setMessage('')
     } catch {
-      addToast('A aparut o eroare de retea. Incearca din nou.', 'error')
+      addToast('A apărut o eroare de rețea. Încearcă din nou.', 'error')
     } finally {
       setLoading(false)
     }
@@ -55,7 +55,7 @@ function ContactForm() {
         label="Nume"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Numele tau complet"
+        placeholder="Numele tău complet"
         required
       />
       <Input
@@ -70,7 +70,7 @@ function ContactForm() {
         label="Mesaj"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Scrie mesajul tau aici..."
+        placeholder="Scrie mesajul tău aici..."
         rows={5}
         required
       />
@@ -110,7 +110,7 @@ export default function ContactContent() {
               Contact
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem' }}>
-              Ai o intrebare sau vrei sa afli mai multe? Scrie-mi!
+              Ai o întrebare sau vrei să afli mai multe? Scrie-mi!
             </p>
           </div>
         </section>
@@ -145,7 +145,7 @@ export default function ContactContent() {
                 fontWeight: 700,
                 marginBottom: '1.5rem',
               }}>
-                Informatii de contact
+                Informații de contact
               </h2>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -172,10 +172,10 @@ export default function ContactContent() {
                 </div>
 
                 <div style={{ backgroundColor: 'rgba(81,8,126,0.1)', borderRadius: '20px', padding: '1.5rem', marginTop: '0.5rem' }}>
-                  <p style={{ color: '#51087e', fontWeight: 700, marginBottom: '0.5rem' }}>Timp de raspuns</p>
+                  <p style={{ color: '#51087e', fontWeight: 700, marginBottom: '0.5rem' }}>Timp de răspuns</p>
                   <p style={{ color: '#444', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                    De obicei raspund in maximum 24 de ore. Pentru urgente,
-                    te rog sa mentionezi in subiect.
+                    De obicei răspund în maximum 24 de ore. Pentru urgențe,
+                    te rog să menționezi în subiect.
                   </p>
                 </div>
               </div>

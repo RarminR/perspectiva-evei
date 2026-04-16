@@ -146,7 +146,7 @@ export default async function GhiduriPage() {
             Ghiduri
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-            Ghiduri create pentru a te ajuta sa preiei controlul asupra vietii tale, pas cu pas.
+            Ghiduri create pentru a te ajuta să preiei controlul asupra vieții tale, pas cu pas.
           </p>
         </div>
       </section>
