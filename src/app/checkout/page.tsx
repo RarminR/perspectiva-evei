@@ -67,6 +67,7 @@ function CheckoutContent() {
   const [oras, setOras] = useState('')
   const [adresa, setAdresa] = useState('')
   const [codPostal, setCodPostal] = useState('')
+  const [cnp, setCnp] = useState('')
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   const isBucuresti = judet === 'București'
@@ -158,6 +159,7 @@ function CheckoutContent() {
             city: isBucuresti ? sector : oras.trim(),
             address: adresa.trim(),
             postalCode: codPostal.trim(),
+            cnp: cnp.trim() || undefined,
           },
         }),
       })
@@ -402,6 +404,22 @@ function CheckoutContent() {
               placeholder="000000"
             />
             {formErrors.codPostal && <p style={{ color: '#dc2626', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.codPostal}</p>}
+          </div>
+
+          {/* CNP */}
+          <div style={{ marginTop: '1rem' }}>
+            <label style={labelStyle}>CNP (opțional)</label>
+            <input
+              type="text"
+              value={cnp}
+              onChange={(e) => setCnp(e.target.value)}
+              style={{ ...inputStyle, maxWidth: '260px' }}
+              placeholder="13 cifre"
+              inputMode="numeric"
+            />
+            <p style={{ color: '#6b7280', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+              Dacă vrei CNP-ul pe factură. Poate fi lăsat gol.
+            </p>
           </div>
         </div>
 

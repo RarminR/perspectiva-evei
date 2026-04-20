@@ -14,6 +14,19 @@ export interface CheckoutItem {
   quantity: number
 }
 
+export interface BillingInfo {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  country: string
+  county: string
+  city: string
+  address: string
+  postalCode: string
+  cnp?: string
+}
+
 export interface CreateCheckoutResult {
   orderId: string
   revolutOrderId: string
@@ -40,9 +53,11 @@ function parseExpirePendingAfter(duration: string): Date | null {
 export async function createCheckout(
   userId: string,
   items: CheckoutItem[],
-  _promoCode?: string
+  _promoCode?: string,
+  billing?: BillingInfo
 ): Promise<CreateCheckoutResult> {
   const totalCents = items.reduce((sum, item) => sum + item.priceEurCents * item.quantity, 0)
+  const billingJson = billing ? (billing as unknown as Record<string, string>) : undefined
 
   if (process.env.BYPASS_PAYMENT === 'true') {
     const order = await prisma.order.create({
@@ -52,6 +67,7 @@ export async function createCheckout(
         status: 'PENDING',
         totalAmount: totalCents / 100,
         currency: 'EUR',
+        shippingAddress: billingJson,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -98,6 +114,7 @@ export async function createCheckout(
       totalAmount: totalCents / 100,
       currency: 'EUR',
       expiresPendingAfter: parseExpirePendingAfter(expirePendingAfter),
+      shippingAddress: billingJson,
       items: {
         create: items.map((item) => ({
           productId: item.productId,
@@ -159,16 +176,27 @@ async function triggerInvoiceAsync(order: {
   id: string
   user: { name: string; email: string }
   items: Array<{ productType: string; productId: string; quantity: number; unitPrice: number }>
+  shippingAddress?: unknown
 }) {
   try {
+    const billing = (order.shippingAddress ?? null) as Partial<BillingInfo> | null
+    const fullName =
+      billing?.firstName || billing?.lastName
+        ? `${billing?.firstName ?? ''} ${billing?.lastName ?? ''}`.trim()
+        : order.user.name || 'Client'
+
     const invoice = await createInvoice({
       companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
       client: {
-        name: order.user.name || 'Client',
-        vatCode: '0000000000000',
+        name: fullName,
+        vatCode: billing?.cnp?.trim() || '0000000000000',
         isTaxPayer: false,
-        email: order.user.email,
-        country: 'Romania',
+        email: billing?.email || order.user.email,
+        phone: billing?.phone,
+        address: billing?.address,
+        city: billing?.city,
+        county: billing?.county,
+        country: billing?.country || 'Romania',
       },
       issueDate: new Date().toISOString().split('T')[0],
       seriesName: process.env.SMARTBILL_INVOICE_SERIES || '',

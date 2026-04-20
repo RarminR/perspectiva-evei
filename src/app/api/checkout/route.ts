@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { auth } from '@/lib/auth'
 import { createCheckout } from '@/services/checkout'
-import type { CheckoutItem } from '@/services/checkout'
+import type { CheckoutItem, BillingInfo } from '@/services/checkout'
 
 const PRODUCT_TYPES = new Set(['COURSE', 'GUIDE', 'BUNDLE', 'SESSION', 'PRODUCT'])
 
@@ -32,7 +32,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Neautorizat' }, { status: 401 })
   }
 
-  const body = (await req.json()) as { items?: unknown[]; promoCode?: string }
+  const body = (await req.json()) as {
+    items?: unknown[]
+    promoCode?: string
+    billing?: Partial<BillingInfo>
+  }
   if (!body.items || body.items.length === 0) {
     return NextResponse.json({ error: 'Coșul este gol' }, { status: 400 })
   }
@@ -42,8 +46,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Date checkout invalide' }, { status: 400 })
   }
 
+  const billing: BillingInfo | undefined = body.billing
+    ? {
+        firstName: String(body.billing.firstName ?? '').trim(),
+        lastName: String(body.billing.lastName ?? '').trim(),
+        email: String(body.billing.email ?? '').trim(),
+        phone: String(body.billing.phone ?? '').trim(),
+        country: String(body.billing.country ?? 'România').trim(),
+        county: String(body.billing.county ?? '').trim(),
+        city: String(body.billing.city ?? '').trim(),
+        address: String(body.billing.address ?? '').trim(),
+        postalCode: String(body.billing.postalCode ?? '').trim(),
+        cnp: body.billing.cnp ? String(body.billing.cnp).trim() : undefined,
+      }
+    : undefined
+
   try {
-    const result = await createCheckout((session.user as { id: string }).id, items, body.promoCode)
+    const result = await createCheckout(
+      (session.user as { id: string }).id,
+      items,
+      body.promoCode,
+      billing
+    )
     return NextResponse.json(result, { status: 201 })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Checkout failed'

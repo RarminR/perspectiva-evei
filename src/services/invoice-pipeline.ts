@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db'
 import { createInvoice } from '@/services/smartbill'
+import type { BillingInfo } from '@/services/checkout'
 
 const RATE_LIMIT = 25
 
@@ -47,14 +48,24 @@ export async function processInvoiceQueue(): Promise<{
   for (const invoice of pendingInvoices) {
     try {
       const today = new Date().toISOString().split('T')[0]
+      const billing = (invoice.order.shippingAddress ?? null) as Partial<BillingInfo> | null
+      const fullName =
+        billing?.firstName || billing?.lastName
+          ? `${billing?.firstName ?? ''} ${billing?.lastName ?? ''}`.trim()
+          : invoice.order.user.name || 'Client'
+
       const payload = {
         companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
         client: {
-          name: invoice.order.user.name || 'Client',
-          vatCode: '0000000000000',
+          name: fullName,
+          vatCode: billing?.cnp?.trim() || '0000000000000',
           isTaxPayer: false,
-          country: 'Romania',
-          email: invoice.order.user.email,
+          country: billing?.country || 'Romania',
+          email: billing?.email || invoice.order.user.email,
+          phone: billing?.phone,
+          address: billing?.address,
+          city: billing?.city,
+          county: billing?.county,
         },
         issueDate: today,
         seriesName: process.env.SMARTBILL_INVOICE_SERIES || 'EVEI',
