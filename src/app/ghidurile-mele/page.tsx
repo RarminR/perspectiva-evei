@@ -2,8 +2,10 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Navbar } from '@/components/ui/Navbar'
 import { Footer } from '@/components/ui/Footer'
+import { imgSrc } from '@/lib/image'
 
 export const dynamic = 'force-dynamic'
 
@@ -71,40 +73,60 @@ export default async function GhidurileMelePage() {
               </Link>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
               {guideAccesses.map(({ guide }: any) => (
                 <Link
                   key={guide.id}
                   href={`/ghidurile-mele/${guide.slug}`}
+                  className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
                   style={{
-                    backgroundColor: '#51087e',
-                    borderRadius: '40px',
-                    overflow: 'hidden',
-                    textDecoration: 'none',
-                    display: 'block',
-                    transition: 'all .2s',
+                    backgroundImage:
+                      'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
                   }}
                 >
-                  {guide.coverImage && (
-                    <div style={{ position: 'relative', height: '200px', backgroundImage: `linear-gradient(180deg, transparent 50%, #51087e), url(${guide.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                  )}
-                  {!guide.coverImage && (
-                    <div style={{ height: '200px', backgroundImage: 'linear-gradient(180deg, #51087e, #a007dc)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem' }}>
-                      📖
+                  {/* Floating cover */}
+                  <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
+                    <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
+                      {guide.coverImage ? (
+                        <Image
+                          src={imgSrc(guide.coverImage)}
+                          alt={guide.title}
+                          fill
+                          unoptimized
+                          className="object-contain"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-30">
+                          📖
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div style={{ backgroundImage: 'linear-gradient(180deg, #51087e, #a007dc)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <h2 style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem' }}>{guide.title}</h2>
-                    {guide.description && (
-                      <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: 1.5 }}>{guide.description}</p>
-                    )}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600 }}>Citeste →</span>
-                      {guide.audioKey && (
-                        <span style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '999px', padding: '0.2rem 0.6rem', fontSize: '0.75rem', color: 'white' }}>
+                  </div>
+
+                  <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
+                    {guide.audioKey && (
+                      <div>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-white/20 text-white">
                           🎧 Audiobook
                         </span>
-                      )}
+                      </div>
+                    )}
+                    <h2 className="text-2xl font-bold leading-tight text-white">
+                      {guide.title}
+                    </h2>
+                    {guide.description && (
+                      <p className="text-[0.95rem] leading-relaxed text-white/80 line-clamp-3">
+                        {guide.description}
+                      </p>
+                    )}
+                    <div className="mt-auto pt-4">
+                      <span
+                        className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white group-hover:bg-white/10 transition-colors duration-200"
+                        style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                      >
+                        Citește
+                        <span aria-hidden>→</span>
+                      </span>
                     </div>
                   </div>
                 </Link>
