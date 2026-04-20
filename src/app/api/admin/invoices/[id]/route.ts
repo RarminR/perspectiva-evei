@@ -66,7 +66,7 @@ export async function POST(
       try {
         const { stornoInvoice } = await import('@/services/smartbill')
         await stornoInvoice({
-          companyVatCode: process.env.SMARTBILL_CIF || '',
+          companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
           seriesName: invoice.smartbillSeries,
           number: invoice.smartbillNumber,
         })
