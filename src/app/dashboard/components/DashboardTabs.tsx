@@ -311,43 +311,50 @@ export function DashboardTabs({ enrollments, guides, upcomingSessions, offers, l
                   </div>
                 ) : (
                   <div
-                    style={{ display: 'grid', gap: '16px' }}
-                    className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch"
                   >
                     {guides.map((guide) => (
-                      <div
+                      <Link
                         key={guide.id}
+                        href={`/ghidurile-mele/${guide.slug}`}
+                        className="group relative flex flex-col rounded-[20px] overflow-hidden shadow-[0_12px_28px_rgba(81,8,126,0.15)] hover:shadow-[0_20px_40px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
                         style={{
-                          backgroundColor: '#ffffff',
-                          borderRadius: '16px',
-                          overflow: 'hidden',
-                          boxShadow: '0 4px 20px rgba(81,8,126,0.08)',
+                          backgroundImage:
+                            'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
                         }}
                       >
-                        {guide.coverImage && (
-                          <Image
-                             src={imgSrc(guide.coverImage)}
-                            alt={guide.title}
-                            width={400}
-                            height={160}
-                            unoptimized
-                            style={{
-                              width: '100%',
-                              height: '160px',
-                              objectFit: 'cover',
-                              display: 'block',
-                            }}
-                          />
-                        )}
-                        <div style={{ padding: '1rem' }}>
-                          <p style={{ fontWeight: 600, color: '#2c0246', margin: '0 0 0.5rem' }}>
+                        <div className="relative flex items-center justify-center pt-6 pb-4 px-6">
+                          <div className="relative aspect-[3/4] w-[60%] drop-shadow-[0_14px_22px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
+                            {guide.coverImage ? (
+                              <Image
+                                src={imgSrc(guide.coverImage)}
+                                alt={guide.title}
+                                fill
+                                unoptimized
+                                className="object-contain"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 flex items-center justify-center text-5xl opacity-30">
+                                📖
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex-1 flex flex-col px-5 pb-5 gap-2 text-left">
+                          <p className="text-lg font-bold leading-tight text-white">
                             {guide.title}
                           </p>
-                          <Link href={`/ghidurile-mele/${guide.slug}`} style={ctaLinkStyle}>
-                            Citește →
-                          </Link>
+                          <div className="mt-auto pt-3">
+                            <span
+                              className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-2.5 px-4 rounded-full text-white text-sm group-hover:bg-white/10 transition-colors duration-200"
+                              style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                            >
+                              Citește
+                              <span aria-hidden>→</span>
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
