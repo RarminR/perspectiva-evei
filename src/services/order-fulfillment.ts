@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db'
 import { sendOrderConfirmationEmail } from './email'
+import { processInvoiceQueue, queueInvoice } from './invoice-pipeline'
 
 function getEnrollmentExpiryDate(): Date {
   return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
@@ -70,5 +71,12 @@ export async function fulfillOrder(orderId: string): Promise<void> {
     })
   } catch (error) {
     console.error('Failed to send order confirmation email:', error)
+  }
+
+  try {
+    await queueInvoice(order.id)
+    await processInvoiceQueue()
+  } catch (error) {
+    console.error('Failed to create SmartBill invoice:', error)
   }
 }
