@@ -82,6 +82,34 @@ const formatEur = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value)
 
+const MONTHS_RO = [
+  'ianuarie',
+  'februarie',
+  'martie',
+  'aprilie',
+  'mai',
+  'iunie',
+  'iulie',
+  'august',
+  'septembrie',
+  'octombrie',
+  'noiembrie',
+  'decembrie',
+]
+
+function formatEditionRange(start: Date, end: Date): string {
+  const s = new Date(start)
+  const e = new Date(end)
+  const sDay = s.getDate()
+  const eDay = e.getDate()
+  const sMonth = MONTHS_RO[s.getMonth()]
+  const eMonth = MONTHS_RO[e.getMonth()]
+  if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+    return `${sDay} - ${eDay} ${eMonth}`
+  }
+  return `${sDay} ${sMonth} - ${eDay} ${eMonth}`
+}
+
 export default async function Home() {
   const course = await getCourseWithEditions('cursul-ado')
   const activeEdition = course?.editions?.find((e) => e.enrollmentOpen)
@@ -168,19 +196,24 @@ export default async function Home() {
                 <span style={{ color: '#a007dc' }}>●</span>
                 <span>Locuri restrânse</span>
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  backgroundColor: 'rgba(255,255,255,0.25)',
-                  borderRadius: '999px',
-                  padding: '.75rem 1.5rem',
-                  fontSize: '0.9rem',
-                }}
-              >
-                <span>Ediția 12: 9 iunie - 28 iulie</span>
-              </div>
+              {activeEdition && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    backgroundColor: 'rgba(255,255,255,0.25)',
+                    borderRadius: '999px',
+                    padding: '.75rem 1.5rem',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  <span>
+                    Ediția {activeEdition.editionNumber}:{' '}
+                    {formatEditionRange(activeEdition.startDate, activeEdition.endDate)}
+                  </span>
+                </div>
+              )}
             </div>
 
             <h1

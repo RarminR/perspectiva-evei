@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
+import { SetCurrentButton } from './SetCurrentButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -58,7 +59,7 @@ export default async function EditionsPage({
                 <th className="px-6 py-4 font-medium">Perioada</th>
                 <th className="px-6 py-4 font-medium">Locuri</th>
                 <th className="px-6 py-4 font-medium">Cursanți</th>
-                <th className="px-6 py-4 font-medium">Înscriere</th>
+                <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium">Acțiuni</th>
               </tr>
             </thead>
@@ -76,15 +77,7 @@ export default async function EditionsPage({
                     {edition._count.enrollments} cursanți
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        edition.enrollmentOpen
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {edition.enrollmentOpen ? 'Deschisă' : 'Închisă'}
-                    </span>
+                    <SetCurrentButton editionId={edition.id} isCurrent={edition.enrollmentOpen} />
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-3">
