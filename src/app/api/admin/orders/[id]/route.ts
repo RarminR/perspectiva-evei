@@ -52,7 +52,10 @@ export async function POST(
   const { action } = await req.json()
 
   if (action === 'refund') {
-    const order = await prisma.order.findUnique({ where: { id } })
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: { items: true },
+    })
 
     if (!order) {
       return NextResponse.json({ error: 'Comandă negăsită' }, { status: 404 })
@@ -66,6 +69,33 @@ export async function POST(
       } catch (error) {
         console.error('Revolut refund error:', error)
         // Continue — mark as cancelled even if Revolut fails
+      }
+    }
+
+    // Revoke fulfilled access so refunded customers lose the product
+    for (const item of order.items) {
+      if (item.productType === 'GUIDE') {
+        await prisma.guideAccess.deleteMany({
+          where: { userId: order.userId, guideId: item.productId, orderId: order.id },
+        })
+      } else if (item.productType === 'BUNDLE') {
+        const bundle = await prisma.bundle.findUnique({
+          where: { id: item.productId },
+          include: { items: { select: { guideId: true } } },
+        })
+        if (bundle) {
+          await prisma.guideAccess.deleteMany({
+            where: {
+              userId: order.userId,
+              orderId: order.id,
+              guideId: { in: bundle.items.map((b) => b.guideId) },
+            },
+          })
+        }
+      } else if (item.productType === 'COURSE') {
+        await prisma.courseEnrollment.deleteMany({
+          where: { userId: order.userId, editionId: item.productId, orderId: order.id },
+        })
       }
     }
 
