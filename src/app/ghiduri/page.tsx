@@ -166,10 +166,9 @@ export default async function GhiduriPage() {
           {guides.map((guide) => {
             const isBeginner = guide.slug === 'ghid-de-schimbare-al-conceptului-de-sine'
             return (
-              <Link
+              <div
                 key={guide.id}
-                href={`/ghiduri/${guide.slug}`}
-                className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
+                className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 text-white"
                 style={{
                   backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
                 }}
@@ -222,17 +221,24 @@ export default async function GhiduriPage() {
                       {guide.description}
                     </p>
                   )}
-                  <div className="mt-auto pt-4">
-                    <span
-                      className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white transition-colors duration-200 group-hover:bg-white/10"
+                  <div className="mt-auto pt-4 flex flex-col sm:flex-row gap-3">
+                    <Link
+                      href={`/ghiduri/${guide.slug}`}
+                      className="inline-flex items-center justify-center flex-1 gap-2 border font-semibold py-3 px-5 rounded-full text-white hover:bg-white/10 transition-colors duration-200 no-underline"
                       style={{ borderColor: 'rgba(255,255,255,0.5)' }}
                     >
                       Află mai mult
+                    </Link>
+                    <Link
+                      href={`/checkout?product=GUIDE&id=${guide.id}`}
+                      className="inline-flex items-center justify-center flex-1 gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
+                    >
+                      Cumpără acum
                       <span aria-hidden>→</span>
-                    </span>
+                    </Link>
                   </div>
                 </div>
-              </Link>
+              </div>
             )
           })}
 
