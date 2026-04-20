@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 
 interface GroupedSlots {
@@ -7,6 +8,7 @@ interface GroupedSlots {
 }
 
 export default function SchedulingClient() {
+  const router = useRouter()
   const [slots, setSlots] = useState<GroupedSlots>({})
   const [loading, setLoading] = useState(true)
   const [booking, setBooking] = useState<string | null>(null)
@@ -53,7 +55,7 @@ export default function SchedulingClient() {
       product: 'SESSION',
       scheduledAt,
     })
-    window.location.href = `/checkout?${params.toString()}`
+    router.push(`/checkout?${params.toString()}`)
   }
 
   if (loading) {
