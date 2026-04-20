@@ -355,85 +355,106 @@ export default async function GuideDetailPage({
               Alte ghiduri care te-ar putea interesa
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {relatedGuides.map((related) => (
-              <div
+              <Link
                 key={related.id}
-                className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20"
+                href={`/ghiduri/${related.slug}`}
+                className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
+                style={{
+                  backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
+                }}
               >
-                <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#51087e]/80">
-                  {related.coverImage ? (
-                    <Image
-                       src={imgSrc(related.coverImage)}
-                      alt={related.title}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-5xl opacity-20">📖</div>
-                    </div>
-                  )}
-                  <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 bg-[#a007dc] text-white text-xs font-bold px-3 py-1 rounded-full">
-                      €{related.price}
+                <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
+                  <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
+                    {related.coverImage ? (
+                      <Image
+                        src={imgSrc(related.coverImage)}
+                        alt={related.title}
+                        fill
+                        unoptimized
+                        className="object-contain"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-30">
+                        📖
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
+                  <div>
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
+                      style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
+                    >
+                      <span className="text-xs">✦</span>€{related.price}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
+                    {related.title}
+                  </h3>
+                  <div className="mt-auto pt-4">
+                    <span
+                      className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white group-hover:bg-white/10 transition-colors duration-200"
+                      style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                    >
+                      Află mai mult
+                      <span aria-hidden>→</span>
                     </span>
                   </div>
                 </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-[#51087e] mb-1">{related.title}</h3>
-                  <p className="text-xl font-bold text-[#51087e] mb-4">€{related.price}</p>
-                  <div className="flex gap-3">
-                    <Link
-                      href={`/ghiduri/${related.slug}`}
-                      className="inline-flex items-center justify-center flex-1 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-2.5 rounded-xl hover:bg-[#51087e]/5 transition-all duration-200 text-sm"
-                    >
-                      Despre
-                    </Link>
-                    <Link
-                      href={`/checkout?product=GUIDE&id=${related.id}`}
-                      className="inline-flex items-center justify-center flex-1 gap-1 bg-[#a007dc] text-white font-semibold py-2.5 rounded-xl hover:bg-[#51087e] transition-all duration-200 text-sm"
-                    >
-                      Cumpără <span className="text-xs">→</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              </Link>
             ))}
 
             {/* Bundle card */}
             {bundle && (
-              <div className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20">
-                <div className="relative h-40 bg-gradient-to-br from-[#51087e] to-[#a007dc]">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-5xl opacity-20">📦</div>
+              <Link
+                href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+                className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
+                style={{
+                  backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
+                }}
+              >
+                <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
+                  <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
+                    <Image
+                      src="/images/bundle-covers.jpg"
+                      alt={bundle.title}
+                      fill
+                      unoptimized
+                      className="object-contain"
+                    />
                   </div>
-                  <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 bg-[#a007dc] text-white text-xs font-bold px-3 py-1 rounded-full">
-                      €{bundle.price}
+                </div>
+                <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
+                  <div>
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
+                      style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
+                    >
+                      <span className="text-xs">✦</span>
+                      <span className="text-xs line-through opacity-70">€{bundle.originalPrice}</span>
+                      <span>€{bundle.price}</span>
                     </span>
                   </div>
-                  <div className="absolute top-3 left-3">
-                    <span className="inline-flex items-center bg-green-500/90 text-white text-xs font-bold px-3 py-1 rounded-full">
-                      -{Math.round(((bundle.originalPrice - bundle.price) / bundle.originalPrice) * 100)}%
+                  <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
+                    {bundle.title}
+                  </h3>
+                  <p className="text-[0.95rem] leading-relaxed text-white/80">
+                    {bundle.guideNames.join(' + ')}
+                  </p>
+                  <div className="mt-auto pt-4">
+                    <span
+                      className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white"
+                      style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                    >
+                      Cumpără pachetul
+                      <span aria-hidden>→</span>
                     </span>
                   </div>
                 </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-[#51087e] mb-1">{bundle.title}</h3>
-                  <p className="text-[#51087e]/50 text-xs mb-1">{bundle.guideNames.join(' + ')}</p>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-xl font-bold text-[#51087e]">€{bundle.price}</span>
-                    <span className="text-sm text-[#51087e]/40 line-through">€{bundle.originalPrice}</span>
-                  </div>
-                  <Link
-                    href={`/checkout?product=BUNDLE&id=${bundle.id}`}
-                    className="inline-flex items-center justify-center w-full gap-1 bg-[#a007dc] text-white font-semibold py-2.5 rounded-xl hover:bg-[#51087e] transition-all duration-200 text-sm"
-                  >
-                    Cumpără pachetul <span className="text-xs">→</span>
-                  </Link>
-                </div>
-              </div>
+              </Link>
             )}
           </div>
         </Section>
