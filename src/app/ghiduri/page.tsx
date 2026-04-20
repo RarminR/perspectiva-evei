@@ -162,7 +162,7 @@ export default async function GhiduriPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
           {guides.map((guide) => {
             const isBeginner = guide.slug === 'ghid-de-schimbare-al-conceptului-de-sine'
             return (
