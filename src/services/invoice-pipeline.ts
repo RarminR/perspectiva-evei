@@ -4,6 +4,57 @@ import type { BillingInfo } from '@/services/checkout'
 
 const RATE_LIMIT = 25
 
+type OrderItemForLookup = {
+  productType: string
+  productId: string
+}
+
+export async function resolveProductNames(
+  items: OrderItemForLookup[]
+): Promise<Map<string, string>> {
+  const guideIds = items.filter((i) => i.productType === 'GUIDE').map((i) => i.productId)
+  const bundleIds = items.filter((i) => i.productType === 'BUNDLE').map((i) => i.productId)
+  const editionIds = items.filter((i) => i.productType === 'COURSE').map((i) => i.productId)
+  const productIds = items.filter((i) => i.productType === 'PRODUCT').map((i) => i.productId)
+
+  const [guides, bundles, editions, products] = await Promise.all([
+    guideIds.length
+      ? prisma.guide.findMany({ where: { id: { in: guideIds } }, select: { id: true, title: true } })
+      : Promise.resolve([]),
+    bundleIds.length
+      ? prisma.bundle.findMany({ where: { id: { in: bundleIds } }, select: { id: true, title: true } })
+      : Promise.resolve([]),
+    editionIds.length
+      ? prisma.courseEdition.findMany({
+          where: { id: { in: editionIds } },
+          select: { id: true, editionNumber: true, course: { select: { title: true } } },
+        })
+      : Promise.resolve([]),
+    productIds.length
+      ? prisma.product.findMany({ where: { id: { in: productIds } }, select: { id: true, title: true } })
+      : Promise.resolve([]),
+  ])
+
+  const map = new Map<string, string>()
+  for (const g of guides) map.set(`GUIDE:${g.id}`, g.title)
+  for (const b of bundles) map.set(`BUNDLE:${b.id}`, b.title)
+  for (const e of editions) {
+    map.set(`COURSE:${e.id}`, `${e.course.title} — Ediția ${e.editionNumber}`)
+  }
+  for (const p of products) map.set(`PRODUCT:${p.id}`, p.title)
+  return map
+}
+
+export function nameForItem(
+  item: { productType: string; productId: string },
+  lookup: Map<string, string>
+): string {
+  return (
+    lookup.get(`${item.productType}:${item.productId}`) ||
+    (item.productType === 'SESSION' ? 'Ședință 1:1' : 'Produs digital')
+  )
+}
+
 export async function queueInvoice(orderId: string): Promise<void> {
   const existing = await prisma.invoice.findFirst({ where: { orderId } })
   if (existing) {
@@ -54,6 +105,8 @@ export async function processInvoiceQueue(): Promise<{
           ? `${billing?.firstName ?? ''} ${billing?.lastName ?? ''}`.trim()
           : invoice.order.user.name || 'Client'
 
+      const nameLookup = await resolveProductNames(invoice.order.items)
+
       const payload = {
         companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
         client: {
@@ -70,7 +123,7 @@ export async function processInvoiceQueue(): Promise<{
         issueDate: today,
         seriesName: process.env.SMARTBILL_INVOICE_SERIES || 'EVEI',
         products: invoice.order.items.map((item) => ({
-          name: item.productId,
+          name: nameForItem(item, nameLookup),
           measuringUnitName: 'buc',
           currency: 'EUR',
           quantity: item.quantity,

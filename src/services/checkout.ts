@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db'
 import { createOrder, getOrder } from '@/services/revolut'
 import { createInvoice } from '@/services/smartbill'
 import { fulfillOrder } from '@/services/order-fulfillment'
+import { resolveProductNames, nameForItem } from '@/services/invoice-pipeline'
 import type { CreateOrderParams } from '@/types/revolut'
 
 export interface CheckoutItem {
@@ -185,6 +186,8 @@ async function triggerInvoiceAsync(order: {
         ? `${billing?.firstName ?? ''} ${billing?.lastName ?? ''}`.trim()
         : order.user.name || 'Client'
 
+    const nameLookup = await resolveProductNames(order.items)
+
     const invoice = await createInvoice({
       companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
       client: {
@@ -201,7 +204,7 @@ async function triggerInvoiceAsync(order: {
       issueDate: new Date().toISOString().split('T')[0],
       seriesName: process.env.SMARTBILL_INVOICE_SERIES || '',
       products: order.items.map((item) => ({
-        name: `${item.productType} ${item.productId}`,
+        name: nameForItem(item, nameLookup),
         measuringUnitName: 'buc',
         currency: 'EUR',
         quantity: item.quantity,
