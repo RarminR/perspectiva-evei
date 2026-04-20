@@ -5,6 +5,7 @@ import { createOrder, getOrder } from '@/services/revolut'
 import { createInvoice } from '@/services/smartbill'
 import { fulfillOrder } from '@/services/order-fulfillment'
 import { resolveProductNames, nameForItem } from '@/services/invoice-pipeline'
+import { incrementPromoUse, validatePromoCode } from '@/services/promo'
 import type { CreateOrderParams } from '@/types/revolut'
 
 export interface CheckoutItem {
@@ -54,11 +55,31 @@ function parseExpirePendingAfter(duration: string): Date | null {
 export async function createCheckout(
   userId: string,
   items: CheckoutItem[],
-  _promoCode?: string,
+  promoCode?: string,
   billing?: BillingInfo
 ): Promise<CreateCheckoutResult> {
-  const totalCents = items.reduce((sum, item) => sum + item.priceEurCents * item.quantity, 0)
+  const grossCents = items.reduce((sum, item) => sum + item.priceEurCents * item.quantity, 0)
   const billingJson = billing ? (billing as unknown as Record<string, string>) : undefined
+
+  // Apply promo code (if any)
+  let totalCents = grossCents
+  let appliedPromo: { code: string } | null = null
+  const normalizedCode = promoCode?.trim()
+  if (normalizedCode) {
+    const validation = await validatePromoCode(normalizedCode, grossCents / 100)
+    if (!validation.valid) {
+      throw new Error(validation.error || 'Codul promoțional nu este valid.')
+    }
+    totalCents = Math.max(0, Math.round((validation.finalAmount ?? grossCents / 100) * 100))
+    appliedPromo = { code: normalizedCode }
+  }
+
+  // Adjust per-item unit prices proportionally so line items sum to the discounted total
+  const discountRatio = grossCents > 0 ? totalCents / grossCents : 1
+  const discountedItems = items.map((item) => ({
+    ...item,
+    unitPriceCents: Math.round(item.priceEurCents * discountRatio),
+  }))
 
   if (process.env.BYPASS_PAYMENT === 'true') {
     const order = await prisma.order.create({
@@ -70,15 +91,23 @@ export async function createCheckout(
         currency: 'EUR',
         shippingAddress: billingJson,
         items: {
-          create: items.map((item) => ({
+          create: discountedItems.map((item) => ({
             productId: item.productId,
             productType: item.productType as OrderItemType,
             quantity: item.quantity,
-            unitPrice: item.priceEurCents / 100,
+            unitPrice: item.unitPriceCents / 100,
           })),
         },
       },
     })
+
+    if (appliedPromo) {
+      try {
+        await incrementPromoUse(appliedPromo.code)
+      } catch (err) {
+        console.error('Failed to increment promo use:', err)
+      }
+    }
 
     await fulfillOrder(order.id)
 
@@ -117,15 +146,23 @@ export async function createCheckout(
       expiresPendingAfter: parseExpirePendingAfter(expirePendingAfter),
       shippingAddress: billingJson,
       items: {
-        create: items.map((item) => ({
+        create: discountedItems.map((item) => ({
           productId: item.productId,
           productType: item.productType as OrderItemType,
           quantity: item.quantity,
-          unitPrice: item.priceEurCents / 100,
+          unitPrice: item.unitPriceCents / 100,
         })),
       },
     },
   })
+
+  if (appliedPromo) {
+    try {
+      await incrementPromoUse(appliedPromo.code)
+    } catch (err) {
+      console.error('Failed to increment promo use:', err)
+    }
+  }
 
   return {
     orderId: order.id,

@@ -68,6 +68,12 @@ function CheckoutContent() {
   const [adresa, setAdresa] = useState('')
   const [codPostal, setCodPostal] = useState('')
   const [cnp, setCnp] = useState('')
+  const [promoCode, setPromoCode] = useState('')
+  const [promoState, setPromoState] = useState<{
+    status: 'idle' | 'validating' | 'applied' | 'error'
+    message?: string
+    finalAmount?: number
+  }>({ status: 'idle' })
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   const isBucuresti = judet === 'București'
@@ -148,6 +154,7 @@ function CheckoutContent() {
             priceEurCents: product.priceEurCents,
             quantity: 1,
           }],
+          promoCode: promoState.status === 'applied' ? promoCode.trim() : undefined,
           billing: {
             firstName: prenume.trim(),
             lastName: nume.trim(),
@@ -204,7 +211,45 @@ function CheckoutContent() {
 
   if (!product) return null
 
-  const displayPrice = product.priceEur.toFixed(2)
+  const effectivePrice =
+    promoState.status === 'applied' && typeof promoState.finalAmount === 'number'
+      ? promoState.finalAmount
+      : product.priceEur
+  const displayPrice = effectivePrice.toFixed(2)
+  const originalPriceStr = product.priceEur.toFixed(2)
+
+  async function handleApplyPromo() {
+    if (!promoCode.trim()) return
+    setPromoState({ status: 'validating' })
+    try {
+      const res = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode.trim(), amount: product!.priceEur }),
+      })
+      const data = (await res.json()) as {
+        valid: boolean
+        error?: string
+        finalAmount?: number
+      }
+      if (!data.valid) {
+        setPromoState({ status: 'error', message: data.error || 'Cod invalid.' })
+      } else {
+        setPromoState({
+          status: 'applied',
+          message: 'Codul a fost aplicat.',
+          finalAmount: data.finalAmount,
+        })
+      }
+    } catch {
+      setPromoState({ status: 'error', message: 'Eroare de rețea.' })
+    }
+  }
+
+  function handleRemovePromo() {
+    setPromoCode('')
+    setPromoState({ status: 'idle' })
+  }
 
   return (
     <div style={{ minHeight: '100vh', backgroundImage: 'linear-gradient(180deg, white, #e8c2ff)', padding: '60px 5%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
@@ -245,12 +290,86 @@ function CheckoutContent() {
           <h2 style={{ color: '#51087e', fontWeight: 700, marginBottom: '1rem' }}>Rezumat comandă</h2>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ color: '#444' }}>{product.name}</span>
-            <span style={{ fontWeight: 700, color: '#51087e', fontSize: '1.1rem' }}>EUR {displayPrice}</span>
+            <span style={{ fontWeight: 700, color: '#51087e', fontSize: '1.1rem' }}>
+              {promoState.status === 'applied' && (
+                <span style={{ color: '#9ca3af', textDecoration: 'line-through', fontSize: '0.9rem', marginRight: '0.5rem' }}>
+                  EUR {originalPriceStr}
+                </span>
+              )}
+              EUR {displayPrice}
+            </span>
           </div>
           {product.paymentType === 'installment' && (
             <p style={{ color: '#92400e', fontSize: '0.85rem', marginTop: '0.5rem' }}>
               Prima rată · a doua rată va fi facturată ulterior
             </p>
+          )}
+        </div>
+
+        {/* Promo code */}
+        <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(81,8,126,0.1)' }}>
+          <h2 style={{ color: '#51087e', fontWeight: 700, marginBottom: '1rem' }}>Cod promoțional</h2>
+          {promoState.status === 'applied' ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+              <div>
+                <p style={{ margin: 0, fontWeight: 700, color: '#16a34a' }}>
+                  Cod aplicat: {promoCode}
+                </p>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: '#6b7280' }}>
+                  Economisești EUR {(product.priceEur - effectivePrice).toFixed(2)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleRemovePromo}
+                style={{
+                  background: 'none',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '999px',
+                  padding: '.5rem 1rem',
+                  color: '#51087e',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
+              >
+                Elimină
+              </button>
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  placeholder="ex. EVA20"
+                  style={{ ...inputStyle, flex: 1 }}
+                  disabled={promoState.status === 'validating'}
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyPromo}
+                  disabled={!promoCode.trim() || promoState.status === 'validating'}
+                  style={{
+                    backgroundColor: '#a007dc',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '0 1.25rem',
+                    fontWeight: 700,
+                    cursor: promoState.status === 'validating' ? 'wait' : 'pointer',
+                    opacity: !promoCode.trim() || promoState.status === 'validating' ? 0.5 : 1,
+                  }}
+                >
+                  {promoState.status === 'validating' ? '...' : 'Aplică'}
+                </button>
+              </div>
+              {promoState.status === 'error' && promoState.message && (
+                <p style={{ color: '#dc2626', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                  {promoState.message}
+                </p>
+              )}
+            </>
           )}
         </div>
 
