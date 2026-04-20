@@ -7,6 +7,7 @@ import { FadeIn } from '@/components/ui/FadeIn'
 import { Footer } from '@/components/ui/Footer'
 import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
 import { getCourseWithEditions } from '@/services/course'
+import { formatEditionRange } from '@/lib/edition'
 import { prisma } from '@/lib/db'
 import { auth } from '@/lib/auth'
 
@@ -81,34 +82,6 @@ const formatEur = (value: number) =>
     currency: 'EUR',
     maximumFractionDigits: 0,
   }).format(value)
-
-const MONTHS_RO = [
-  'ianuarie',
-  'februarie',
-  'martie',
-  'aprilie',
-  'mai',
-  'iunie',
-  'iulie',
-  'august',
-  'septembrie',
-  'octombrie',
-  'noiembrie',
-  'decembrie',
-]
-
-function formatEditionRange(start: Date, end: Date): string {
-  const s = new Date(start)
-  const e = new Date(end)
-  const sDay = s.getDate()
-  const eDay = e.getDate()
-  const sMonth = MONTHS_RO[s.getMonth()]
-  const eMonth = MONTHS_RO[e.getMonth()]
-  if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
-    return `${sDay} - ${eDay} ${eMonth}`
-  }
-  return `${sDay} ${sMonth} - ${eDay} ${eMonth}`
-}
 
 export default async function Home() {
   const course = await getCourseWithEditions('cursul-ado')

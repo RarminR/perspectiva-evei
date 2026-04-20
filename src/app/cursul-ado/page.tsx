@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Navbar, Footer, Section, Badge, Accordion } from '@/components/ui'
 import { getCourseWithEditions } from '@/services/course'
 import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
+import { formatEditionRange } from '@/lib/edition'
 
 export const metadata: Metadata = {
   title: 'Cursul A.D.O. | Perspectiva Evei',
@@ -129,9 +130,18 @@ export default async function CursulAdoPage() {
             </nav>
 
             {activeEdition && (
-              <Badge variant="pink" className="mb-6 text-sm px-4 py-1.5">
-                Ediția {activeEdition.editionNumber}
-              </Badge>
+              <div className="flex flex-wrap gap-3 mb-6">
+                <div className="inline-flex items-center gap-2 bg-white/25 backdrop-blur-sm rounded-full px-5 py-2 text-sm font-medium text-white">
+                  <span className="text-[#e0b0ff]">●</span>
+                  <span>Locuri restrânse</span>
+                </div>
+                <div className="inline-flex items-center gap-2 bg-white/25 backdrop-blur-sm rounded-full px-5 py-2 text-sm font-medium text-white">
+                  <span>
+                    Ediția {activeEdition.editionNumber}:{' '}
+                    {formatEditionRange(activeEdition.startDate, activeEdition.endDate)}
+                  </span>
+                </div>
+              </div>
             )}
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
@@ -214,7 +224,8 @@ export default async function CursulAdoPage() {
           {activeEdition && (
             <div className="flex flex-wrap justify-center gap-3 mb-12">
               <Badge variant="purple" className="bg-white/10 text-white border border-white/20 px-4 py-1.5">
-                Ediția {activeEdition.editionNumber}
+                Ediția {activeEdition.editionNumber}:{' '}
+                {formatEditionRange(activeEdition.startDate, activeEdition.endDate)}
               </Badge>
               <Badge variant="purple" className="bg-white/10 text-white border border-white/20 px-4 py-1.5">
                 Online · Zoom
