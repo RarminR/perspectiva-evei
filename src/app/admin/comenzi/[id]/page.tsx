@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import { RefundButton } from './RefundButton'
+import { GenerateInvoiceButton } from './GenerateInvoiceButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -176,7 +177,12 @@ export default async function OrderDetailPage({
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Acțiuni
           </h2>
-          <RefundButton orderId={order.id} />
+          <div className="flex flex-wrap gap-3">
+            <RefundButton orderId={order.id} />
+            {order.invoices.length === 0 && (
+              <GenerateInvoiceButton orderId={order.id} />
+            )}
+          </div>
         </div>
       )}
     </div>

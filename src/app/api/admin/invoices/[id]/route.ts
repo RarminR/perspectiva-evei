@@ -84,11 +84,14 @@ export async function POST(
   }
 
   if (action === 'retry') {
-    const updated = await prisma.invoice.update({
-      where: { id },
-      data: { status: 'PENDING', errorText: null },
-    })
+    const { retryFailedInvoice } = await import('@/services/invoice-pipeline')
+    try {
+      await retryFailedInvoice(id)
+    } catch (error) {
+      console.error('Invoice retry error:', error)
+    }
 
+    const updated = await prisma.invoice.findUnique({ where: { id } })
     return NextResponse.json({ invoice: updated })
   }
 
