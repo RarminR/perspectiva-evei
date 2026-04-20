@@ -157,123 +157,169 @@ export default async function GhiduriPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-3">
             Explorează ghidurile mele
           </h2>
-          <p className="text-[#51087e]/60 text-lg max-w-xl mx-auto">
-            Acces instant, pași clari, rezultate reale.
+          <p className="text-[#51087e]/70 text-lg max-w-xl mx-auto">
+            Ghiduri create pentru a te ajuta să preiei controlul asupra vieții tale, pas cu pas.
           </p>
         </div>
 
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${(guides.length + (bundle ? 1 : 0)) > 4 ? 'lg:grid-cols-3' : 'lg:grid-cols-2 max-w-4xl mx-auto'} gap-8`}>
-          {guides.map((guide) => (
-            <div
-              key={guide.id}
-              className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1"
-            >
-              {/* Cover image area */}
-              <div className="relative h-52 bg-gradient-to-br from-[#51087e] to-[#51087e]/80 overflow-hidden">
-                {guide.coverImage ? (
-                  <Image
-                     src={imgSrc(guide.coverImage)}
-                    alt={guide.title}
-                    fill
-                    unoptimized
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-6xl opacity-20">📖</div>
-                    <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#51087e] to-transparent" />
-                  </div>
-                )}
-                {/* Price pill */}
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-md">
-                    <span className="text-xs">✦</span>
-                    €{guide.price}
-                  </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+          {guides.map((guide, index) => {
+            const isBeginner = guide.slug === 'ghid-de-schimbare-al-conceptului-de-sine'
+            const isDarkHeader = index % 2 === 0
+            return (
+              <Link
+                key={guide.id}
+                href={`/ghiduri/${guide.slug}`}
+                className="group flex flex-col bg-white rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.10)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.18)] hover:-translate-y-1 transition-all duration-300 no-underline"
+              >
+                {/* Cover photo header */}
+                <div
+                  className="relative aspect-[4/3] overflow-hidden"
+                  style={{
+                    backgroundImage: isDarkHeader
+                      ? 'linear-gradient(135deg, #2c0246, #51087e)'
+                      : 'linear-gradient(135deg, #e8c2ff, #ffffff)',
+                  }}
+                >
+                  {guide.coverImage ? (
+                    <Image
+                      src={imgSrc(guide.coverImage)}
+                      alt={guide.title}
+                      fill
+                      unoptimized
+                      className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-20">
+                      📖
+                    </div>
+                  )}
+                  {isBeginner && (
+                    <div className="absolute bottom-4 left-4">
+                      <span className="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur text-[#51087e] text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
+                        <span className="text-[#a007dc]">✦</span>
+                        Ghid pentru începători
+                      </span>
+                    </div>
+                  )}
                 </div>
-              </div>
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-[#51087e] mb-2 group-hover:text-[#a007dc] transition-colors">
-                  {guide.title}
-                </h3>
-                {guide.description && (
-                  <p className="text-[#51087e]/60 text-sm mb-3 line-clamp-2">
-                    {guide.description}
-                  </p>
-                )}
-                <p className="text-2xl font-bold text-[#51087e] mb-4">
-                  €{guide.price}
-                </p>
-                <div className="flex gap-3">
-                  <Link
-                    href={`/ghiduri/${guide.slug}`}
-                    className="inline-flex items-center justify-center flex-1 gap-2 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-3 rounded-xl hover:bg-[#51087e]/5 transition-all duration-200 text-sm"
-                  >
-                    Despre
-                  </Link>
-                  <Link
-                    href={`/checkout?product=GUIDE&id=${guide.id}`}
-                    className="inline-flex items-center justify-center flex-1 gap-2 bg-[#a007dc] text-white font-semibold py-3 rounded-xl hover:bg-[#51087e] transition-all duration-200 text-sm"
-                  >
-                    Cumpără
-                    <span className="text-xs">→</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
 
-          {/* Bundle — same card style as guides */}
+                {/* Content */}
+                <div
+                  className="flex-1 flex flex-col p-7 gap-3 text-left"
+                  style={{
+                    backgroundImage: isDarkHeader
+                      ? 'linear-gradient(180deg, #51087e, #2c0246)'
+                      : 'linear-gradient(180deg, #ffffff, #f8eaff)',
+                    color: isDarkHeader ? '#ffffff' : '#2c0246',
+                  }}
+                >
+                  <div>
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
+                      style={{
+                        backgroundImage: isDarkHeader
+                          ? 'linear-gradient(90deg, #a007dc, #e0b0ff)'
+                          : 'linear-gradient(90deg, #51087e, #a007dc)',
+                      }}
+                    >
+                      <span className="text-xs">✦</span>€{guide.price}
+                    </span>
+                  </div>
+                  <h3
+                    className="text-2xl font-bold leading-tight mt-1"
+                    style={{ color: isDarkHeader ? '#ffffff' : '#2c0246' }}
+                  >
+                    {guide.title}
+                  </h3>
+                  {guide.description && (
+                    <p
+                      className="text-[0.95rem] leading-relaxed"
+                      style={{
+                        color: isDarkHeader
+                          ? 'rgba(255,255,255,0.78)'
+                          : 'rgba(44,2,70,0.7)',
+                      }}
+                    >
+                      {guide.description}
+                    </p>
+                  )}
+                  <div className="mt-auto pt-4">
+                    <span
+                      className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full transition-colors duration-200"
+                      style={{
+                        borderColor: isDarkHeader
+                          ? 'rgba(255,255,255,0.5)'
+                          : 'rgba(81,8,126,0.25)',
+                        color: isDarkHeader ? '#ffffff' : '#51087e',
+                      }}
+                    >
+                      Află mai mult
+                      <span aria-hidden>→</span>
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
+
+          {/* Bundle — matching card style */}
           {bundle && (
-            <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#51087e]/5 hover:border-[#a007dc]/20 hover:-translate-y-1">
-              {/* Cover area */}
-              <div className="relative h-52 bg-gradient-to-br from-[#51087e] to-[#a007dc] overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-6xl opacity-20">📦</div>
-                  <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#51087e] to-transparent" />
-                </div>
-                {/* Price pill */}
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#a007dc] to-[#e0b0ff] text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-md">
-                    <span className="text-xs">✦</span>
-                    €{bundlePrice}
-                  </span>
-                </div>
-                {/* Savings badge */}
-                <div className="absolute top-4 left-4">
-                  <span className="inline-flex items-center bg-green-500/90 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                    -{Math.round((bundleSavings / bundleOriginal) * 100)}%
-                  </span>
-                </div>
+            <Link
+              href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+              className="group flex flex-col bg-white rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.10)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.18)] hover:-translate-y-1 transition-all duration-300 no-underline"
+            >
+              <div
+                className="relative aspect-[4/3] overflow-hidden"
+                style={{ backgroundImage: 'linear-gradient(135deg, #51087e, #a007dc)' }}
+              >
+                <Image
+                  src="/images/bundle-covers.jpg"
+                  alt={bundle.title ?? 'Pachet promoțional'}
+                  fill
+                  unoptimized
+                  className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                />
               </div>
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-[#51087e] mb-2 group-hover:text-[#a007dc] transition-colors">
-                  {bundle.title ?? 'Pachet Complet'}
+              <div
+                className="flex-1 flex flex-col p-7 gap-3 text-left"
+                style={{
+                  backgroundImage: 'linear-gradient(180deg, #51087e, #2c0246)',
+                  color: '#ffffff',
+                }}
+              >
+                <div>
+                  <span
+                    className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
+                    style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
+                  >
+                    <span className="text-xs">✦</span>
+                    <span className="text-xs line-through opacity-70">€{bundleOriginal}</span>
+                    <span>€{bundlePrice}</span>
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
+                  {bundle.title ?? 'Pachet promoțional'}
                 </h3>
-                <p className="text-[#51087e]/60 text-sm mb-3 line-clamp-2">
-                  {bundle.items
+                <p className="text-[0.95rem] leading-relaxed text-white/80">
+                  {bundle.items && bundle.items.length > 0
                     ? bundle.items.map((item) => item.guide.title).join(' + ')
                     : 'Toate ghidurile într-un singur pachet.'}
                 </p>
-                <div className="flex items-baseline gap-3 mb-4">
-                  <p className="text-2xl font-bold text-[#51087e]">
-                    €{bundlePrice}
-                  </p>
-                  <p className="text-base text-[#51087e]/40 line-through">
-                    €{bundleOriginal}
-                  </p>
+                <p className="text-xs font-semibold text-white/70">
+                  Economisești €{bundleSavings}
+                </p>
+                <div className="mt-auto pt-4">
+                  <span
+                    className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white"
+                    style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                  >
+                    Cumpără Pachetul
+                    <span aria-hidden>→</span>
+                  </span>
                 </div>
-                <Link
-                  href={`/checkout?product=BUNDLE&id=${bundle.id}`}
-                  className="inline-flex items-center justify-center w-full gap-2 border-2 border-[#51087e]/10 text-[#51087e] font-semibold py-3 rounded-xl hover:bg-[#a007dc] hover:text-white hover:border-[#a007dc] transition-all duration-200 text-sm"
-                >
-                  Cumpără Pachetul
-                  <span className="text-xs">→</span>
-                </Link>
               </div>
-            </div>
+            </Link>
           )}
         </div>
       </Section>
