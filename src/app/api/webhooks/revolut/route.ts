@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   }
 
   const event = JSON.parse(rawBody) as RevolutWebhookEvent
-  void processWebhookEvent(event)
+  await processWebhookEvent(event)
 
   return NextResponse.json({ received: true })
 }
