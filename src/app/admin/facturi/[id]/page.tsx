@@ -129,6 +129,81 @@ export default async function InvoiceDetailPage({
         )}
       </div>
 
+      {/* Billing info */}
+      {(() => {
+        const billing = (invoice.order.shippingAddress ?? null) as {
+          firstName?: string
+          lastName?: string
+          phone?: string
+          email?: string
+          cnp?: string
+          country?: string
+          county?: string
+          city?: string
+          address?: string
+          postalCode?: string
+        } | null
+
+        if (!billing) {
+          return (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Date facturare</h2>
+              <p className="text-sm text-gray-500">
+                Nu există date de facturare salvate pentru această comandă.
+              </p>
+            </div>
+          )
+        }
+
+        const fullName = `${billing.firstName ?? ''} ${billing.lastName ?? ''}`.trim()
+
+        return (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Date facturare</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Nume complet</p>
+                <p className="font-medium text-gray-900">{fullName || '—'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">CNP</p>
+                <p className="font-medium text-gray-900">{billing.cnp || '—'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Telefon</p>
+                <p className="font-medium text-gray-900">{billing.phone || '—'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Email</p>
+                <p className="font-medium text-gray-900">
+                  {billing.email || invoice.order.user.email}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Țară</p>
+                <p className="font-medium text-gray-900">{billing.country || '—'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Județ</p>
+                <p className="font-medium text-gray-900">{billing.county || '—'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Oraș</p>
+                <p className="font-medium text-gray-900">{billing.city || '—'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Cod poștal</p>
+                <p className="font-medium text-gray-900">{billing.postalCode || '—'}</p>
+              </div>
+              <div className="sm:col-span-2 lg:col-span-3">
+                <p className="text-sm text-gray-500">Adresă</p>
+                <p className="font-medium text-gray-900">{billing.address || '—'}</p>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
       {/* Actions */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Acțiuni</h2>
