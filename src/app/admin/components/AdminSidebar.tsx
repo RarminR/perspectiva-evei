@@ -13,7 +13,6 @@ const NAV_ITEMS = [
   { href: '/admin/utilizatori', label: 'Utilizatori', icon: '👥' },
   { href: '/admin/comenzi', label: 'Comenzi', icon: '📦' },
   { href: '/admin/facturi', label: 'Facturi', icon: '🧾' },
-  { href: '/admin/studii-de-caz', label: 'Studii de caz', icon: '💼' },
   { href: '/admin/promo-coduri', label: 'Promo coduri', icon: '🏷️' },
   { href: '/admin/programari', label: 'Programări', icon: '📅' },
   { href: '/admin/disponibilitate', label: 'Disponibilitate', icon: '🕐' },
