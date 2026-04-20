@@ -28,6 +28,7 @@ export default function NewGuidePage() {
     coverImage: '',
     pdfKey: '',
     audioKey: '',
+    audioDurationMinutes: '',
     contentJson: '',
   })
 
@@ -177,6 +178,25 @@ export default function NewGuidePage() {
           value={form.audioKey}
           onChange={(key) => handleChange('audioKey', key)}
         />
+
+        <div>
+          <label htmlFor="audioDurationMinutes" className="block text-sm font-medium text-gray-700 mb-1">
+            Durata audiobook (minute)
+          </label>
+          <input
+            id="audioDurationMinutes"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="ex. 45"
+            value={form.audioDurationMinutes}
+            onChange={(e) => handleChange('audioDurationMinutes', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Afișată pe pagina ghidului ca &ldquo;Versiune audiobook (N min)&rdquo;.
+          </p>
+        </div>
 
         <div>
           <label htmlFor="contentJson" className="block text-sm font-medium text-gray-700 mb-1">

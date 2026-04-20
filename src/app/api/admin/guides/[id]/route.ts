@@ -33,7 +33,22 @@ export async function PUT(
 
   const { id } = await params
   const body = await req.json()
-  const { title, slug, description, price, coverImage, pdfKey, audioKey, contentJson } = body
+  const {
+    title,
+    slug,
+    description,
+    price,
+    coverImage,
+    pdfKey,
+    audioKey,
+    audioDurationMinutes,
+    contentJson,
+  } = body
+
+  const audioDuration =
+    audioDurationMinutes !== undefined && audioDurationMinutes !== '' && audioDurationMinutes !== null
+      ? Math.round(Number(audioDurationMinutes) * 60)
+      : null
 
   const guide = await prisma.guide.update({
     where: { id },
@@ -45,6 +60,7 @@ export async function PUT(
       coverImage: coverImage || null,
       pdfKey: pdfKey || null,
       audioKey: audioKey || null,
+      audioDuration,
       contentJson: contentJson || null,
     },
   })

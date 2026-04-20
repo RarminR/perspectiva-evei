@@ -23,7 +23,22 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { title, slug, description, price, coverImage, pdfKey, audioKey, contentJson } = body
+  const {
+    title,
+    slug,
+    description,
+    price,
+    coverImage,
+    pdfKey,
+    audioKey,
+    audioDurationMinutes,
+    contentJson,
+  } = body
+
+  const audioDuration =
+    audioDurationMinutes !== undefined && audioDurationMinutes !== '' && audioDurationMinutes !== null
+      ? Math.round(Number(audioDurationMinutes) * 60)
+      : null
 
   const guide = await prisma.guide.create({
     data: {
@@ -34,6 +49,7 @@ export async function POST(req: Request) {
       coverImage: coverImage || null,
       pdfKey: pdfKey || null,
       audioKey: audioKey || null,
+      audioDuration,
       contentJson: contentJson || null,
     },
   })
