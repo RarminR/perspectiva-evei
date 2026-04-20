@@ -11,6 +11,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    if ((session.user as { role?: string }).role !== 'ADMIN') {
+      return NextResponse.json(
+        {
+          error:
+            'Rezervarea direct nu mai este disponibilă. Folosește /programare pentru a plăti și a rezerva slotul.',
+        },
+        { status: 403 }
+      )
+    }
+
     const { scheduledAt, durationMinutes = 60 } = await request.json()
     const userId = (session.user as any).id
 

@@ -108,6 +108,14 @@ export async function POST(
         await prisma.courseEnrollment.deleteMany({
           where: { userId: order.userId, editionId: item.productId, orderId: order.id },
         })
+      } else if (item.productType === 'SESSION') {
+        const scheduledAt = new Date(item.productId)
+        if (!Number.isNaN(scheduledAt.getTime())) {
+          await prisma.session1on1.updateMany({
+            where: { userId: order.userId, scheduledAt, status: 'BOOKED' },
+            data: { status: 'CANCELLED' },
+          })
+        }
       }
     }
 

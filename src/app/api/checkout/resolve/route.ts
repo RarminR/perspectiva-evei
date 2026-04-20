@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { SESSION_PRICING } from '@/lib/constants/pricing'
 
 export async function GET(req: NextRequest) {
   const session = await auth()
@@ -78,6 +79,47 @@ export async function GET(req: NextRequest) {
         name: bundle.title,
         priceEur: bundle.price,
         priceEurCents: Math.round(bundle.price * 100),
+      })
+    }
+
+    if (productType === 'SESSION') {
+      const scheduledAtParam = searchParams.get('scheduledAt')
+      if (!scheduledAtParam) {
+        return NextResponse.json(
+          { error: 'Slot invalid pentru ședință.' },
+          { status: 400 }
+        )
+      }
+      const scheduledAt = new Date(scheduledAtParam)
+      if (Number.isNaN(scheduledAt.getTime())) {
+        return NextResponse.json({ error: 'Data slotului invalidă.' }, { status: 400 })
+      }
+      if (scheduledAt.getTime() < Date.now()) {
+        return NextResponse.json({ error: 'Slotul ales e în trecut.' }, { status: 400 })
+      }
+
+      const conflict = await prisma.session1on1.findFirst({
+        where: { scheduledAt, status: 'BOOKED' },
+      })
+      if (conflict) {
+        return NextResponse.json({ error: 'Slotul ales tocmai a fost rezervat.' }, { status: 409 })
+      }
+
+      const isoSlot = scheduledAt.toISOString()
+      const formatted = scheduledAt.toLocaleString('ro-RO', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+
+      return NextResponse.json({
+        productId: isoSlot,
+        productType: 'SESSION',
+        name: `${SESSION_PRICING.PRODUCT_NAME} — ${formatted}`,
+        priceEur: SESSION_PRICING.PRICE_EUR,
+        priceEurCents: SESSION_PRICING.PRICE_EUR * 100,
       })
     }
 

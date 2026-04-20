@@ -80,6 +80,7 @@ function CheckoutContent() {
 
   const rawProductType = searchParams.get('product') || searchParams.get('productType')
   const rawId = searchParams.get('id') || searchParams.get('productId')
+  const rawScheduledAt = searchParams.get('scheduledAt')
   const paymentType = searchParams.get('type') || searchParams.get('paymentType') || 'full'
 
   useEffect(() => {
@@ -94,6 +95,7 @@ function CheckoutContent() {
 
       const params = new URLSearchParams({ productType: rawProductType })
       if (rawId) params.set('id', rawId)
+      if (rawScheduledAt) params.set('scheduledAt', rawScheduledAt)
       params.set('paymentType', paymentType)
 
       const res = await fetch(`/api/checkout/resolve?${params}`)
@@ -115,7 +117,7 @@ function CheckoutContent() {
 
     void resolve()
     return () => { mounted = false }
-  }, [rawProductType, rawId, paymentType])
+  }, [rawProductType, rawId, rawScheduledAt, paymentType])
 
   function validateForm(): boolean {
     const errors: Record<string, string> = {}

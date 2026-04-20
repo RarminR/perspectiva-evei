@@ -1,3 +1,9 @@
+export const SESSION_PRICING = {
+  PRICE_EUR: 160,
+  DURATION_MINUTES: 60,
+  PRODUCT_NAME: 'Ședință 1:1 cu Eva',
+} as const
+
 export const COURSE_PRICING = {
   FULL_PRICE: '€1.188',
   FULL_PRICE_CROSSED: '€1.288',

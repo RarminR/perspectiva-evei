@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db'
-import { sendOrderConfirmationEmail } from './email'
+import { sendOrderConfirmationEmail, sendSessionBookedEmail } from './email'
 import { processInvoiceQueue, queueInvoice } from './invoice-pipeline'
+import { SESSION_PRICING } from '@/lib/constants/pricing'
 
 function getEnrollmentExpiryDate(): Date {
   return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
@@ -58,6 +59,44 @@ export async function fulfillOrder(orderId: string): Promise<void> {
           orderId: order.id,
         },
       })
+    }
+
+    if (item.productType === 'SESSION') {
+      const scheduledAt = new Date(item.productId)
+      if (Number.isNaN(scheduledAt.getTime())) {
+        console.error('SESSION order item has invalid scheduledAt:', item.productId)
+        continue
+      }
+      const conflict = await prisma.session1on1.findFirst({
+        where: { scheduledAt, status: 'BOOKED' },
+      })
+      if (conflict) {
+        console.error(
+          `SESSION slot ${scheduledAt.toISOString()} already booked — order ${order.id} paid but session not created`
+        )
+        continue
+      }
+      const booked = await prisma.session1on1.create({
+        data: {
+          userId: order.userId,
+          scheduledAt,
+          duration: SESSION_PRICING.DURATION_MINUTES,
+          status: 'BOOKED',
+        },
+      })
+      try {
+        await sendSessionBookedEmail(order.user.email, {
+          name: order.user.name,
+          sessionDate: scheduledAt.toLocaleDateString('ro-RO'),
+          sessionTime: scheduledAt.toLocaleTimeString('ro-RO', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        })
+      } catch (error) {
+        console.error('Failed to send session booked email:', error)
+      }
+      void booked
     }
   }
 

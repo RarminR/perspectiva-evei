@@ -47,35 +47,13 @@ export default function SchedulingClient() {
     fetchSlots()
   }, [fetchSlots])
 
-  async function handleBook(scheduledAt: string) {
+  function handleBook(scheduledAt: string) {
     setBooking(scheduledAt)
-    setMessage(null)
-    try {
-      const res = await fetch('/api/scheduling/book', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scheduledAt }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) throw new Error(data.error || 'Eroare la programare')
-
-      setMessage({
-        type: 'success',
-        text: 'Ședința a fost programată cu succes! Vei primi un email de confirmare.',
-      })
-      fetchSlots()
-    } catch (err) {
-      setMessage({
-        type: 'error',
-        text:
-          err instanceof Error
-            ? err.message
-            : 'Nu s-a putut programa ședința.',
-      })
-    } finally {
-      setBooking(null)
-    }
+    const params = new URLSearchParams({
+      product: 'SESSION',
+      scheduledAt,
+    })
+    window.location.href = `/checkout?${params.toString()}`
   }
 
   if (loading) {
