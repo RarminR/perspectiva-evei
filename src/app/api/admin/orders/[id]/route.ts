@@ -61,14 +61,26 @@ export async function POST(
       return NextResponse.json({ error: 'Comandă negăsită' }, { status: 404 })
     }
 
-    // Attempt Revolut refund if order has a revolut ID
-    if (order.revolutOrderId) {
+    // Attempt Revolut refund if order has a real Revolut order
+    const isRealRevolutOrder =
+      order.revolutOrderId && !order.revolutOrderId.startsWith('dev-bypass-')
+    if (isRealRevolutOrder) {
       try {
         const { refundOrder } = await import('@/services/revolut')
-        await refundOrder(order.revolutOrderId)
+        await refundOrder(order.revolutOrderId!, {
+          amount: Math.round(order.totalAmount * 100),
+          description: `Refund comandă ${order.id}`,
+        })
       } catch (error) {
         console.error('Revolut refund error:', error)
-        // Continue — mark as cancelled even if Revolut fails
+        return NextResponse.json(
+          {
+            error:
+              'Rambursarea Revolut a eșuat. Verifică în Revolut și reîncearcă. Comanda nu a fost anulată.',
+            detail: error instanceof Error ? error.message : String(error),
+          },
+          { status: 502 }
+        )
       }
     }
 
