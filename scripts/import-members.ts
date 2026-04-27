@@ -100,7 +100,7 @@ interface ImportStats {
   usersUpdated: number
   guideAccessCreated: number
   guideAccessSkipped: number
-  membersWithoutPlans: number
+  membersWithoutGuides: number
   unknownPlans: Map<string, number>
   badEmails: string[]
 }
@@ -122,7 +122,7 @@ async function importMembers(csvPath: string, dryRun: boolean): Promise<ImportSt
     usersUpdated: 0,
     guideAccessCreated: 0,
     guideAccessSkipped: 0,
-    membersWithoutPlans: 0,
+    membersWithoutGuides: 0,
     unknownPlans: new Map(),
     badEmails: skippedEmails,
   }
@@ -139,14 +139,15 @@ async function importMembers(csvPath: string, dryRun: boolean): Promise<ImportSt
     }
 
     if (grantedSlugs.size === 0) {
-      stats.membersWithoutPlans++
-      continue
+      stats.membersWithoutGuides++
     }
 
     if (dryRun) {
-      console.log(
-        `[DRY] ${member.email} → guides: ${Array.from(grantedSlugs).join(', ')}`
-      )
+      const tag =
+        grantedSlugs.size > 0
+          ? `guides: ${Array.from(grantedSlugs).join(', ')}`
+          : 'no guides (user only)'
+      console.log(`[DRY] ${member.email} → ${tag}`)
       continue
     }
 
@@ -208,7 +209,7 @@ async function main() {
   console.log(`  Users updated:         ${stats.usersUpdated}`)
   console.log(`  GuideAccess created:   ${stats.guideAccessCreated}`)
   console.log(`  GuideAccess existed:   ${stats.guideAccessSkipped}`)
-  console.log(`  Members without plans: ${stats.membersWithoutPlans}`)
+  console.log(`  Users without guides:   ${stats.membersWithoutGuides}`)
 
   if (stats.unknownPlans.size > 0) {
     console.log(`\n  Unknown plan IDs (skipped):`)
