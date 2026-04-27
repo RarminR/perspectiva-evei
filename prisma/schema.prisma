@@ -59,14 +59,16 @@ enum SessionStatus {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String
-  hashedPassword String?
-  phone          String?
-  role           Role     @default(USER)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  name                 String
+  hashedPassword       String?
+  phone                String?
+  role                 Role      @default(USER)
+  inviteToken          String?   @unique
+  inviteTokenExpiresAt DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   devices            Device[]
   orders             Order[]

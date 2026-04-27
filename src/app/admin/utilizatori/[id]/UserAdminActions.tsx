@@ -12,6 +12,41 @@ export function UserAdminActions({
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null)
+  const [inviteError, setInviteError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  async function handleGenerateInvite() {
+    setInviteError(null)
+    setCopied(false)
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/invite`, {
+        method: 'POST',
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setInviteError(data.error || 'A apărut o eroare')
+        return
+      }
+      setInviteUrl(data.inviteUrl)
+    } catch {
+      setInviteError('A apărut o eroare de rețea')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleCopyInvite() {
+    if (!inviteUrl) return
+    try {
+      await navigator.clipboard.writeText(inviteUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // ignore
+    }
+  }
 
   async function handleToggleRole() {
     const newRole = currentRole === 'ADMIN' ? 'USER' : 'ADMIN'
@@ -68,6 +103,44 @@ export function UserAdminActions({
         >
           Schimbă rol → {currentRole === 'ADMIN' ? 'USER' : 'ADMIN'}
         </button>
+
+        <div className="border-t border-gray-100 pt-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+            Link de invitație
+          </h3>
+          <p className="text-xs text-gray-500 mb-3">
+            Generează un link unic pe care utilizatorul îl poate folosi pentru a-și
+            seta parola și a accesa contul. Linkul expiră în 30 de zile.
+          </p>
+          <button
+            onClick={handleGenerateInvite}
+            disabled={loading}
+            className="px-4 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 text-sm font-medium disabled:opacity-50"
+          >
+            {inviteUrl ? 'Generează link nou' : 'Generează link de invitație'}
+          </button>
+
+          {inviteError && (
+            <p className="mt-3 text-sm text-red-600">{inviteError}</p>
+          )}
+
+          {inviteUrl && (
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                readOnly
+                value={inviteUrl}
+                onFocus={(e) => e.currentTarget.select()}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-xs font-mono bg-gray-50"
+              />
+              <button
+                onClick={handleCopyInvite}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
+              >
+                {copied ? 'Copiat ✓' : 'Copiază'}
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="border-t border-gray-100 pt-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
