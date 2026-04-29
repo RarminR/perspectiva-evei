@@ -104,7 +104,7 @@ export default async function GhidurileMelePage() {
                   </div>
 
                   <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
-                    {guide.audioKey && (
+                    {guide.type === 'AUDIO' && (
                       <div>
                         <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-white/20 text-white">
                           🎧 Audiobook

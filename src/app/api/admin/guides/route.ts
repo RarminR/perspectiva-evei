@@ -29,14 +29,20 @@ export async function POST(req: Request) {
     description,
     price,
     coverImage,
+    type,
     pdfKey,
     audioKey,
     audioDurationMinutes,
     contentJson,
   } = body
 
+  const guideType = type === 'AUDIO' ? 'AUDIO' : 'PDF'
+
   const audioDuration =
-    audioDurationMinutes !== undefined && audioDurationMinutes !== '' && audioDurationMinutes !== null
+    guideType === 'AUDIO' &&
+    audioDurationMinutes !== undefined &&
+    audioDurationMinutes !== '' &&
+    audioDurationMinutes !== null
       ? Math.round(Number(audioDurationMinutes) * 60)
       : null
 
@@ -47,8 +53,9 @@ export async function POST(req: Request) {
       description: description || null,
       price: parseFloat(price),
       coverImage: coverImage || null,
-      pdfKey: pdfKey || null,
-      audioKey: audioKey || null,
+      type: guideType,
+      pdfKey: guideType === 'PDF' ? pdfKey || null : null,
+      audioKey: guideType === 'AUDIO' ? audioKey || null : null,
       audioDuration,
       contentJson: contentJson || null,
     },

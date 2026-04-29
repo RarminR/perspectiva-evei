@@ -173,19 +173,25 @@ model LessonProgress {
   @@unique([userId, lessonId])
 }
 
+enum GuideType {
+  PDF
+  AUDIO
+}
+
 model Guide {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   title         String
-  slug          String   @unique
+  slug          String    @unique
   description   String?
   price         Float
   coverImage    String?
   contentJson   Json?
+  type          GuideType @default(PDF)
   pdfKey        String?
   audioKey      String?
   audioDuration Int?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   access      GuideAccess[]
   bundleItems BundleItem[]

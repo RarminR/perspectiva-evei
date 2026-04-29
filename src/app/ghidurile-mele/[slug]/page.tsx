@@ -49,6 +49,7 @@ export default async function GuideReaderPage({
   }
 
   const audioUrl = guide.audioKey ? `/api/guides/${guide.id}/audio` : null
+  const isAudio = guide.type === 'AUDIO'
 
   return (
     <div className="min-h-screen bg-[#f5f0ff]">
@@ -63,7 +64,11 @@ export default async function GuideReaderPage({
 
         <h1 className="mb-6 text-2xl font-bold text-[#51087e]">{guide.title}</h1>
 
-        {guide.pdfKey ? (
+        {isAudio ? (
+          <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
+            <AudiobookPlayer guideId={guide.id} audioUrl={audioUrl} />
+          </div>
+        ) : guide.pdfKey ? (
           <SecurePdfViewer
             guideId={guide.id}
             userEmail={userEmail}
@@ -79,13 +84,6 @@ export default async function GuideReaderPage({
             userEmail={userEmail}
             userId={userId}
           />
-        )}
-
-        {guide.audioKey && (
-          <div className="mt-8 rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-            <h2 className="mb-4 text-lg font-semibold text-[#51087e]">Audiobook</h2>
-            <AudiobookPlayer guideId={guide.id} audioUrl={audioUrl} />
-          </div>
         )}
       </div>
     </div>

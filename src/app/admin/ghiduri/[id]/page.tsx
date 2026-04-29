@@ -27,6 +27,7 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
     shortDescription: '',
     price: '',
     coverImage: '',
+    type: 'PDF' as 'PDF' | 'AUDIO',
     pdfKey: '',
     audioKey: '',
     audioDurationMinutes: '',
@@ -46,6 +47,7 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
           shortDescription: data.shortDescription || '',
           price: String(data.price || ''),
           coverImage: data.coverImage || '',
+          type: data.type === 'AUDIO' ? 'AUDIO' : 'PDF',
           pdfKey: data.pdfKey || '',
           audioKey: data.audioKey || '',
           audioDurationMinutes: data.audioDuration
@@ -226,36 +228,65 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
           onChange={(url) => handleChange('coverImage', url)}
         />
 
-        <PdfUpload
-          label="PDF ghid"
-          value={form.pdfKey}
-          onChange={(key) => handleChange('pdfKey', key)}
-        />
-
-        <AudioUpload
-          label="Audiobook"
-          value={form.audioKey}
-          onChange={(key) => handleChange('audioKey', key)}
-        />
-
         <div>
-          <label htmlFor="audioDurationMinutes" className="block text-sm font-medium text-gray-700 mb-1">
-            Durata audiobook (minute)
-          </label>
-          <input
-            id="audioDurationMinutes"
-            type="number"
-            min="0"
-            step="1"
-            placeholder="ex. 45"
-            value={form.audioDurationMinutes}
-            onChange={(e) => handleChange('audioDurationMinutes', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Afișată pe pagina ghidului ca &ldquo;Versiune audiobook (N min)&rdquo;.
-          </p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Tip ghid</label>
+          <div className="flex gap-6">
+            <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="radio"
+                name="type"
+                value="PDF"
+                checked={form.type === 'PDF'}
+                onChange={() => setForm((prev) => ({ ...prev, type: 'PDF' }))}
+                className="text-[#a007dc] focus:ring-[#a007dc]"
+              />
+              PDF
+            </label>
+            <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="radio"
+                name="type"
+                value="AUDIO"
+                checked={form.type === 'AUDIO'}
+                onChange={() => setForm((prev) => ({ ...prev, type: 'AUDIO' }))}
+                className="text-[#a007dc] focus:ring-[#a007dc]"
+              />
+              Audiobook
+            </label>
+          </div>
         </div>
+
+        {form.type === 'PDF' ? (
+          <PdfUpload
+            label="PDF ghid"
+            value={form.pdfKey}
+            onChange={(key) => handleChange('pdfKey', key)}
+          />
+        ) : (
+          <>
+            <AudioUpload
+              label="Audiobook"
+              value={form.audioKey}
+              onChange={(key) => handleChange('audioKey', key)}
+            />
+
+            <div>
+              <label htmlFor="audioDurationMinutes" className="block text-sm font-medium text-gray-700 mb-1">
+                Durata (minute)
+              </label>
+              <input
+                id="audioDurationMinutes"
+                type="number"
+                min="0"
+                step="1"
+                placeholder="ex. 45"
+                value={form.audioDurationMinutes}
+                onChange={(e) => handleChange('audioDurationMinutes', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
+              />
+            </div>
+          </>
+        )}
 
         <div>
           <label htmlFor="contentJson" className="block text-sm font-medium text-gray-700 mb-1">

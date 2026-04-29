@@ -14,6 +14,7 @@ const FALLBACK_GUIDES = [
     description: 'Ghidul care îți dezvăluie secretele manifestării conștiente.',
     coverImage: null,
     contentJson: null,
+    type: 'PDF' as const,
     audioKey: null,
     audioDuration: null,
     pdfKey: null,
@@ -28,6 +29,7 @@ interface GuideDetail {
   description: string | null
   coverImage: string | null
   contentJson: unknown
+  type: 'PDF' | 'AUDIO'
   audioKey: string | null
   audioDuration: number | null
   pdfKey: string | null
@@ -278,16 +280,15 @@ export default async function GuideDetailPage({
             <div className="bg-[#f5f0ff] rounded-xl p-5 border border-[#a007dc]/10 mb-6">
               <h3 className="font-bold text-[#51087e] mb-3">Ce primești:</h3>
               <div className="space-y-2">
-                {guide.pdfKey && (
+                {guide.type === 'AUDIO' ? (
+                  <div className="flex items-center gap-2 text-[#2c0246] text-sm">
+                    <span className="text-[#a007dc]">✓</span>
+                    <span>Audiobook{guide.audioDuration ? ` (${Math.round(guide.audioDuration / 60)} min)` : ''} — acces instant după achiziție</span>
+                  </div>
+                ) : (
                   <div className="flex items-center gap-2 text-[#2c0246] text-sm">
                     <span className="text-[#a007dc]">✓</span>
                     <span>Ghid PDF — acces instant după achiziție</span>
-                  </div>
-                )}
-                {guide.audioKey && (
-                  <div className="flex items-center gap-2 text-[#2c0246] text-sm">
-                    <span className="text-[#a007dc]">✓</span>
-                    <span>Versiune audiobook{guide.audioDuration ? ` (${Math.round(guide.audioDuration / 60)} min)` : ''}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-[#2c0246] text-sm">
