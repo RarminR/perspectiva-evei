@@ -110,7 +110,7 @@ interface BundleData {
   slug: string
   price: number
   originalPrice: number
-  items: { guide: { id: string; title: string; slug: string } }[]
+  items: { guide: { id: string; title: string; slug: string; type: 'PDF' | 'AUDIO' } }[]
 }
 
 async function getBundle(): Promise<BundleData | null> {
@@ -120,7 +120,7 @@ async function getBundle(): Promise<BundleData | null> {
       include: {
         items: {
           include: {
-            guide: { select: { id: true, title: true, slug: true } },
+            guide: { select: { id: true, title: true, slug: true, type: true } },
           },
         },
       },
@@ -282,59 +282,90 @@ export default async function GhiduriPage() {
           })}
 
           {/* Bundle — matching card style */}
-          {bundle && (
-            <Link
-              href={`/checkout?product=BUNDLE&id=${bundle.id}`}
-              className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
-              style={{
-                backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
-              }}
-            >
-              <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
-                <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
-                  <Image
-                    src="/images/bundle-covers.jpg"
-                    alt={bundle.title ?? 'Pachet promoțional'}
-                    fill
-                    unoptimized
-                    className="object-contain"
-                  />
+          {bundle && (() => {
+            const bundleItems = bundle.items ?? []
+            const bundleOwned =
+              bundleItems.length > 0 && bundleItems.every((i) => ownedGuideIds.has(i.guide.id))
+            const cardClassName = 'group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white'
+            const cardStyle = {
+              backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
+            }
+            const inner = (
+              <>
+                <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
+                  <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
+                    <Image
+                      src="/images/bundle-covers.jpg"
+                      alt={bundle.title ?? 'Pachet promoțional'}
+                      fill
+                      unoptimized
+                      className="object-contain"
+                    />
+                  </div>
                 </div>
+                <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
+                  <div>
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
+                      style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
+                    >
+                      <span className="text-xs">✦</span>
+                      <span className="text-xs line-through opacity-70">€{bundleOriginal}</span>
+                      <span>€{bundlePrice}</span>
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
+                    {bundle.title ?? 'Pachet promoțional'}
+                  </h3>
+                  <p className="text-[0.95rem] leading-relaxed text-white/80">
+                    {bundleItems.length > 0
+                      ? bundleItems.map((item) => item.guide.title).join(' + ')
+                      : 'Toate ghidurile într-un singur pachet.'}
+                  </p>
+                  {!bundleOwned && (
+                    <p className="text-xs font-semibold text-white/70">
+                      Economisești €{bundleSavings}
+                    </p>
+                  )}
+                  <div className="mt-auto pt-4 flex flex-col gap-2">
+                    {bundleOwned ? (
+                      bundleItems.map((item) => (
+                        <Link
+                          key={item.guide.id}
+                          href={`/ghidurile-mele/${item.guide.slug}`}
+                          className="inline-flex items-center justify-between w-full gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
+                        >
+                          {item.guide.type === 'AUDIO' ? 'Ascultă' : 'Citește'} — {item.guide.title}
+                          <span aria-hidden>→</span>
+                        </Link>
+                      ))
+                    ) : (
+                      <span
+                        className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white"
+                        style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                      >
+                        Cumpără Pachetul
+                        <span aria-hidden>→</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </>
+            )
+            return bundleOwned ? (
+              <div className={cardClassName} style={cardStyle}>
+                {inner}
               </div>
-              <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
-                <div>
-                  <span
-                    className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
-                    style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
-                  >
-                    <span className="text-xs">✦</span>
-                    <span className="text-xs line-through opacity-70">€{bundleOriginal}</span>
-                    <span>€{bundlePrice}</span>
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
-                  {bundle.title ?? 'Pachet promoțional'}
-                </h3>
-                <p className="text-[0.95rem] leading-relaxed text-white/80">
-                  {bundle.items && bundle.items.length > 0
-                    ? bundle.items.map((item) => item.guide.title).join(' + ')
-                    : 'Toate ghidurile într-un singur pachet.'}
-                </p>
-                <p className="text-xs font-semibold text-white/70">
-                  Economisești €{bundleSavings}
-                </p>
-                <div className="mt-auto pt-4">
-                  <span
-                    className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white"
-                    style={{ borderColor: 'rgba(255,255,255,0.5)' }}
-                  >
-                    Cumpără Pachetul
-                    <span aria-hidden>→</span>
-                  </span>
-                </div>
-              </div>
-            </Link>
-          )}
+            ) : (
+              <Link
+                href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+                className={cardClassName}
+                style={cardStyle}
+              >
+                {inner}
+              </Link>
+            )
+          })()}
         </div>
       </Section>
 
