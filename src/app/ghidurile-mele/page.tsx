@@ -124,7 +124,7 @@ export default async function GhidurileMelePage() {
                         className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white group-hover:bg-white/10 transition-colors duration-200"
                         style={{ borderColor: 'rgba(255,255,255,0.5)' }}
                       >
-                        Citește
+                        {guide.type === 'AUDIO' ? 'Ascultă' : 'Citește'}
                         <span aria-hidden>→</span>
                       </span>
                     </div>
