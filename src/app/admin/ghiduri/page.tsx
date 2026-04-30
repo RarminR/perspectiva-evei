@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
+import { TogglePublishButton } from './TogglePublishButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -67,12 +68,18 @@ export default async function GuidesPage() {
                     </td>
                     <td className="p-4 text-gray-500">{formatDate(guide.createdAt)}</td>
                     <td className="p-4">
-                      <Link
-                        href={`/admin/ghiduri/${guide.id}`}
-                        className="text-[#a007dc] hover:underline font-medium"
-                      >
-                        Editează
-                      </Link>
+                      <div className="flex items-center gap-3">
+                        <TogglePublishButton
+                          guideId={guide.id}
+                          published={guide.published !== false}
+                        />
+                        <Link
+                          href={`/admin/ghiduri/${guide.id}`}
+                          className="text-[#a007dc] hover:underline font-medium text-sm"
+                        >
+                          Editează
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

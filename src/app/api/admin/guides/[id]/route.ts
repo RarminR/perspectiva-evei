@@ -79,6 +79,31 @@ export async function PUT(
   return NextResponse.json(guide)
 }
 
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth()
+  if (!session?.user || (session.user as any).role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { id } = await params
+  const body = await req.json()
+
+  const data: Record<string, unknown> = {}
+  if (typeof body.published === 'boolean') data.published = body.published
+
+  if (Object.keys(data).length === 0) {
+    return NextResponse.json({ error: 'Niciun câmp de actualizat.' }, { status: 400 })
+  }
+
+  const guide = await prisma.guide.update({ where: { id }, data })
+  revalidatePath('/ghiduri')
+  revalidatePath('/')
+  return NextResponse.json(guide)
+}
+
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
