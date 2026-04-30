@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar, Footer, Section, Badge, Accordion } from '@/components/ui'
-import { getCourseWithEditions } from '@/services/course'
+import { getCourseWithEditions, getEditionInstallmentDueDate } from '@/services/course'
 import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
 import { formatEditionRange } from '@/lib/edition'
 
@@ -107,6 +107,9 @@ export default async function CursulAdoPage() {
   // Fetch course data with enrollment counts
   const course = await getCourseWithEditions('cursul-ado')
   const activeEdition = course?.editions?.find((e) => e.enrollmentOpen)
+  const secondInstallmentDueDate = activeEdition
+    ? await getEditionInstallmentDueDate(activeEdition.id)
+    : null
 
   return (
     <>
@@ -303,11 +306,11 @@ export default async function CursulAdoPage() {
 
               <div className="bg-amber-500/15 border border-amber-300/40 rounded-xl p-4 mb-6 text-sm text-amber-100/90 leading-relaxed">
                 <strong className="text-amber-100">Atenție:</strong> dacă a doua rată nu este achitată până la scadență, accesul la curs va fi blocat până la plată.
-                {activeEdition?.secondInstallmentDueDate && (
+                {secondInstallmentDueDate && (
                   <>
                     {' '}Scadența pentru această ediție:{' '}
                     <strong className="text-white">
-                      {new Date(activeEdition.secondInstallmentDueDate).toLocaleDateString('ro-RO', {
+                      {new Date(secondInstallmentDueDate).toLocaleDateString('ro-RO', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric',

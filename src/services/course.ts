@@ -3,13 +3,45 @@ import { prisma } from '@/lib/db'
 export async function getCourseWithEditions(courseSlug: string) {
   return prisma.course.findUnique({
     where: { slug: courseSlug },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      price: true,
+      installmentPrice: true,
+      maxParticipants: true,
+      accessDurationDays: true,
+      createdAt: true,
+      updatedAt: true,
       editions: {
         orderBy: { startDate: 'desc' },
-        include: { _count: { select: { enrollments: true } } },
+        select: {
+          id: true,
+          courseId: true,
+          editionNumber: true,
+          startDate: true,
+          endDate: true,
+          enrollmentOpen: true,
+          maxParticipants: true,
+          createdAt: true,
+          _count: { select: { enrollments: true } },
+        },
       },
     },
   })
+}
+
+export async function getEditionInstallmentDueDate(editionId: string): Promise<Date | null> {
+  try {
+    const edition = await prisma.courseEdition.findUnique({
+      where: { id: editionId },
+      select: { secondInstallmentDueDate: true },
+    })
+    return edition?.secondInstallmentDueDate ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function getActiveEdition(courseId: string) {
