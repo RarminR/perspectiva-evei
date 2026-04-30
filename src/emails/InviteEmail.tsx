@@ -46,11 +46,8 @@ export const InviteEmail = ({ name, inviteUrl }: InviteEmailProps) => (
             Mă bucur că ești aici și… stai pe aproape! Ți-am pregătit o lansare nouă!
           </Text>
 
-          <Text style={signature}>
-            Cu drag,
-            <br />
-            Eva
-          </Text>
+          <Text style={signatureLine}>Cu drag,</Text>
+          <Text style={signatureName}>Eva</Text>
 
           <Hr style={hr} />
 
@@ -132,11 +129,21 @@ const primaryButton = {
   marginBottom: '24px',
 }
 
-const signature = {
+const signatureLine = {
   fontSize: '16px',
   lineHeight: '1.6',
   color: '#374151',
   marginTop: '24px',
+  marginBottom: '0px',
+  fontStyle: 'italic' as const,
+}
+
+const signatureName = {
+  fontSize: '16px',
+  lineHeight: '1.6',
+  color: '#374151',
+  marginTop: '0px',
+  marginBottom: '16px',
   fontStyle: 'italic' as const,
 }
 
