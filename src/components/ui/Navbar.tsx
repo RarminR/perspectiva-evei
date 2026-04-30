@@ -38,6 +38,7 @@ export function Navbar() {
   )
 
   return (
+    <>
     <nav
       style={{
         backdropFilter: 'blur(10px)',
@@ -212,8 +213,10 @@ export function Navbar() {
           </div>
         </button>
       </div>
+    </nav>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu overlay — outside <nav> so its position:fixed is relative
+          to the viewport, not the backdrop-filtered navbar. */}
       {mobileOpen && (
         <div
           className="md:hidden"
@@ -224,7 +227,6 @@ export function Navbar() {
             right: 0,
             bottom: 0,
             backgroundImage: 'linear-gradient(#51087ef5, #a007dcf5)',
-            backdropFilter: 'blur(10px)',
             padding: '2rem 5%',
             display: 'flex',
             flexDirection: 'column',
@@ -340,6 +342,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-    </nav>
+    </>
   )
 }
