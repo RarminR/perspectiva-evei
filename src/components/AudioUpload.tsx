@@ -115,6 +115,19 @@ export default function AudioUpload({ label, value, onChange }: AudioUploadProps
         </label>
       </div>
 
+      <div className="mt-3">
+        <label className="block text-xs text-gray-500 mb-1">
+          Sau lipește calea din Bunny Storage (pentru fișiere &gt; 4 MB)
+        </label>
+        <input
+          type="text"
+          placeholder="ex. guides/audio/cine-manifesta.mp3"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs font-mono focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
+        />
+      </div>
+
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
     </div>
   )
