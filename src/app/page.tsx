@@ -649,14 +649,27 @@ export default async function Home() {
                       flex: 1,
                     }}
                   >
-                    <div style={{ borderRadius: '16px', overflow: 'hidden', width: '80px', height: '112px', minWidth: '80px' }}>
+                    <div
+                      style={{
+                        borderRadius: '16px',
+                        overflow: 'hidden',
+                        width: '80px',
+                        height: '112px',
+                        minWidth: '80px',
+                        backgroundColor: '#f5f0ff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '4px',
+                      }}
+                    >
                       <Image
                         src={guide.coverImage || '/images/Cine-manifesta.png'}
                         alt={guide.title}
                         width={80}
                         height={112}
                         unoptimized
-                        style={{ width: '80px', height: '112px', objectFit: 'cover', display: 'block' }}
+                        style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block' }}
                       />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
