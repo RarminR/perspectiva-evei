@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import type { PDFDocumentProxy } from 'pdfjs-dist'
 import { Watermark } from './Watermark'
 
 interface SecurePdfViewerProps {
@@ -11,15 +12,63 @@ interface SecurePdfViewerProps {
 
 export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const pdfRef = useRef<PDFDocumentProxy | null>(null)
+  const renderTaskRef = useRef<{ cancel: () => void } | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [pageCount, setPageCount] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
+  const [rendering, setRendering] = useState(false)
 
   const watermarkText = `${userEmail} • ${userId.slice(0, 8)}`
 
-  // Fetch and render PDF
+  const renderPage = useCallback(async (pageNumber: number) => {
+    const pdf = pdfRef.current
+    const canvas = canvasRef.current
+    const container = containerRef.current
+    if (!pdf || !canvas || !container) return
+
+    if (renderTaskRef.current) {
+      renderTaskRef.current.cancel()
+      renderTaskRef.current = null
+    }
+
+    setRendering(true)
+    try {
+      const page = await pdf.getPage(pageNumber)
+      const unscaledViewport = page.getViewport({ scale: 1 })
+
+      const availableWidth = container.clientWidth || 600
+      const availableHeight = container.clientHeight || 800
+      const widthScale = availableWidth / unscaledViewport.width
+      const heightScale = availableHeight / unscaledViewport.height
+      const scale = Math.min(widthScale, heightScale)
+
+      const viewport = page.getViewport({ scale })
+      const dpr = window.devicePixelRatio || 1
+
+      canvas.width = Math.floor(viewport.width * dpr)
+      canvas.height = Math.floor(viewport.height * dpr)
+      canvas.style.width = `${Math.floor(viewport.width)}px`
+      canvas.style.height = `${Math.floor(viewport.height)}px`
+
+      const ctx = canvas.getContext('2d')!
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+      const task = page.render({ canvasContext: ctx, viewport, canvas } as any)
+      renderTaskRef.current = task
+      await task.promise
+    } catch (err: any) {
+      if (err?.name !== 'RenderingCancelledException') {
+        setError(err.message || 'Eroare la randarea paginii')
+      }
+    } finally {
+      setRendering(false)
+    }
+  }, [])
+
+  // Load the PDF document once
   useEffect(() => {
     let cancelled = false
 
@@ -44,46 +93,9 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
         if (cancelled) return
 
+        pdfRef.current = pdf
         setPageCount(pdf.numPages)
         setLoading(false)
-
-        // Wait for the container to be in the DOM and have layout
-        await new Promise((r) => requestAnimationFrame(r))
-        await new Promise((r) => requestAnimationFrame(r))
-
-        const container = containerRef.current
-        if (!container || cancelled) return
-
-        const containerWidth = container.parentElement?.clientWidth || container.clientWidth || 600
-
-        for (let i = 1; i <= pdf.numPages; i++) {
-          if (cancelled) return
-          const page = await pdf.getPage(i)
-          const unscaledViewport = page.getViewport({ scale: 1 })
-          const scale = containerWidth / unscaledViewport.width
-          const viewport = page.getViewport({ scale })
-
-          const dpr = window.devicePixelRatio || 1
-          const canvas = document.createElement('canvas')
-          canvas.width = Math.floor(viewport.width * dpr)
-          canvas.height = Math.floor(viewport.height * dpr)
-          canvas.style.width = `${Math.floor(viewport.width)}px`
-          canvas.style.maxWidth = '100%'
-          canvas.style.height = 'auto'
-          canvas.style.display = 'block'
-          canvas.style.margin = '0 auto'
-          canvas.dataset.page = String(i)
-
-          container.appendChild(canvas)
-
-          const ctx = canvas.getContext('2d')!
-          ctx.scale(dpr, dpr)
-          await page.render({
-            canvasContext: ctx,
-            viewport,
-            canvas,
-          } as any).promise
-        }
       } catch (err: any) {
         if (!cancelled) {
           setError(err.message)
@@ -93,44 +105,53 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
     }
 
     load()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      if (renderTaskRef.current) {
+        renderTaskRef.current.cancel()
+        renderTaskRef.current = null
+      }
+      pdfRef.current?.destroy()
+      pdfRef.current = null
+    }
   }, [guideId])
 
-  // Track current page on scroll
+  // Render whenever current page or layout changes
   useEffect(() => {
-    const scrollEl = scrollRef.current
-    if (!scrollEl || pageCount === 0) return
+    if (loading || pageCount === 0) return
+    renderPage(currentPage)
+  }, [currentPage, pageCount, loading, renderPage])
 
-    function handleScroll() {
-      const container = containerRef.current
-      if (!container || !scrollEl) return
+  // Re-render on container resize
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    const observer = new ResizeObserver(() => {
+      if (!loading && pageCount > 0) renderPage(currentPage)
+    })
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [loading, pageCount, currentPage, renderPage])
 
-      const scrollTop = scrollEl.scrollTop
-      const canvases = container.querySelectorAll('canvas')
-      let page = 1
-
-      for (const canvas of canvases) {
-        if (canvas.offsetTop <= scrollTop + 100) {
-          page = Number(canvas.dataset.page) || 1
-        } else {
-          break
-        }
+  // Keyboard navigation
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        setCurrentPage((p) => Math.min(p + 1, pageCount))
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        setCurrentPage((p) => Math.max(p - 1, 1))
       }
-      setCurrentPage(page)
     }
-
-    scrollEl.addEventListener('scroll', handleScroll)
-    return () => scrollEl.removeEventListener('scroll', handleScroll)
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
   }, [pageCount])
 
   // Prevent right-click and text selection
   useEffect(() => {
     const preventContext = (e: MouseEvent) => e.preventDefault()
     const preventSelect = (e: Event) => e.preventDefault()
-
     document.addEventListener('contextmenu', preventContext)
     document.addEventListener('selectstart', preventSelect)
-
     return () => {
       document.removeEventListener('contextmenu', preventContext)
       document.removeEventListener('selectstart', preventSelect)
@@ -145,17 +166,11 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
     )
   }
 
+  const canPrev = currentPage > 1
+  const canNext = currentPage < pageCount
+
   return (
     <div className="relative">
-      {/* Page indicator */}
-      {pageCount > 1 && (
-        <div className="sticky top-0 z-20 flex justify-center py-2">
-          <span className="rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur-sm">
-            {currentPage} / {pageCount}
-          </span>
-        </div>
-      )}
-
       {loading && (
         <div className="flex items-center justify-center py-20">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#a007dc] border-t-transparent" />
@@ -163,18 +178,51 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
         </div>
       )}
 
-      <div
-        ref={scrollRef}
-        className="relative mx-auto w-full overflow-y-auto rounded-2xl bg-white shadow-lg"
-        style={{
-          userSelect: 'none',
-          WebkitUserSelect: 'none',
-          maxHeight: 'calc(100vh - 220px)',
-          display: loading ? 'none' : 'block',
-        }}
-      >
-        <Watermark text={watermarkText} />
-        <div ref={containerRef} className="relative z-0" />
+      <div style={{ display: loading ? 'none' : 'block' }}>
+        <div
+          ref={containerRef}
+          className="relative mx-auto flex w-full items-center justify-center rounded-2xl bg-white shadow-lg overflow-hidden"
+          style={{
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            height: 'calc(100vh - 220px)',
+            minHeight: 400,
+          }}
+        >
+          <Watermark text={watermarkText} />
+          <canvas ref={canvasRef} className="relative z-0 block" />
+          {rendering && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/40">
+              <div className="h-6 w-6 animate-spin rounded-full border-4 border-[#a007dc] border-t-transparent" />
+            </div>
+          )}
+        </div>
+
+        {pageCount > 0 && (
+          <div className="mt-4 flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={!canPrev}
+              className="rounded-full bg-[#a007dc] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#51087e] disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Pagina anterioară"
+            >
+              ← Anterior
+            </button>
+            <span className="rounded-full bg-black/70 px-4 py-1.5 text-sm font-medium text-white">
+              {currentPage} / {pageCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, pageCount))}
+              disabled={!canNext}
+              className="rounded-full bg-[#a007dc] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#51087e] disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Pagina următoare"
+            >
+              Următor →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
