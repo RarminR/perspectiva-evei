@@ -1,6 +1,7 @@
 'use server'
 
 import { Resend } from 'resend'
+import { render as renderEmail } from '@react-email/components'
 import { WelcomeEmail } from '@/emails/WelcomeEmail'
 import { OrderConfirmationEmail } from '@/emails/OrderConfirmationEmail'
 import { InstallmentReminderEmail } from '@/emails/InstallmentReminderEmail'
@@ -11,6 +12,13 @@ import { SessionReminderEmail } from '@/emails/SessionReminderEmail'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@perspectivaevei.com'
+
+async function renderToHtml(element: unknown): Promise<string> {
+  const result = renderEmail(element as any) as unknown
+  if (typeof result === 'string') return result
+  // @react-email/render in newer versions returns a Promise
+  return await (result as Promise<string>)
+}
 
 export async function sendWelcomeEmail(to: string, name: string) {
   return getResend().emails.send({
@@ -63,11 +71,13 @@ export async function sendInviteEmail(
     inviteUrl: string
   }
 ) {
+  const html = await renderToHtml(InviteEmail(params))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: 'O nouă platformă Perspectiva Evei — setează-ți parola',
-    react: InviteEmail(params),
+    html,
+    text: `Bună ${params.name},\n\nTe invit să îți setezi o nouă parolă pe această platformă folosind link-ul de mai jos:\n\n${params.inviteUrl}\n\nLink-ul expiră în 30 de zile.\n\nCu drag,\nEva`,
   })
 }
 
