@@ -81,7 +81,11 @@ function CheckoutContent() {
   const rawProductType = searchParams.get('product') || searchParams.get('productType')
   const rawId = searchParams.get('id') || searchParams.get('productId')
   const rawScheduledAt = searchParams.get('scheduledAt')
-  const paymentType = searchParams.get('type') || searchParams.get('paymentType') || 'full'
+  const initialPaymentType =
+    (searchParams.get('type') || searchParams.get('paymentType')) === 'installment'
+      ? 'installment'
+      : 'full'
+  const [paymentType, setPaymentType] = useState<'full' | 'installment'>(initialPaymentType)
 
   useEffect(() => {
     let mounted = true
@@ -156,6 +160,7 @@ function CheckoutContent() {
             priceEurCents: product.priceEurCents,
             quantity: 1,
           }],
+          paymentType,
           promoCode: promoState.status === 'applied' ? promoCode.trim() : undefined,
           billing: {
             firstName: prenume.trim(),
@@ -301,10 +306,40 @@ function CheckoutContent() {
               EUR {displayPrice}
             </span>
           </div>
-          {product.paymentType === 'installment' && (
-            <p style={{ color: '#92400e', fontSize: '0.85rem', marginTop: '0.5rem' }}>
-              Prima rată · a doua rată va fi facturată ulterior
-            </p>
+
+          {product.productType === 'COURSE' && (
+            <div style={{ marginTop: '1rem', borderTop: '1px solid #f3f4f6', paddingTop: '1rem' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#51087e', marginBottom: '0.5rem' }}>
+                Mod de plată
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#444', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    name="paymentType"
+                    value="full"
+                    checked={paymentType === 'full'}
+                    onChange={() => setPaymentType('full')}
+                  />
+                  Plată integrală
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#444', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    name="paymentType"
+                    value="installment"
+                    checked={paymentType === 'installment'}
+                    onChange={() => setPaymentType('installment')}
+                  />
+                  Plată în 2 rate (plătești prima rată acum)
+                </label>
+              </div>
+              {paymentType === 'installment' && (
+                <p style={{ color: '#92400e', fontSize: '0.8rem', marginTop: '0.5rem', lineHeight: 1.4 }}>
+                  Aceasta este prima rată. A doua rată va fi facturată ulterior, conform scadenței comunicate de Eva. Dacă nu este achitată la timp, accesul la curs va fi blocat până la plată.
+                </p>
+              )}
+            </div>
           )}
         </div>
 

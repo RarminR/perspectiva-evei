@@ -37,6 +37,8 @@ export interface CreateCheckoutResult {
   bypassed?: boolean
 }
 
+export type PaymentType = 'full' | 'installment'
+
 function parseExpirePendingAfter(duration: string): Date | null {
   if (!duration.startsWith('PT') || !duration.endsWith('H')) {
     return null
@@ -56,8 +58,11 @@ export async function createCheckout(
   userId: string,
   items: CheckoutItem[],
   promoCode?: string,
-  billing?: BillingInfo
+  billing?: BillingInfo,
+  paymentType: PaymentType = 'full'
 ): Promise<CreateCheckoutResult> {
+  const isInstallmentCourse =
+    paymentType === 'installment' && items.some((i) => i.productType === 'COURSE')
   const grossCents = items.reduce((sum, item) => sum + item.priceEurCents * item.quantity, 0)
   const billingJson = billing ? (billing as unknown as Record<string, string>) : undefined
 
@@ -90,6 +95,7 @@ export async function createCheckout(
         totalAmount: totalCents / 100,
         currency: 'EUR',
         shippingAddress: billingJson,
+        ...(isInstallmentCourse && { installmentNumber: 1 }),
         items: {
           create: discountedItems.map((item) => ({
             productId: item.productId,
@@ -145,6 +151,7 @@ export async function createCheckout(
       currency: 'EUR',
       expiresPendingAfter: parseExpirePendingAfter(expirePendingAfter),
       shippingAddress: billingJson,
+      ...(isInstallmentCourse && { installmentNumber: 1 }),
       items: {
         create: discountedItems.map((item) => ({
           productId: item.productId,

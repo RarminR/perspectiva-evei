@@ -36,7 +36,10 @@ export async function POST(req: NextRequest) {
     items?: unknown[]
     promoCode?: string
     billing?: Partial<BillingInfo>
+    paymentType?: string
   }
+  const paymentType: 'full' | 'installment' =
+    body.paymentType === 'installment' ? 'installment' : 'full'
   if (!body.items || body.items.length === 0) {
     return NextResponse.json({ error: 'Coșul este gol' }, { status: 400 })
   }
@@ -66,7 +69,8 @@ export async function POST(req: NextRequest) {
       (session.user as { id: string }).id,
       items,
       body.promoCode,
-      billing
+      billing,
+      paymentType
     )
     return NextResponse.json(result, { status: 201 })
   } catch (error) {
