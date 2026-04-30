@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Navbar, Footer, Section } from '@/components/ui'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { imgSrc } from '@/lib/image'
 
@@ -53,6 +54,7 @@ interface RelatedGuide {
   slug: string
   price: number
   coverImage: string | null
+  type: 'PDF' | 'AUDIO'
 }
 
 interface BundleCard {
@@ -91,16 +93,29 @@ async function getRelatedGuides(currentSlug: string): Promise<RelatedGuide[]> {
     const guides = await prisma.guide.findMany({
       where: { slug: { not: currentSlug } },
       take: 3,
-      select: { id: true, title: true, slug: true, price: true, coverImage: true },
+      select: { id: true, title: true, slug: true, price: true, coverImage: true, type: true },
     })
     if (guides.length > 0) return guides
     return FALLBACK_GUIDES.filter((g) => g.slug !== currentSlug).map((g) => ({
-      id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage,
+      id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage, type: g.type,
     }))
   } catch {
     return FALLBACK_GUIDES.filter((g) => g.slug !== currentSlug).map((g) => ({
-      id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage,
+      id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage, type: g.type,
     }))
+  }
+}
+
+async function getOwnedGuideIds(userId: string | null): Promise<Set<string>> {
+  if (!userId) return new Set()
+  try {
+    const access = await prisma.guideAccess.findMany({
+      where: { userId },
+      select: { guideId: true },
+    })
+    return new Set(access.map((a) => a.guideId))
+  } catch {
+    return new Set()
   }
 }
 
@@ -161,9 +176,17 @@ export default async function GuideDetailPage({
     notFound()
   }
 
-  const relatedGuides = await getRelatedGuides(slug)
-  const bundle = await getActiveBundle()
+  const session = await auth()
+  const userId = (session?.user as any)?.id ?? null
+
+  const [relatedGuides, bundle, ownedGuideIds] = await Promise.all([
+    getRelatedGuides(slug),
+    getActiveBundle(),
+    getOwnedGuideIds(userId),
+  ])
   const content = extractContent(guide.contentJson)
+  const isOwned = ownedGuideIds.has(guide.id)
+  const ownedCtaLabel = guide.type === 'AUDIO' ? 'Ascultă' : 'Citește'
 
   return (
     <>
@@ -315,13 +338,23 @@ export default async function GuideDetailPage({
             </div>
 
             {/* CTA */}
-            <Link
-              href={`/checkout?product=GUIDE&id=${guide.id}`}
-              className="inline-flex items-center justify-center w-full gap-2 bg-[#a007dc] text-white font-bold py-4 rounded-xl hover:bg-[#51087e] transition-colors text-lg"
-            >
-              Cumpără — €{guide.price}
-              <span>→</span>
-            </Link>
+            {isOwned ? (
+              <Link
+                href={`/ghidurile-mele/${guide.slug}`}
+                className="inline-flex items-center justify-center w-full gap-2 bg-[#a007dc] text-white font-bold py-4 rounded-xl hover:bg-[#51087e] transition-colors text-lg"
+              >
+                {ownedCtaLabel} acum
+                <span>→</span>
+              </Link>
+            ) : (
+              <Link
+                href={`/checkout?product=GUIDE&id=${guide.id}`}
+                className="inline-flex items-center justify-center w-full gap-2 bg-[#a007dc] text-white font-bold py-4 rounded-xl hover:bg-[#51087e] transition-colors text-lg"
+              >
+                Cumpără — €{guide.price}
+                <span>→</span>
+              </Link>
+            )}
           </div>
         </div>
       </Section>
@@ -357,7 +390,10 @@ export default async function GuideDetailPage({
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-            {relatedGuides.map((related) => (
+            {relatedGuides.map((related) => {
+              const relatedOwned = ownedGuideIds.has(related.id)
+              const relatedOwnedLabel = related.type === 'AUDIO' ? 'Ascultă' : 'Citește'
+              return (
               <div
                 key={related.id}
                 className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 text-white"
@@ -395,24 +431,37 @@ export default async function GuideDetailPage({
                     {related.title}
                   </h3>
                   <div className="mt-auto pt-4 flex flex-col sm:flex-row gap-3">
-                    <Link
-                      href={`/ghiduri/${related.slug}`}
-                      className="inline-flex items-center justify-center flex-1 gap-2 border font-semibold py-3 px-5 rounded-full text-white hover:bg-white/10 transition-colors duration-200 no-underline"
-                      style={{ borderColor: 'rgba(255,255,255,0.5)' }}
-                    >
-                      Află mai mult
-                    </Link>
-                    <Link
-                      href={`/checkout?product=GUIDE&id=${related.id}`}
-                      className="inline-flex items-center justify-center flex-1 gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
-                    >
-                      Cumpără acum
-                      <span aria-hidden>→</span>
-                    </Link>
+                    {relatedOwned ? (
+                      <Link
+                        href={`/ghidurile-mele/${related.slug}`}
+                        className="inline-flex items-center justify-center w-full gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
+                      >
+                        {relatedOwnedLabel}
+                        <span aria-hidden>→</span>
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          href={`/ghiduri/${related.slug}`}
+                          className="inline-flex items-center justify-center flex-1 gap-2 border font-semibold py-3 px-5 rounded-full text-white hover:bg-white/10 transition-colors duration-200 no-underline"
+                          style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                        >
+                          Află mai mult
+                        </Link>
+                        <Link
+                          href={`/checkout?product=GUIDE&id=${related.id}`}
+                          className="inline-flex items-center justify-center flex-1 gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
+                        >
+                          Cumpără acum
+                          <span aria-hidden>→</span>
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
 
             {/* Bundle card */}
             {bundle && (

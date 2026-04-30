@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Footer, Section } from '@/components/ui'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { imgSrc } from '@/lib/image'
 
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   },
 }
 
-const FALLBACK_GUIDES = [
+const FALLBACK_GUIDES: GuideData[] = [
   {
     id: '1',
     title: 'Cine Manifestă?!',
@@ -34,6 +35,7 @@ const FALLBACK_GUIDES = [
     price: 99,
     description: 'Ghidul care îți dezvăluie secretele manifestării conștiente.',
     coverImage: null,
+    type: 'PDF',
   },
   {
     id: '2',
@@ -42,6 +44,7 @@ const FALLBACK_GUIDES = [
     price: 99,
     description: 'Transformă-ți relația cu banii și abundența.',
     coverImage: null,
+    type: 'PDF',
   },
   {
     id: '3',
@@ -50,6 +53,7 @@ const FALLBACK_GUIDES = [
     price: 99,
     description: 'Manifestă relații sănătoase și iubitoare.',
     coverImage: null,
+    type: 'PDF',
   },
 ]
 
@@ -63,6 +67,7 @@ interface GuideData {
   price: number
   description: string | null
   coverImage: string | null
+  type: 'PDF' | 'AUDIO'
 }
 
 async function getGuides(): Promise<GuideData[]> {
@@ -77,11 +82,25 @@ async function getGuides(): Promise<GuideData[]> {
         price: true,
         description: true,
         coverImage: true,
+        type: true,
       },
     })
     return guides.length > 0 ? guides : FALLBACK_GUIDES
   } catch {
     return FALLBACK_GUIDES
+  }
+}
+
+async function getOwnedGuideIds(userId: string | null): Promise<Set<string>> {
+  if (!userId) return new Set()
+  try {
+    const access = await prisma.guideAccess.findMany({
+      where: { userId },
+      select: { guideId: true },
+    })
+    return new Set(access.map((a) => a.guideId))
+  } catch {
+    return new Set()
   }
 }
 
@@ -113,8 +132,14 @@ async function getBundle(): Promise<BundleData | null> {
 }
 
 export default async function GhiduriPage() {
-  const guides = await getGuides()
-  const bundle = await getBundle()
+  const session = await auth()
+  const userId = (session?.user as any)?.id ?? null
+
+  const [guides, bundle, ownedGuideIds] = await Promise.all([
+    getGuides(),
+    getBundle(),
+    getOwnedGuideIds(userId),
+  ])
 
   const bundlePrice = bundle?.price ?? BUNDLE_PRICE
   const bundleOriginal = bundle?.originalPrice ?? BUNDLE_ORIGINAL
@@ -165,6 +190,8 @@ export default async function GhiduriPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
           {guides.map((guide) => {
             const isBeginner = guide.slug === 'ghid-de-schimbare-al-conceptului-de-sine'
+            const owned = ownedGuideIds.has(guide.id)
+            const ownedCtaLabel = guide.type === 'AUDIO' ? 'Ascultă' : 'Citește'
             return (
               <div
                 key={guide.id}
@@ -222,20 +249,32 @@ export default async function GhiduriPage() {
                     </p>
                   )}
                   <div className="mt-auto pt-4 flex flex-col sm:flex-row gap-3">
-                    <Link
-                      href={`/ghiduri/${guide.slug}`}
-                      className="inline-flex items-center justify-center flex-1 gap-2 border font-semibold py-3 px-5 rounded-full text-white hover:bg-white/10 transition-colors duration-200 no-underline"
-                      style={{ borderColor: 'rgba(255,255,255,0.5)' }}
-                    >
-                      Află mai mult
-                    </Link>
-                    <Link
-                      href={`/checkout?product=GUIDE&id=${guide.id}`}
-                      className="inline-flex items-center justify-center flex-1 gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
-                    >
-                      Cumpără acum
-                      <span aria-hidden>→</span>
-                    </Link>
+                    {owned ? (
+                      <Link
+                        href={`/ghidurile-mele/${guide.slug}`}
+                        className="inline-flex items-center justify-center w-full gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
+                      >
+                        {ownedCtaLabel}
+                        <span aria-hidden>→</span>
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          href={`/ghiduri/${guide.slug}`}
+                          className="inline-flex items-center justify-center flex-1 gap-2 border font-semibold py-3 px-5 rounded-full text-white hover:bg-white/10 transition-colors duration-200 no-underline"
+                          style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                        >
+                          Află mai mult
+                        </Link>
+                        <Link
+                          href={`/checkout?product=GUIDE&id=${guide.id}`}
+                          className="inline-flex items-center justify-center flex-1 gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
+                        >
+                          Cumpără acum
+                          <span aria-hidden>→</span>
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
