@@ -5,6 +5,7 @@ import { SecureVideoPlayer } from '@/components/SecureVideoPlayer'
 import { PdfDownloadList } from '../../components/PdfDownloadList'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { getInstallmentLock } from '@/services/installment-lock'
 
 export const dynamic = 'force-dynamic'
 
@@ -52,6 +53,40 @@ export default async function LessonPage({
         <div style={{ textAlign: 'center' }}>
           <h1 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Acces interzis</h1>
           <p style={{ color: '#aaa' }}>Nu ești înscris la acest curs.</p>
+        </div>
+      </div>
+    )
+  }
+
+  const lock = await getInstallmentLock(userId, lesson.edition.id)
+
+  if (lock.kind === 'locked') {
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: '#0d0d0d', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div style={{ textAlign: 'center', maxWidth: '440px' }}>
+          <h1 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Acces blocat</h1>
+          <p style={{ color: '#aaa', marginBottom: '0.5rem' }}>
+            A doua rată trebuia plătită până la {lock.dueDate.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}.
+          </p>
+          <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.9rem' }}>
+            Plătește acum pentru a redobândi accesul la curs.
+          </p>
+          <a
+            href={lock.order2CheckoutUrl ?? '/api/checkout/installment2'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              color: '#51087e',
+              backgroundColor: 'white',
+              borderRadius: '999px',
+              padding: '.85rem 2rem',
+              textDecoration: 'none',
+              fontWeight: 700,
+            }}
+          >
+            Plătește rata 2
+          </a>
         </div>
       </div>
     )

@@ -284,7 +284,7 @@ export default async function CursulAdoPage() {
                 <span className="text-white/50 text-lg">/rată</span>
               </div>
               <div className="text-white/40 text-sm mb-6">{INSTALLMENT_TOTAL} total (2 × {INSTALLMENT_PRICE})</div>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-6">
                 <li className="flex items-start gap-2.5 text-sm text-white/70">
                   <svg className="w-4 h-4 text-[#a007dc] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -300,6 +300,23 @@ export default async function CursulAdoPage() {
                   </li>
                 ))}
               </ul>
+
+              <div className="bg-amber-500/15 border border-amber-300/40 rounded-xl p-4 mb-6 text-sm text-amber-100/90 leading-relaxed">
+                <strong className="text-amber-100">Atenție:</strong> dacă a doua rată nu este achitată până la scadență, accesul la curs va fi blocat până la plată.
+                {activeEdition?.secondInstallmentDueDate && (
+                  <>
+                    {' '}Scadența pentru această ediție:{' '}
+                    <strong className="text-white">
+                      {new Date(activeEdition.secondInstallmentDueDate).toLocaleDateString('ro-RO', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </strong>.
+                  </>
+                )}
+              </div>
+
               <Link
                 href="/checkout?product=COURSE&type=installment"
                 className="block w-full text-center bg-[#a007dc] text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-[#a007dc]/90 transition-all hover:shadow-lg hover:shadow-[#a007dc]/25"

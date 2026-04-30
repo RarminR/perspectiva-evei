@@ -110,14 +110,15 @@ model Course {
 }
 
 model CourseEdition {
-  id               String   @id @default(cuid())
-  courseId         String
-  editionNumber    Int
-  startDate        DateTime
-  endDate          DateTime
-  enrollmentOpen   Boolean  @default(false)
-  maxParticipants  Int      @default(15)
-  createdAt        DateTime @default(now())
+  id                        String    @id @default(cuid())
+  courseId                  String
+  editionNumber             Int
+  startDate                 DateTime
+  endDate                   DateTime
+  enrollmentOpen            Boolean   @default(false)
+  maxParticipants           Int       @default(15)
+  secondInstallmentDueDate  DateTime?
+  createdAt                 DateTime  @default(now())
 
   course      Course             @relation(fields: [courseId], references: [id])
   lessons     Lesson[]

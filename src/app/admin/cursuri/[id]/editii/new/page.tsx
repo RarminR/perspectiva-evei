@@ -22,6 +22,7 @@ export default function NewEditionPage() {
       startDate: formData.get('startDate'),
       endDate: formData.get('endDate'),
       maxParticipants: Number(formData.get('maxParticipants')),
+      secondInstallmentDueDate: formData.get('secondInstallmentDueDate') || null,
     }
 
     try {
@@ -115,6 +116,21 @@ export default function NewEditionPage() {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
             />
+          </div>
+
+          <div>
+            <label htmlFor="secondInstallmentDueDate" className="block text-sm font-medium text-gray-700 mb-1">
+              Scadență rata 2 (pentru plata în 2 rate)
+            </label>
+            <input
+              type="date"
+              id="secondInstallmentDueDate"
+              name="secondInstallmentDueDate"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51087e] focus:border-transparent text-sm"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              După această dată, accesul cursanților care nu au plătit rata 2 va fi blocat. Reminder e-mail automat cu 2 zile înainte.
+            </p>
           </div>
 
           <div className="flex justify-end gap-3">

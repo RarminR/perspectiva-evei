@@ -9,7 +9,15 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { courseId, editionNumber, startDate, endDate, maxParticipants, enrollmentOpen } = body
+  const {
+    courseId,
+    editionNumber,
+    startDate,
+    endDate,
+    maxParticipants,
+    enrollmentOpen,
+    secondInstallmentDueDate,
+  } = body
 
   if (!courseId || !editionNumber || !startDate || !endDate) {
     return NextResponse.json(
@@ -26,6 +34,9 @@ export async function POST(req: Request) {
       endDate: new Date(endDate),
       maxParticipants: maxParticipants ? Number(maxParticipants) : 15,
       enrollmentOpen: enrollmentOpen ?? false,
+      secondInstallmentDueDate: secondInstallmentDueDate
+        ? new Date(secondInstallmentDueDate)
+        : null,
     },
   })
 

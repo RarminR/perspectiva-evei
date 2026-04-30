@@ -38,7 +38,14 @@ export async function PUT(
 
   const { id } = await params
   const body = await req.json()
-  const { editionNumber, startDate, endDate, maxParticipants, enrollmentOpen } = body
+  const {
+    editionNumber,
+    startDate,
+    endDate,
+    maxParticipants,
+    enrollmentOpen,
+    secondInstallmentDueDate,
+  } = body
 
   const edition = await prisma.courseEdition.update({
     where: { id },
@@ -48,6 +55,11 @@ export async function PUT(
       ...(endDate !== undefined && { endDate: new Date(endDate) }),
       ...(maxParticipants !== undefined && { maxParticipants: Number(maxParticipants) }),
       ...(enrollmentOpen !== undefined && { enrollmentOpen }),
+      ...(secondInstallmentDueDate !== undefined && {
+        secondInstallmentDueDate: secondInstallmentDueDate
+          ? new Date(secondInstallmentDueDate)
+          : null,
+      }),
     },
   })
 
