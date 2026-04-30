@@ -14,7 +14,7 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pdfRef = useRef<PDFDocumentProxy | null>(null)
-  const renderTaskRef = useRef<{ cancel: () => void } | null>(null)
+  const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [pageCount, setPageCount] = useState(0)
@@ -30,8 +30,14 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
     if (!pdf || !canvas || !container) return
 
     if (renderTaskRef.current) {
-      renderTaskRef.current.cancel()
+      const previous = renderTaskRef.current
       renderTaskRef.current = null
+      previous.cancel()
+      try {
+        await previous.promise
+      } catch {
+        // RenderingCancelledException is expected
+      }
     }
 
     setRendering(true)
