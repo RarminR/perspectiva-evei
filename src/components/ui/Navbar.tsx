@@ -83,7 +83,6 @@ export function Navbar() {
             gap: '5px',
             color: 'white',
             alignItems: 'center',
-            display: 'flex',
           }}
         >
           {navLinks.map((link) => (
