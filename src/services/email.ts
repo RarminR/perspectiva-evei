@@ -4,6 +4,7 @@ import { Resend } from 'resend'
 import { WelcomeEmail } from '@/emails/WelcomeEmail'
 import { OrderConfirmationEmail } from '@/emails/OrderConfirmationEmail'
 import { InstallmentReminderEmail } from '@/emails/InstallmentReminderEmail'
+import { InviteEmail } from '@/emails/InviteEmail'
 import { PasswordResetEmail } from '@/emails/PasswordResetEmail'
 import { SessionBookedEmail } from '@/emails/SessionBookedEmail'
 import { SessionReminderEmail } from '@/emails/SessionReminderEmail'
@@ -52,6 +53,21 @@ export async function sendInstallmentReminderEmail(
     to,
     subject: 'Rata 2 — Cursul A.D.O. este scadentă',
     react: InstallmentReminderEmail(params),
+  })
+}
+
+export async function sendInviteEmail(
+  to: string,
+  params: {
+    name: string
+    inviteUrl: string
+  }
+) {
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: 'O nouă platformă Perspectiva Evei — setează-ți parola',
+    react: InviteEmail(params),
   })
 }
 

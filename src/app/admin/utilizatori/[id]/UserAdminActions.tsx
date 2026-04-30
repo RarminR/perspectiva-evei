@@ -14,15 +14,21 @@ export function UserAdminActions({
   const [loading, setLoading] = useState(false)
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [inviteError, setInviteError] = useState<string | null>(null)
+  const [emailSent, setEmailSent] = useState(false)
+  const [emailWarning, setEmailWarning] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
-  async function handleGenerateInvite() {
+  async function handleGenerateInvite(sendEmail: boolean) {
     setInviteError(null)
+    setEmailSent(false)
+    setEmailWarning(null)
     setCopied(false)
     setLoading(true)
     try {
       const res = await fetch(`/api/admin/users/${userId}/invite`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sendEmail }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -30,6 +36,10 @@ export function UserAdminActions({
         return
       }
       setInviteUrl(data.inviteUrl)
+      if (sendEmail) {
+        if (data.emailSent) setEmailSent(true)
+        else if (data.emailError) setEmailWarning(`Linkul a fost generat, dar email-ul nu s-a putut trimite: ${data.emailError}`)
+      }
     } catch {
       setInviteError('A apărut o eroare de rețea')
     } finally {
@@ -106,22 +116,41 @@ export function UserAdminActions({
 
         <div className="border-t border-gray-100 pt-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            Link de invitație
+            Invitație pe email
           </h3>
           <p className="text-xs text-gray-500 mb-3">
-            Generează un link unic pe care utilizatorul îl poate folosi pentru a-și
-            seta parola și a accesa contul. Linkul expiră în 30 de zile.
+            Trimite-i utilizatoarei un email cu link-ul pentru setarea parolei.
+            Linkul expiră în 30 de zile. Poți și să-l copiezi manual dacă preferi.
           </p>
-          <button
-            onClick={handleGenerateInvite}
-            disabled={loading}
-            className="px-4 py-2 bg-[#51087e] text-white rounded-lg hover:bg-[#51087e]/90 text-sm font-medium disabled:opacity-50"
-          >
-            {inviteUrl ? 'Generează link nou' : 'Generează link de invitație'}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleGenerateInvite(true)}
+              disabled={loading}
+              className="px-4 py-2 bg-[#a007dc] text-white rounded-lg hover:bg-[#a007dc]/90 text-sm font-medium disabled:opacity-50"
+            >
+              {loading ? 'Se trimite...' : 'Trimite invitație pe email'}
+            </button>
+            <button
+              onClick={() => handleGenerateInvite(false)}
+              disabled={loading}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium disabled:opacity-50"
+            >
+              Doar generează link (fără email)
+            </button>
+          </div>
 
           {inviteError && (
             <p className="mt-3 text-sm text-red-600">{inviteError}</p>
+          )}
+
+          {emailSent && (
+            <p className="mt-3 text-sm text-green-700">
+              ✓ Email-ul de invitație a fost trimis.
+            </p>
+          )}
+
+          {emailWarning && (
+            <p className="mt-3 text-sm text-amber-700">{emailWarning}</p>
           )}
 
           {inviteUrl && (
