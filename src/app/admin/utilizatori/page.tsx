@@ -35,6 +35,12 @@ export default async function UsersPage({
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Utilizatori</h1>
+        <Link
+          href="/admin/utilizatori/new"
+          className="px-4 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#51087e] transition"
+        >
+          Adaugă utilizator
+        </Link>
       </div>
 
       {/* Search */}
