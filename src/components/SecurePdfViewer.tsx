@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import { Watermark } from './Watermark'
 
@@ -10,11 +10,15 @@ interface SecurePdfViewerProps {
   userId: string
 }
 
+type RenderTask = { cancel: () => void; promise: Promise<void> }
+
 export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pdfRef = useRef<PDFDocumentProxy | null>(null)
-  const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null)
+  const renderQueueRef = useRef<Promise<void>>(Promise.resolve())
+  const activeTaskRef = useRef<RenderTask | null>(null)
+  const desiredPageRef = useRef<number>(1)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [pageCount, setPageCount] = useState(0)
@@ -22,57 +26,6 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
   const [rendering, setRendering] = useState(false)
 
   const watermarkText = `${userEmail} • ${userId.slice(0, 8)}`
-
-  const renderPage = useCallback(async (pageNumber: number) => {
-    const pdf = pdfRef.current
-    const canvas = canvasRef.current
-    const container = containerRef.current
-    if (!pdf || !canvas || !container) return
-
-    if (renderTaskRef.current) {
-      const previous = renderTaskRef.current
-      renderTaskRef.current = null
-      previous.cancel()
-      try {
-        await previous.promise
-      } catch {
-        // RenderingCancelledException is expected
-      }
-    }
-
-    setRendering(true)
-    try {
-      const page = await pdf.getPage(pageNumber)
-      const unscaledViewport = page.getViewport({ scale: 1 })
-
-      const availableWidth = container.clientWidth || 600
-      const availableHeight = container.clientHeight || 800
-      const widthScale = availableWidth / unscaledViewport.width
-      const heightScale = availableHeight / unscaledViewport.height
-      const scale = Math.min(widthScale, heightScale)
-
-      const viewport = page.getViewport({ scale })
-      const dpr = window.devicePixelRatio || 1
-
-      canvas.width = Math.floor(viewport.width * dpr)
-      canvas.height = Math.floor(viewport.height * dpr)
-      canvas.style.width = `${Math.floor(viewport.width)}px`
-      canvas.style.height = `${Math.floor(viewport.height)}px`
-
-      const ctx = canvas.getContext('2d')!
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-
-      const task = page.render({ canvasContext: ctx, viewport, canvas } as any)
-      renderTaskRef.current = task
-      await task.promise
-    } catch (err: any) {
-      if (err?.name !== 'RenderingCancelledException') {
-        setError(err.message || 'Eroare la randarea paginii')
-      }
-    } finally {
-      setRendering(false)
-    }
-  }, [])
 
   // Load the PDF document once
   useEffect(() => {
@@ -113,31 +66,141 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
     load()
     return () => {
       cancelled = true
-      if (renderTaskRef.current) {
-        renderTaskRef.current.cancel()
-        renderTaskRef.current = null
+      if (activeTaskRef.current) {
+        try { activeTaskRef.current.cancel() } catch {}
+        activeTaskRef.current = null
       }
       pdfRef.current?.destroy()
       pdfRef.current = null
     }
   }, [guideId])
 
-  // Render whenever current page or layout changes
+  // Single render driver: serializes all render requests through a queue.
+  // Each request updates desiredPageRef and either cancels the active task
+  // (so the queue advances) or appends a renderer that picks the latest target.
   useEffect(() => {
     if (loading || pageCount === 0) return
-    renderPage(currentPage)
-  }, [currentPage, pageCount, loading, renderPage])
 
-  // Re-render on container resize
+    desiredPageRef.current = currentPage
+
+    // Cancel the in-flight render so the queue moves on quickly. The queued
+    // step still awaits its promise to settle before starting the next render.
+    if (activeTaskRef.current) {
+      try { activeTaskRef.current.cancel() } catch {}
+    }
+
+    let stepCancelled = false
+
+    renderQueueRef.current = renderQueueRef.current
+      .catch(() => {})
+      .then(async () => {
+        if (stepCancelled) return
+        const pdf = pdfRef.current
+        const canvas = canvasRef.current
+        const container = containerRef.current
+        if (!pdf || !canvas || !container) return
+
+        // Always render the latest desired page — older steps no-op.
+        const target = desiredPageRef.current
+
+        setRendering(true)
+        try {
+          const page = await pdf.getPage(target)
+          if (stepCancelled || pdfRef.current !== pdf) return
+
+          const unscaledViewport = page.getViewport({ scale: 1 })
+          const availableWidth = container.clientWidth || 600
+          const availableHeight = container.clientHeight || 800
+          const widthScale = availableWidth / unscaledViewport.width
+          const heightScale = availableHeight / unscaledViewport.height
+          const scale = Math.min(widthScale, heightScale) || 1
+
+          const viewport = page.getViewport({ scale })
+          const dpr = window.devicePixelRatio || 1
+
+          canvas.width = Math.floor(viewport.width * dpr)
+          canvas.height = Math.floor(viewport.height * dpr)
+          canvas.style.width = `${Math.floor(viewport.width)}px`
+          canvas.style.height = `${Math.floor(viewport.height)}px`
+
+          const ctx = canvas.getContext('2d')!
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+          const task = page.render({ canvasContext: ctx, viewport, canvas } as any) as RenderTask
+          activeTaskRef.current = task
+          try {
+            await task.promise
+          } catch (err: any) {
+            if (err?.name !== 'RenderingCancelledException') throw err
+          } finally {
+            if (activeTaskRef.current === task) activeTaskRef.current = null
+          }
+        } catch (err: any) {
+          if (err?.name !== 'RenderingCancelledException') {
+            setError(err.message || 'Eroare la randarea paginii')
+          }
+        } finally {
+          setRendering(false)
+        }
+      })
+
+    return () => {
+      stepCancelled = true
+    }
+  }, [currentPage, pageCount, loading])
+
+  // Re-render on container resize — bumps the queue with the same desired page
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
     const observer = new ResizeObserver(() => {
-      if (!loading && pageCount > 0) renderPage(currentPage)
+      if (loading || pageCount === 0) return
+      // Trigger a re-render by re-running the renderer effect would require
+      // a state change. Instead, just nudge: cancel the active task and
+      // queue another render of the desired page.
+      if (activeTaskRef.current) {
+        try { activeTaskRef.current.cancel() } catch {}
+      }
+      const target = desiredPageRef.current
+      renderQueueRef.current = renderQueueRef.current
+        .catch(() => {})
+        .then(async () => {
+          const pdf = pdfRef.current
+          const canvas = canvasRef.current
+          const containerEl = containerRef.current
+          if (!pdf || !canvas || !containerEl) return
+          if (target !== desiredPageRef.current) return
+          try {
+            const page = await pdf.getPage(target)
+            const unscaledViewport = page.getViewport({ scale: 1 })
+            const availableWidth = containerEl.clientWidth || 600
+            const availableHeight = containerEl.clientHeight || 800
+            const widthScale = availableWidth / unscaledViewport.width
+            const heightScale = availableHeight / unscaledViewport.height
+            const scale = Math.min(widthScale, heightScale) || 1
+            const viewport = page.getViewport({ scale })
+            const dpr = window.devicePixelRatio || 1
+            canvas.width = Math.floor(viewport.width * dpr)
+            canvas.height = Math.floor(viewport.height * dpr)
+            canvas.style.width = `${Math.floor(viewport.width)}px`
+            canvas.style.height = `${Math.floor(viewport.height)}px`
+            const ctx = canvas.getContext('2d')!
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+            const task = page.render({ canvasContext: ctx, viewport, canvas } as any) as RenderTask
+            activeTaskRef.current = task
+            try {
+              await task.promise
+            } catch (err: any) {
+              if (err?.name !== 'RenderingCancelledException') throw err
+            } finally {
+              if (activeTaskRef.current === task) activeTaskRef.current = null
+            }
+          } catch {}
+        })
     })
     observer.observe(container)
     return () => observer.disconnect()
-  }, [loading, pageCount, currentPage, renderPage])
+  }, [loading, pageCount])
 
   // Keyboard navigation
   useEffect(() => {
