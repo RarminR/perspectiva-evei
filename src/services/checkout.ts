@@ -71,7 +71,11 @@ export async function createCheckout(
   let appliedPromo: { code: string } | null = null
   const normalizedCode = promoCode?.trim()
   if (normalizedCode) {
-    const validation = await validatePromoCode(normalizedCode, grossCents / 100)
+    const itemsForValidation = items.map((i) => ({
+      productType: i.productType,
+      productId: i.productId,
+    }))
+    const validation = await validatePromoCode(normalizedCode, grossCents / 100, itemsForValidation)
     if (!validation.valid) {
       throw new Error(validation.error || 'Codul promoțional nu este valid.')
     }

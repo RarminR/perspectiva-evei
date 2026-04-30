@@ -39,13 +39,18 @@ export default async function PromoCoduriPage() {
                   <th className="p-4 font-medium">Cod</th>
                   <th className="p-4 font-medium">Tip</th>
                   <th className="p-4 font-medium">Valoare</th>
+                  <th className="p-4 font-medium">Aplică</th>
                   <th className="p-4 font-medium">Utilizări</th>
                   <th className="p-4 font-medium">Valabil</th>
                   <th className="p-4 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {codes.map((code) => (
+                {codes.map((code) => {
+                  const appliesTo = Array.isArray((code as { appliesTo?: unknown }).appliesTo)
+                    ? ((code as { appliesTo?: unknown }).appliesTo as Array<{ type?: string; id?: string }>)
+                    : null
+                  return (
                   <tr key={code.id} className="border-b border-gray-50 last:border-0">
                     <td className="p-4 font-mono font-bold text-gray-900">{code.code}</td>
                     <td className="p-4 text-gray-600">
@@ -53,6 +58,11 @@ export default async function PromoCoduriPage() {
                     </td>
                     <td className="p-4 text-gray-900">
                       {code.type === 'PERCENTAGE' ? `${code.value}%` : `€${code.value.toFixed(2)}`}
+                    </td>
+                    <td className="p-4 text-gray-600 text-xs">
+                      {!appliesTo || appliesTo.length === 0
+                        ? <span className="text-gray-400">Toate produsele</span>
+                        : `${appliesTo.length} produs${appliesTo.length === 1 ? '' : 'e'}`}
                     </td>
                     <td className="p-4 text-gray-600">
                       {code.currentUses}{code.maxUses ? `/${code.maxUses}` : ''}
@@ -74,7 +84,8 @@ export default async function PromoCoduriPage() {
                       </span>
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>

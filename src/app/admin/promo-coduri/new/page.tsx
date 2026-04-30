@@ -1,12 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+
+interface PromoProduct {
+  type: 'COURSE' | 'GUIDE' | 'BUNDLE'
+  id: string
+  title: string
+  price: number
+}
+
+function productKey(p: { type: string; id: string }) {
+  return `${p.type}:${p.id}`
+}
 
 export default function NewPromoCodePage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [products, setProducts] = useState<PromoProduct[]>([])
+  const [productsLoading, setProductsLoading] = useState(true)
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
   const [form, setForm] = useState({
     code: '',
     type: 'PERCENTAGE',
@@ -16,8 +30,28 @@ export default function NewPromoCodePage() {
     validUntil: '',
   })
 
+  useEffect(() => {
+    fetch('/api/admin/promo/products')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data.products)) setProducts(data.products)
+      })
+      .catch(() => {})
+      .finally(() => setProductsLoading(false))
+  }, [])
+
   function handleChange(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  function toggleProduct(p: PromoProduct) {
+    const key = productKey(p)
+    setSelectedKeys((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -26,6 +60,10 @@ export default function NewPromoCodePage() {
     setError('')
 
     try {
+      const appliesTo = products
+        .filter((p) => selectedKeys.has(productKey(p)))
+        .map((p) => ({ type: p.type, id: p.id }))
+
       const res = await fetch('/api/admin/promo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -36,6 +74,7 @@ export default function NewPromoCodePage() {
           maxUses: form.maxUses ? parseInt(form.maxUses) : null,
           validFrom: form.validFrom || null,
           validUntil: form.validUntil || null,
+          appliesTo,
         }),
       })
 
@@ -50,6 +89,12 @@ export default function NewPromoCodePage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const productsByType = {
+    COURSE: products.filter((p) => p.type === 'COURSE'),
+    GUIDE: products.filter((p) => p.type === 'GUIDE'),
+    BUNDLE: products.filter((p) => p.type === 'BUNDLE'),
   }
 
   return (
@@ -145,6 +190,57 @@ export default function NewPromoCodePage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Se aplică pentru
+          </label>
+          <p className="text-xs text-gray-500 mb-3">
+            Bifează produsele pentru care e valabil codul. Dacă nu bifezi nimic, se aplică pentru orice produs.
+          </p>
+
+          {productsLoading ? (
+            <p className="text-sm text-gray-500">Se încarcă produsele...</p>
+          ) : products.length === 0 ? (
+            <p className="text-sm text-gray-500">Nu există produse active.</p>
+          ) : (
+            <div className="space-y-4 border border-gray-200 rounded-lg p-4">
+              {(['COURSE', 'GUIDE', 'BUNDLE'] as const).map((type) => {
+                const list = productsByType[type]
+                if (list.length === 0) return null
+                const label = type === 'COURSE' ? 'Cursuri' : type === 'GUIDE' ? 'Ghiduri' : 'Bundle-uri'
+                return (
+                  <div key={type}>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                      {label}
+                    </p>
+                    <div className="space-y-1.5">
+                      {list.map((p) => {
+                        const key = productKey(p)
+                        const checked = selectedKeys.has(key)
+                        return (
+                          <label
+                            key={key}
+                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggleProduct(p)}
+                              className="w-4 h-4 text-[#a007dc] border-gray-300 rounded focus:ring-[#a007dc]"
+                            />
+                            <span>{p.title}</span>
+                            <span className="text-gray-400 text-xs">€{p.price}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3">

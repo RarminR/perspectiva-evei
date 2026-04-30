@@ -13,7 +13,26 @@ export async function PATCH(
 
   const { id } = await params
   const body = await req.json()
-  const code = await prisma.promoCode.update({ where: { id }, data: body })
+
+  const data: Record<string, unknown> = { ...body }
+  if ('appliesTo' in body) {
+    if (Array.isArray(body.appliesTo)) {
+      const filtered = body.appliesTo.filter(
+        (entry: unknown): entry is { type: string; id: string } =>
+          !!entry &&
+          typeof entry === 'object' &&
+          typeof (entry as any).type === 'string' &&
+          typeof (entry as any).id === 'string'
+      )
+      data.appliesTo = filtered.length > 0 ? filtered : null
+    } else if (body.appliesTo === null) {
+      data.appliesTo = null
+    } else {
+      delete data.appliesTo
+    }
+  }
+
+  const code = await prisma.promoCode.update({ where: { id }, data })
   return NextResponse.json({ code })
 }
 

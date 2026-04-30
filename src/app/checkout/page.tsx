@@ -232,7 +232,11 @@ function CheckoutContent() {
       const res = await fetch('/api/promo/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: promoCode.trim(), amount: product!.priceEur }),
+        body: JSON.stringify({
+          code: promoCode.trim(),
+          amount: product!.priceEur,
+          items: [{ productType: product!.productType, productId: product!.productId }],
+        }),
       })
       const data = (await res.json()) as {
         valid: boolean

@@ -8,7 +8,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ valid: false, error: 'Neautorizat' }, { status: 401 })
   }
 
-  const body = (await req.json()) as { code?: string; amount?: number }
+  const body = (await req.json()) as {
+    code?: string
+    amount?: number
+    items?: Array<{ productType?: string; productId?: string }>
+  }
   const code = typeof body.code === 'string' ? body.code.trim() : ''
   const amount = typeof body.amount === 'number' && Number.isFinite(body.amount) ? body.amount : null
 
@@ -19,6 +23,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ valid: false, error: 'Suma este invalidă.' }, { status: 400 })
   }
 
-  const result = await validatePromoCode(code, amount)
+  const items = Array.isArray(body.items)
+    ? body.items
+        .filter(
+          (i): i is { productType: string; productId: string } =>
+            !!i && typeof i.productType === 'string' && typeof i.productId === 'string'
+        )
+        .map((i) => ({ productType: i.productType, productId: i.productId }))
+    : undefined
+
+  const result = await validatePromoCode(code, amount, items)
   return NextResponse.json(result)
 }

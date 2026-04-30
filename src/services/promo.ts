@@ -8,9 +8,27 @@ export interface PromoValidationResult {
   finalAmount?: number
 }
 
+export interface PromoItemRef {
+  productType: string
+  productId: string
+}
+
+function parseAppliesTo(value: unknown): { type: string; id: string }[] | null {
+  if (!Array.isArray(value)) return null
+  const cleaned = value.filter(
+    (entry): entry is { type: string; id: string } =>
+      !!entry &&
+      typeof entry === 'object' &&
+      typeof (entry as any).type === 'string' &&
+      typeof (entry as any).id === 'string'
+  )
+  return cleaned.length > 0 ? cleaned : null
+}
+
 export async function validatePromoCode(
   code: string,
-  amount: number
+  amount: number,
+  items?: PromoItemRef[]
 ): Promise<PromoValidationResult> {
   const promo = await prisma.promoCode.findUnique({ where: { code } })
 
@@ -34,6 +52,19 @@ export async function validatePromoCode(
 
   if (promo.maxUses !== null && promo.currentUses >= promo.maxUses) {
     return { valid: false, error: 'Codul a fost folosit de numărul maxim de ori.' }
+  }
+
+  const appliesTo = parseAppliesTo((promo as { appliesTo?: unknown }).appliesTo ?? null)
+  if (appliesTo && appliesTo.length > 0) {
+    if (!items || items.length === 0) {
+      return { valid: false, error: 'Codul nu se aplică acestui produs.' }
+    }
+    const matches = items.some((item) =>
+      appliesTo.some((scope) => scope.type === item.productType && scope.id === item.productId)
+    )
+    if (!matches) {
+      return { valid: false, error: 'Codul nu se aplică produselor din coș.' }
+    }
   }
 
   const finalAmount = applyDiscount(amount, promo.type as 'PERCENTAGE' | 'FIXED', promo.value)

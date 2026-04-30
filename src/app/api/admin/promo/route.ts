@@ -19,6 +19,16 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
+  const appliesTo = Array.isArray(body.appliesTo) && body.appliesTo.length > 0
+    ? body.appliesTo
+        .filter((entry: unknown): entry is { type: string; id: string } =>
+          !!entry &&
+          typeof entry === 'object' &&
+          typeof (entry as any).type === 'string' &&
+          typeof (entry as any).id === 'string'
+        )
+    : null
+
   const code = await prisma.promoCode.create({
     data: {
       code: body.code,
@@ -28,6 +38,7 @@ export async function POST(req: Request) {
       validFrom: body.validFrom ? new Date(body.validFrom) : null,
       validUntil: body.validUntil ? new Date(body.validUntil) : null,
       active: body.active ?? true,
+      appliesTo: appliesTo && appliesTo.length > 0 ? appliesTo : undefined,
     },
   })
   return NextResponse.json({ code }, { status: 201 })
