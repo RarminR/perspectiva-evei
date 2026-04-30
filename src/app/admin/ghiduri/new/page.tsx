@@ -27,6 +27,7 @@ export default function NewGuidePage() {
     price: '',
     coverImage: '',
     type: 'PDF' as 'PDF' | 'AUDIO',
+    published: true,
     pdfKey: '',
     audioKey: '',
     audioDurationMinutes: '',
@@ -240,6 +241,19 @@ export default function NewGuidePage() {
             onChange={(e) => handleChange('contentJson', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-[#a007dc] focus:border-transparent"
           />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            id="published"
+            type="checkbox"
+            checked={form.published}
+            onChange={(e) => setForm((prev) => ({ ...prev, published: e.target.checked }))}
+            className="w-4 h-4 text-[#a007dc] border-gray-300 rounded focus:ring-[#a007dc]"
+          />
+          <label htmlFor="published" className="text-sm font-medium text-gray-700">
+            Publicat (vizibil în catalog)
+          </label>
         </div>
 
         <div className="flex gap-3">

@@ -71,23 +71,33 @@ interface GuideData {
 }
 
 async function getGuides(): Promise<GuideData[]> {
+  const select = {
+    id: true,
+    title: true,
+    slug: true,
+    price: true,
+    description: true,
+    coverImage: true,
+    type: true,
+  } as const
   try {
     const guides = await prisma.guide.findMany({
-      where: {},
+      where: { published: true },
       orderBy: { createdAt: 'asc' },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        price: true,
-        description: true,
-        coverImage: true,
-        type: true,
-      },
+      select,
     })
     return guides.length > 0 ? guides : FALLBACK_GUIDES
   } catch {
-    return FALLBACK_GUIDES
+    try {
+      const guides = await prisma.guide.findMany({
+        where: {},
+        orderBy: { createdAt: 'asc' },
+        select,
+      })
+      return guides.length > 0 ? guides : FALLBACK_GUIDES
+    } catch {
+      return FALLBACK_GUIDES
+    }
   }
 }
 

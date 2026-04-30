@@ -94,13 +94,22 @@ export default async function Home() {
     price: number
     coverImage: string | null
   }[] = []
+  const guideSelect = { id: true, title: true, slug: true, price: true, coverImage: true } as const
   try {
     guides = await prisma.guide.findMany({
-      where: {},
+      where: { published: true },
       orderBy: { createdAt: 'asc' },
-      select: { id: true, title: true, slug: true, price: true, coverImage: true },
+      select: guideSelect,
     })
-  } catch {}
+  } catch {
+    try {
+      guides = await prisma.guide.findMany({
+        where: {},
+        orderBy: { createdAt: 'asc' },
+        select: guideSelect,
+      })
+    } catch {}
+  }
 
   let bundle: { id: string; title: string; price: number; originalPrice: number; items: { guide: { title: string } }[] } | null = null
   try {

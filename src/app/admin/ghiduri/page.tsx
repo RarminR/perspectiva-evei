@@ -43,6 +43,7 @@ export default async function GuidesPage() {
                   <th className="p-4 font-medium">Titlu</th>
                   <th className="p-4 font-medium">Slug</th>
                   <th className="p-4 font-medium">Preț</th>
+                  <th className="p-4 font-medium">Status</th>
                   <th className="p-4 font-medium">Creat</th>
                   <th className="p-4 font-medium">Acțiuni</th>
                 </tr>
@@ -53,6 +54,17 @@ export default async function GuidesPage() {
                     <td className="p-4 font-medium text-gray-900">{guide.title}</td>
                     <td className="p-4 text-gray-500">{guide.slug}</td>
                     <td className="p-4 text-gray-900">{formatPrice(guide.price)}</td>
+                    <td className="p-4">
+                      {guide.published === false ? (
+                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                          Ascuns
+                        </span>
+                      ) : (
+                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                          Publicat
+                        </span>
+                      )}
+                    </td>
                     <td className="p-4 text-gray-500">{formatDate(guide.createdAt)}</td>
                     <td className="p-4">
                       <Link

@@ -39,7 +39,10 @@ interface GuideDetail {
 async function getGuide(slug: string): Promise<GuideDetail | null> {
   try {
     const guide = await prisma.guide.findUnique({ where: { slug } })
-    if (guide) return guide as GuideDetail
+    if (guide) {
+      if ((guide as { published?: boolean }).published === false) return null
+      return guide as GuideDetail
+    }
     const fallback = FALLBACK_GUIDES.find((g) => g.slug === slug)
     return fallback ?? null
   } catch {
@@ -101,21 +104,27 @@ async function getActiveBundle(): Promise<BundleCard | null> {
 }
 
 async function getRelatedGuides(currentSlug: string): Promise<RelatedGuide[]> {
+  const select = { id: true, title: true, slug: true, price: true, coverImage: true, type: true } as const
   try {
     const guides = await prisma.guide.findMany({
-      where: { slug: { not: currentSlug } },
+      where: { slug: { not: currentSlug }, published: true },
       take: 3,
-      select: { id: true, title: true, slug: true, price: true, coverImage: true, type: true },
+      select,
     })
     if (guides.length > 0) return guides
-    return FALLBACK_GUIDES.filter((g) => g.slug !== currentSlug).map((g) => ({
-      id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage, type: g.type,
-    }))
   } catch {
-    return FALLBACK_GUIDES.filter((g) => g.slug !== currentSlug).map((g) => ({
-      id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage, type: g.type,
-    }))
+    try {
+      const guides = await prisma.guide.findMany({
+        where: { slug: { not: currentSlug } },
+        take: 3,
+        select,
+      })
+      if (guides.length > 0) return guides
+    } catch {}
   }
+  return FALLBACK_GUIDES.filter((g) => g.slug !== currentSlug).map((g) => ({
+    id: g.id, title: g.title, slug: g.slug, price: g.price, coverImage: g.coverImage, type: g.type,
+  }))
 }
 
 async function getOwnedGuideIds(userId: string | null): Promise<Set<string>> {

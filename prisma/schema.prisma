@@ -188,6 +188,7 @@ model Guide {
   coverImage    String?
   contentJson   Json?
   type          GuideType @default(PDF)
+  published     Boolean   @default(true)
   pdfKey        String?
   audioKey      String?
   audioDuration Int?
