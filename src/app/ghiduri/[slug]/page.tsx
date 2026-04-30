@@ -475,83 +475,56 @@ export default async function GuideDetailPage({
               )
             })}
 
-            {/* Bundle card */}
-            {bundle && (() => {
-              const bundleOwned =
-                bundle.items.length > 0 && bundle.items.every((i) => ownedGuideIds.has(i.id))
-              const cardClassName = 'group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white'
-              const cardStyle = {
-                backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
-              }
-              const inner = (
-                <>
-                  <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
-                    <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
-                      <Image
-                        src="/images/bundle-covers.jpg"
-                        alt={bundle.title}
-                        fill
-                        unoptimized
-                        className="object-contain"
-                      />
-                    </div>
+            {/* Bundle card — hidden when user already owns every guide in it */}
+            {bundle &&
+              !(bundle.items.length > 0 && bundle.items.every((i) => ownedGuideIds.has(i.id))) && (
+              <Link
+                href={`/checkout?product=BUNDLE&id=${bundle.id}`}
+                className="group relative flex flex-col rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(81,8,126,0.15)] hover:shadow-[0_28px_56px_rgba(81,8,126,0.25)] hover:-translate-y-1 transition-all duration-300 no-underline text-white"
+                style={{
+                  backgroundImage: 'linear-gradient(180deg, #e8c2ff 0%, #a62bf1 38%, #51087e 72%, #2c0246 100%)',
+                }}
+              >
+                <div className="relative flex items-center justify-center pt-10 pb-6 px-8">
+                  <div className="relative aspect-[3/4] w-[65%] drop-shadow-[0_18px_30px_rgba(44,2,70,0.45)] group-hover:scale-[1.03] transition-transform duration-500">
+                    <Image
+                      src="/images/bundle-covers.jpg"
+                      alt={bundle.title}
+                      fill
+                      unoptimized
+                      className="object-contain"
+                    />
                   </div>
-                  <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
-                    <div>
-                      <span
-                        className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
-                        style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
-                      >
-                        <span className="text-xs">✦</span>
-                        <span className="text-xs line-through opacity-70">€{bundle.originalPrice}</span>
-                        <span>€{bundle.price}</span>
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
-                      {bundle.title}
-                    </h3>
-                    <p className="text-[0.95rem] leading-relaxed text-white/80">
-                      {bundle.items.map((i) => i.title).join(' + ')}
-                    </p>
-                    <div className="mt-auto pt-4 flex flex-col gap-2">
-                      {bundleOwned ? (
-                        bundle.items.map((item) => (
-                          <Link
-                            key={item.id}
-                            href={`/ghidurile-mele/${item.slug}`}
-                            className="inline-flex items-center justify-between w-full gap-2 font-semibold py-3 px-5 rounded-full text-[#51087e] bg-white hover:bg-[#f3e8ff] transition-colors duration-200 no-underline"
-                          >
-                            {item.type === 'AUDIO' ? 'Ascultă' : 'Citește'} — {item.title}
-                            <span aria-hidden>→</span>
-                          </Link>
-                        ))
-                      ) : (
-                        <span
-                          className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white"
-                          style={{ borderColor: 'rgba(255,255,255,0.5)' }}
-                        >
-                          Cumpără pachetul
-                          <span aria-hidden>→</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )
-              return bundleOwned ? (
-                <div className={cardClassName} style={cardStyle}>
-                  {inner}
                 </div>
-              ) : (
-                <Link
-                  href={`/checkout?product=BUNDLE&id=${bundle.id}`}
-                  className={cardClassName}
-                  style={cardStyle}
-                >
-                  {inner}
-                </Link>
-              )
-            })()}
+                <div className="flex-1 flex flex-col px-7 pb-7 gap-3 text-left">
+                  <div>
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full shadow-md text-white"
+                      style={{ backgroundImage: 'linear-gradient(90deg, #a007dc, #e0b0ff)' }}
+                    >
+                      <span className="text-xs">✦</span>
+                      <span className="text-xs line-through opacity-70">€{bundle.originalPrice}</span>
+                      <span>€{bundle.price}</span>
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold leading-tight mt-1 text-white">
+                    {bundle.title}
+                  </h3>
+                  <p className="text-[0.95rem] leading-relaxed text-white/80">
+                    {bundle.items.map((i) => i.title).join(' + ')}
+                  </p>
+                  <div className="mt-auto pt-4">
+                    <span
+                      className="inline-flex items-center justify-between w-full gap-2 border font-semibold py-3 px-5 rounded-full text-white"
+                      style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+                    >
+                      Cumpără pachetul
+                      <span aria-hidden>→</span>
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            )}
           </div>
         </Section>
       )}
