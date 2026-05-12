@@ -27,12 +27,12 @@ const benefits = [
   {
     icon: '◈',
     title: 'Ghidare în Manifestare',
-    description: 'Înveți cum funcționează Legea Asumpției aplicată situației tale specifice - nu teorie generală, ci practică reală.',
+    description: 'Vei înțelege procesul din spatele manifestării aplicând fără tehnici.',
   },
   {
     icon: '❋',
     title: 'Transformare Conștientă',
-    description: 'Descoperi cum poți schimba situațiile cu care te confrunți acum prin puterea conștiinței și a asumpției corecte.',
+    description: 'Înveți cum să privești diferit situațiile cu care te confrunți, alegând conștient.',
   },
   {
     icon: '✧',
@@ -50,12 +50,12 @@ const steps = [
   {
     number: '02',
     title: 'Ședința',
-    description: 'În 60 de minute, lucrăm împreună pe situația ta. Primești claritate, direcție și tehnici concrete.',
+    description: 'În 60 de minute, lucrăm împreună pe situația ta. Primești claritate, direcție și echilibru.',
   },
   {
     number: '03',
     title: 'Transformă',
-    description: 'Aplici ce ai învățat și observi cum realitatea ta începe să se schimbe. Rezultatele vin natural.',
+    description: 'Începi să trăiești dintr-o nouă perspectivă. Realitatea te urmează.',
   },
 ]
 
@@ -212,7 +212,7 @@ export default function SedinteOneLaOnePage() {
             fontWeight: 700,
             marginBottom: '1.5rem',
           }}>
-            60 de minute. O viață transformată.
+            60 minute. O nouă perspectivă.
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '2rem' }}>
             Investește această oră și descoperă cât de simplu este să trăiești o realitate complet transformată.

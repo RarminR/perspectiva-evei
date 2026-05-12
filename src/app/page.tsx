@@ -80,7 +80,8 @@ const formatEur = (value: number) =>
   new Intl.NumberFormat('ro-RO', {
     style: 'currency',
     currency: 'EUR',
-    maximumFractionDigits: 0,
+    minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
   }).format(value)
 
 export default async function Home() {
@@ -147,7 +148,9 @@ export default async function Home() {
           backgroundSize: 'auto, cover',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '90vh',
+          minHeight: '90vh',
+          paddingTop: '3rem',
+          paddingBottom: '3rem',
           display: 'flex',
         }}
       >
@@ -158,7 +161,6 @@ export default async function Home() {
               flexDirection: 'column',
               gap: '22px',
               alignItems: 'flex-start',
-              width: '50%',
               color: '#f8f9fa',
             }}
             className="w-full md:w-1/2"
@@ -777,7 +779,7 @@ export default async function Home() {
                   />
                   <h3 style={{ margin: 0, fontSize: '1.7rem', fontWeight: 700 }}>Ședințe 1:1</h3>
                   <p style={{ margin: 0, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6 }}>
-                    O sesiune directă pentru blocajele tale actuale, cu claritate, structură și pași aplicabili.
+                    O oră în care primești claritate și direcție cu privire la situația ta.
                   </p>
                   <Link
                     href="/sedinte-1-la-1"

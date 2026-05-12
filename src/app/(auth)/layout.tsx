@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Left panel — hero image + logo overlay */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <Image
-          src="/images/poza-eva-hero.png"
+          src="/images/poza-eva-login.jpeg"
           alt=""
           fill
           className="object-cover"

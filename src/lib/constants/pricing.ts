@@ -14,7 +14,7 @@ export const COURSE_PRICING = {
 } as const
 
 export const PRICING_FEATURES = [
-  'Acces nelimitat la întâlnirile live și la înregistrări',
+  'Acces la întâlnirile live și la înregistrări',
   'Singurul curs de manifestare conștientă de care vei avea nevoie',
   'Garanția clarității',
 ] as const
