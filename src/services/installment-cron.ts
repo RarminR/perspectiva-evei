@@ -79,7 +79,7 @@ export async function processInstallmentReminders(): Promise<InstallmentCronStat
             const revolutOrder = await createOrder({
               amount: INSTALLMENT_AMOUNT_CENTS,
               currency: order1.currency,
-              description: 'Cursul ADO! - Rata 2 din 2',
+              description: 'Cursul A.D.O.! - Rata 2 din 2',
               expirePendingAfter: 'P7D',
             })
 

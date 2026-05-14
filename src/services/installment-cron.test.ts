@@ -89,7 +89,7 @@ describe('processInstallmentReminders', () => {
       expect.objectContaining({
         amount: 64400,
         currency: 'EUR',
-        description: 'Cursul ADO! - Rata 2 din 2',
+        description: 'Cursul A.D.O.! - Rata 2 din 2',
       })
     )
     expect(prisma.order.create).toHaveBeenCalledWith({

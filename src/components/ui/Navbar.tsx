@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 
 const BASE_NAV_LINKS = [
-  { href: '/cursul-ado', enrolledHref: '/curs/cursul-ado', courseSlug: 'cursul-ado', label: 'Cursul ADO!' },
+  { href: '/cursul-ado', enrolledHref: '/curs/cursul-ado', courseSlug: 'cursul-ado', label: 'Cursul A.D.O.!' },
   { href: '/ghiduri', label: 'Ghiduri' },
   { href: '/sedinte-1-la-1', label: 'Ședințe 1:1' },
   { href: 'https://www.perspectivaevei.com/', label: 'Despre Eva' },

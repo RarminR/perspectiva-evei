@@ -55,7 +55,7 @@ describe('Course Expiry Service', () => {
           editionId: 'ed-1',
           accessExpiresAt: new Date('2026-03-10'),
           user: { email: 'a@b.com', name: 'Ana' },
-          edition: { course: { title: 'Cursul ADO!' } },
+          edition: { course: { title: 'Cursul A.D.O.!' } },
         },
         {
           id: 'enroll-2',
@@ -63,7 +63,7 @@ describe('Course Expiry Service', () => {
           editionId: 'ed-1',
           accessExpiresAt: new Date('2026-03-14'),
           user: { email: 'c@d.com', name: 'Bogdan' },
-          edition: { course: { title: 'Cursul ADO!' } },
+          edition: { course: { title: 'Cursul A.D.O.!' } },
         },
       ]
       vi.mocked(prisma.courseEnrollment.findMany).mockResolvedValue(expired as any)
@@ -87,7 +87,7 @@ describe('Course Expiry Service', () => {
         {
           id: 'enroll-1',
           user: { email: 'ana@test.com', name: 'Ana' },
-          edition: { course: { title: 'Cursul ADO!' } },
+          edition: { course: { title: 'Cursul A.D.O.!' } },
         },
       ]
       vi.mocked(prisma.courseEnrollment.findMany).mockResolvedValue(expired as any)
@@ -97,7 +97,7 @@ describe('Course Expiry Service', () => {
 
       expect(sendCourseExpiryEmail).toHaveBeenCalledWith('ana@test.com', {
         name: 'Ana',
-        courseTitle: 'Cursul ADO!',
+        courseTitle: 'Cursul A.D.O.!',
       })
     })
 

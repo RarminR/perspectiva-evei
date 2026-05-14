@@ -189,7 +189,7 @@ export function DashboardTabs({ enrollments, guides, upcomingSessions, offers, l
                   <div>
                     <p style={emptyTextStyle}>Nu ești înscris la niciun curs.</p>
                     <Link href="/cursul-ado" style={ctaLinkStyle}>
-                      Descoperă Cursul ADO! →
+                      Descoperă Cursul A.D.O.! →
                     </Link>
                   </div>
                 ) : (

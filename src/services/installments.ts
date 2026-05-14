@@ -47,7 +47,7 @@ export async function createInstallmentCheckout(
   const revolutOrder = await createOrder({
     amount: INSTALLMENT_AMOUNT_CENTS,
     currency: 'EUR',
-    description: 'Cursul ADO! - Rata 1 din 2',
+    description: 'Cursul A.D.O.! - Rata 1 din 2',
     expirePendingAfter,
   })
 
@@ -113,7 +113,7 @@ export async function createInstallmentOrder2(
   const revolutOrder = await createOrder({
     amount: INSTALLMENT_AMOUNT_CENTS,
     currency: 'EUR',
-    description: 'Cursul ADO! - Rata 2 din 2',
+    description: 'Cursul A.D.O.! - Rata 2 din 2',
     expirePendingAfter,
   })
 

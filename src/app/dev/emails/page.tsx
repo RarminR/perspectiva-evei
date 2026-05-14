@@ -21,7 +21,7 @@ const emailTemplates = [
       <OrderConfirmationEmail
         name="John Doe"
         orderNumber="ORD-001"
-        productName="Cursul ADO!"
+        productName="Cursul A.D.O.!"
         amount="297 EUR"
         invoiceUrl="https://example.com/invoice.pdf"
       />

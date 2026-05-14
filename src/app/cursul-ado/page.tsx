@@ -6,11 +6,11 @@ import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
 import { formatEditionRange } from '@/lib/edition'
 
 export const metadata: Metadata = {
-  title: 'Cursul ADO! | Perspectiva Evei',
+  title: 'Cursul A.D.O.! | Perspectiva Evei',
   description:
-    'Cursul ADO! (Alege! Decide! Observă!) — 8 săptămâni de transformare autentică cu Eva Popescu. Max. 15 participanți, sesiuni live pe Zoom.',
+    'Cursul A.D.O.! (Alege! Decide! Observă!) — 8 săptămâni de transformare autentică cu Eva Popescu. Max. 15 participanți, sesiuni live pe Zoom.',
   openGraph: {
-    title: 'Cursul ADO! | Perspectiva Evei',
+    title: 'Cursul A.D.O.! | Perspectiva Evei',
     description:
       '8 săptămâni de manifestare conștientă cu Eva Popescu. Max. 15 participanți.',
     url: 'https://perspectivaevei.com/cursul-ado',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cursul ADO! | Perspectiva Evei',
+    title: 'Cursul A.D.O.! | Perspectiva Evei',
     description:
       '8 săptămâni de manifestare conștientă cu Eva Popescu. Max. 15 participanți.',
   },
@@ -35,9 +35,9 @@ const { FULL_PRICE, FULL_PRICE_CROSSED, INSTALLMENT_PRICE, INSTALLMENT_TOTAL, SA
 // ─── FAQ Content (from Webflow reference) ──────────────────────
 const FAQ_ITEMS = [
   {
-    question: 'Cu ce se diferențiază Cursul ADO! de alte cursuri de manifestare conștientă?',
+    question: 'Cu ce se diferențiază Cursul A.D.O.! de alte cursuri de manifestare conștientă?',
     answer:
-      'Cursul ADO! nu se bazează pe tehnici rapide sau afirmații, ci te învață să îți disciplinezi mintea și să privești întreaga ta realitate dintr-un alt punct de vedere — Observatorul. Acesta este un proces de transformare autentică, care îți oferă claritate și te ghidează să creezi conștient o viață care reflectă adevărata ta identitate.',
+      'Cursul A.D.O.! nu se bazează pe tehnici rapide sau afirmații, ci te învață să îți disciplinezi mintea și să privești întreaga ta realitate dintr-un alt punct de vedere — Observatorul. Acesta este un proces de transformare autentică, care îți oferă claritate și te ghidează să creezi conștient o viață care reflectă adevărata ta identitate.',
   },
   {
     question: 'Care este structura cursului?',
@@ -63,7 +63,7 @@ const FAQ_ITEMS = [
 
 // ─── 8-Week Curriculum ─────────────────────────────────────────
 const CURRICULUM = [
-  { week: 1, title: 'Introducere în ADO!', description: 'Setăm cadrul potrivit pentru un spațiu sigur și privat.' },
+  { week: 1, title: 'Introducere în A.D.O.!', description: 'Setăm cadrul potrivit pentru un spațiu sigur și privat.' },
   { week: 2, title: 'Conștiința și Manifestarea', description: 'Ce este Conștiința și cum capătă „formă".' },
   { week: 3, title: 'Timpul', description: 'Explicăm conceptul de timp.' },
   { week: 4, title: 'Identitatea', description: 'Conceptul de Observator.' },
@@ -78,17 +78,17 @@ const TESTIMONIALS = [
   {
     quote: 'Eva, te iubesc! Dacă ai ști cât de mult s-a schimbat tot după cursul tău... Voi fi mereu recunoscătoare!',
     name: 'Roxana',
-    role: 'Absolventă Cursul ADO!',
+    role: 'Absolventă Cursul A.D.O.!',
   },
   {
-    quote: 'Singurul curs care te scoate din întuneric este ADO! Totul este atât de simplu, și nu ai nevoie de niciun alt curs după.',
+    quote: 'Singurul curs care te scoate din întuneric este A.D.O.! Totul este atât de simplu, și nu ai nevoie de niciun alt curs după.',
     name: 'Loredana',
-    role: 'Absolventă Cursul ADO!',
+    role: 'Absolventă Cursul A.D.O.!',
   },
   {
     quote: 'Am învățat că totul pleacă de la mine. Perspectiva mea s-a schimbat complet, iar viața a început să reflecte asta.',
     name: 'Elena',
-    role: 'Absolventă Cursul ADO!',
+    role: 'Absolventă Cursul A.D.O.!',
   },
 ]
 
@@ -126,7 +126,7 @@ export default async function CursulAdoPage() {
             <nav className="flex items-center gap-2 text-sm text-white/50 mb-8">
               <Link href="/" className="hover:text-white/80 transition">Acasă</Link>
               <span>/</span>
-              <span className="text-white/80">Cursul ADO!</span>
+              <span className="text-white/80">Cursul A.D.O.!</span>
             </nav>
 
             {activeEdition && (
@@ -146,7 +146,7 @@ export default async function CursulAdoPage() {
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
               <span className="bg-gradient-to-r from-[#a007dc] via-[#e0b0ff] to-[#a007dc] bg-clip-text text-transparent">
-                Cursul ADO!
+                Cursul A.D.O.!
               </span>
               <br />
               <span className="text-white text-3xl md:text-4xl lg:text-5xl font-light">
@@ -190,7 +190,7 @@ export default async function CursulAdoPage() {
       <Section variant="light-pink">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-4">
-            În cursul ADO!
+            În cursul A.D.O.!
           </h2>
           <p className="text-[#51087e]/60 max-w-xl mx-auto">
             Descoperă ce te așteaptă în cele 8 săptămâni de transformare autentică.
@@ -217,7 +217,7 @@ export default async function CursulAdoPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#a007dc]/10 rounded-full blur-[200px] pointer-events-none" />
         <div className="relative max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Vreau să mă înscriu la Cursul ADO!
+            Vreau să mă înscriu la Cursul A.D.O.!
           </h2>
           <p className="text-white/60 mb-4">...pentru că sunt decis să îmi schimb realitatea.</p>
 
@@ -351,7 +351,7 @@ export default async function CursulAdoPage() {
             Vieți reale. Transformări autentice.
           </h2>
           <p className="text-[#51087e]/60 max-w-xl mx-auto">
-            Cursul ADO! a schimbat perspectivele a peste 100 de participanți care au ales să se pună în centrul propriei realități.
+            Cursul A.D.O.! a schimbat perspectivele a peste 100 de participanți care au ales să se pună în centrul propriei realități.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -391,7 +391,7 @@ export default async function CursulAdoPage() {
       <Section variant="white" className="py-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-[#51087e] mb-4">
-            Ai o curiozitate despre Cursul ADO!?
+            Ai o curiozitate despre Cursul A.D.O.!?
           </h2>
           <p className="text-[#51087e]/60 max-w-xl mx-auto">
             Cel mai probabil vei găsi răspunsul pe care îl cauți mai jos.
@@ -410,7 +410,7 @@ export default async function CursulAdoPage() {
             Ești gata să îți schimbi perspectiva?
           </h2>
           <p className="text-white/60 mb-8 text-lg">
-            Alătură-te următoarei ediții a Cursului ADO! și începe transformarea.
+            Alătură-te următoarei ediții a Cursului A.D.O.! și începe transformarea.
           </p>
           <Link
             href="/checkout?product=COURSE&type=full"

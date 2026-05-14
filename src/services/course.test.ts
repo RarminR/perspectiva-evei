@@ -37,7 +37,7 @@ describe('Course Service', () => {
     it('queries by slug and includes editions with enrollment counts', async () => {
       const mockCourse = {
         id: 'course-1',
-        title: 'Cursul ADO!',
+        title: 'Cursul A.D.O.!',
         slug: 'cursul-ado',
         editions: [
           { id: 'ed-1', editionNumber: 2, _count: { enrollments: 5 } },

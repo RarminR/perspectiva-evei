@@ -123,7 +123,7 @@ export default function DevComponentsPage() {
             <div className="max-w-2xl">
               <Accordion
                 items={[
-                  { question: 'Ce este Cursul ADO!?', answer: 'Un program de transformare personală bazat pe principiile de manifestare conștientă.' },
+                  { question: 'Ce este Cursul A.D.O.!?', answer: 'Un program de transformare personală bazat pe principiile de manifestare conștientă.' },
                   { question: 'Cât durează programul?', answer: 'Programul se desfășoară pe parcursul a 8 săptămâni.' },
                   { question: 'Este potrivit pentru începători?', answer: 'Da, cursul este conceput pentru toate nivelurile de experiență.' },
                 ]}

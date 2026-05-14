@@ -62,7 +62,7 @@ async function main() {
   // Create course
   const course = await prisma.course.create({
     data: {
-      title: 'Cursul ADO!',
+      title: 'Cursul A.D.O.!',
       slug: 'cursul-ado',
       description: 'Manifestation and consciousness coaching course',
       price: 1188,

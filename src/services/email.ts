@@ -61,7 +61,7 @@ export async function sendInstallmentReminderEmail(
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: 'Rata 2 — Cursul ADO! este scadentă',
+    subject: 'Rata 2 — Cursul A.D.O.! este scadentă',
     react: InstallmentReminderEmail(params),
   })
 }
