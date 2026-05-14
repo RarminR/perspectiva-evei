@@ -37,6 +37,8 @@ export async function sendOrderConfirmationEmail(
     productName: string
     amount: string
     invoiceUrl?: string
+    isFirstInstallment?: boolean
+    secondInstallmentDueDate?: string
   }
 ) {
   return getResend().emails.send({
@@ -59,7 +61,7 @@ export async function sendInstallmentReminderEmail(
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: 'Rata 2 — Cursul A.D.O. este scadentă',
+    subject: 'Rata 2 — Cursul ADO! este scadentă',
     react: InstallmentReminderEmail(params),
   })
 }

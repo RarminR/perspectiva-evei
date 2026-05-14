@@ -61,7 +61,7 @@ describe('Email Service', () => {
       await sendOrderConfirmationEmail('test@example.com', {
         name: 'John',
         orderNumber: 'ORD-001',
-        productName: 'Cursul A.D.O.',
+        productName: 'Cursul ADO!',
         amount: '297 EUR',
       })
       expect(mockResend.emails.send).toHaveBeenCalledWith(

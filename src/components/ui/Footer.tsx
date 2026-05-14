@@ -48,7 +48,7 @@ export function Footer() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {[
-                  { href: '/cursul-ado', label: 'Cursul A.D.O.' },
+                  { href: '/cursul-ado', label: 'Cursul ADO!' },
                   { href: '/ghiduri', label: 'Ghiduri' },
                   { href: '/sedinte-1-la-1', label: 'Ședințe 1:1' },
                   { href: '/blog', label: 'Blog' },

@@ -25,7 +25,7 @@ async function renderPage() {
   render(Page)
 }
 
-describe('Cursul ADO Page', () => {
+describe('Cursul ADO! Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -35,7 +35,7 @@ describe('Cursul ADO Page', () => {
       mockGetCourse.mockResolvedValue({
         id: 'course-1',
         slug: 'cursul-ado',
-        title: 'Cursul A.D.O.',
+        title: 'Cursul ADO!',
         description: 'Alege. Decide. Observă.',
         price: 1188,
         installmentPrice: 644,
@@ -59,9 +59,9 @@ describe('Cursul ADO Page', () => {
       })
     })
 
-    it('renders with "Cursul A.D.O." heading', async () => {
+    it('renders with "Cursul ADO!" heading', async () => {
       await renderPage()
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Cursul A\.D\.O/i)
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Cursul ADO!/i)
     })
 
     it('displays full payment price €1.188', async () => {

@@ -17,6 +17,8 @@ interface OrderConfirmationEmailProps {
   productName: string
   amount: string
   invoiceUrl?: string
+  isFirstInstallment?: boolean
+  secondInstallmentDueDate?: string
 }
 
 export const OrderConfirmationEmail = ({
@@ -25,6 +27,8 @@ export const OrderConfirmationEmail = ({
   productName,
   amount,
   invoiceUrl,
+  isFirstInstallment,
+  secondInstallmentDueDate,
 }: OrderConfirmationEmailProps) => (
   <Html>
     <Head />
@@ -59,6 +63,18 @@ export const OrderConfirmationEmail = ({
               <Text style={detailsValue}>{amount}</Text>
             </Section>
           </Section>
+
+          {isFirstInstallment && (
+            <Section style={warningBox}>
+              <Text style={warningText}>
+                <strong>Atenție:</strong> dacă a doua rată nu este achitată până la scadență,
+                accesul la curs va fi blocat până la plată.
+                {secondInstallmentDueDate && (
+                  <> Scadența pentru această ediție: <strong>{secondInstallmentDueDate}</strong>.</>
+                )}
+              </Text>
+            </Section>
+          )}
 
           <Hr style={hr} />
 
@@ -204,6 +220,21 @@ const primaryButton = {
 const hr = {
   borderColor: '#e5e7eb',
   margin: '32px 0',
+}
+
+const warningBox = {
+  backgroundColor: '#fef3c7',
+  borderLeft: '4px solid #f59e0b',
+  padding: '16px 20px',
+  borderRadius: '6px',
+  marginBottom: '24px',
+}
+
+const warningText = {
+  fontSize: '14px',
+  lineHeight: '1.6',
+  color: '#92400e',
+  margin: '0',
 }
 
 const footer = {

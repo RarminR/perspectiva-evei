@@ -216,7 +216,7 @@ export default async function Home() {
             </h1>
 
             <p style={{ color: '#ffffff', maxWidth: '480px', margin: 0, lineHeight: 1.65 }}>
-              Cursul A.D.O. este locul în care perspectiva ta se schimbă complet. Fără tehnici.
+              Cursul ADO! este locul în care perspectiva ta se schimbă complet. Fără tehnici.
               Fără meditații. Fără teme. Doar tu, într-o postură complet nouă - cea a centrului
               realității tale.
             </p>
@@ -328,7 +328,7 @@ export default async function Home() {
                 backgroundClip: 'text',
               }}
             >
-              De ce A.D.O.?
+              De ce ADO!?
             </h2>
             <p style={{ margin: 0, color: '#2c0246', fontStyle: 'italic', maxWidth: '640px' }}>
               „Schimbă-ți percepția despre tine și vei schimba automat și lumea în care trăiești.” — Neville Goddard
@@ -855,7 +855,7 @@ export default async function Home() {
                 border: '1px solid #ffffff',
               }}
             >
-              Înscrie-te la A.D.O.
+              Înscrie-te la ADO!
             </Link>
             <Link
               href="/sedinte-1-la-1"

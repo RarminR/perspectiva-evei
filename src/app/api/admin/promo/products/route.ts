@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Courses (we treat them as always-listable; ADO is the only one)
+  // Courses (we treat them as always-listable; ADO! is the only one)
   const courses = await prisma.course.findMany({
     select: { id: true, title: true, price: true },
     orderBy: { createdAt: 'asc' },

@@ -48,7 +48,7 @@ describe('Course user pages', () => {
     vi.mocked(prisma.courseEdition.findUnique).mockResolvedValue({
       id: 'edition-1',
       editionNumber: 11,
-      course: { title: 'Curs A.D.O.' },
+      course: { title: 'Curs ADO!' },
       enrollments: [{ id: 'enr-1', accessExpiresAt: new Date('2099-01-01') }],
       lessons: [
         { id: 'lesson-1', title: 'Introducere', order: 1, duration: 20, availableFrom: null },
@@ -77,7 +77,7 @@ describe('Course user pages', () => {
     vi.mocked(prisma.courseEdition.findUnique).mockResolvedValue({
       id: 'edition-1',
       editionNumber: 11,
-      course: { title: 'Curs A.D.O.' },
+      course: { title: 'Curs ADO!' },
       enrollments: [{ id: 'enr-1', accessExpiresAt: new Date('2099-01-01') }],
       lessons: [
         { id: 'lesson-1', title: 'Lecție viitoare', order: 1, duration: 20, availableFrom: new Date('2099-01-02') },
@@ -101,7 +101,7 @@ describe('Course user pages', () => {
     vi.mocked(prisma.courseEdition.findUnique).mockResolvedValue({
       id: 'edition-1',
       editionNumber: 11,
-      course: { title: 'Curs A.D.O.' },
+      course: { title: 'Curs ADO!' },
       enrollments: [],
       lessons: [],
     } as any)
@@ -128,7 +128,7 @@ describe('Course user pages', () => {
       availableFrom: null,
       edition: {
         id: 'edition-1',
-        course: { title: 'Curs A.D.O.' },
+        course: { title: 'Curs ADO!' },
         enrollments: [{ id: 'enr-1', accessExpiresAt: new Date('2099-01-01') }],
         lessons: [
           { id: 'lesson-1', title: 'Prima', order: 1 },
@@ -158,7 +158,7 @@ describe('Course user pages', () => {
       availableFrom: null,
       edition: {
         id: 'edition-1',
-        course: { title: 'Curs A.D.O.' },
+        course: { title: 'Curs ADO!' },
         enrollments: [{ id: 'enr-1', accessExpiresAt: new Date('2099-01-01') }],
         lessons: [
           { id: 'lesson-1', title: 'Prima', order: 1 },
@@ -188,7 +188,7 @@ describe('Course user pages', () => {
       availableFrom: null,
       edition: {
         id: 'edition-1',
-        course: { title: 'Curs A.D.O.' },
+        course: { title: 'Curs ADO!' },
         enrollments: [{ id: 'enr-1', accessExpiresAt: new Date('2099-01-01') }],
         lessons: [
           { id: 'lesson-1', title: 'Prima', order: 1 },
@@ -219,7 +219,7 @@ describe('Course user pages', () => {
       availableFrom: null,
       edition: {
         id: 'edition-1',
-        course: { title: 'Curs A.D.O.' },
+        course: { title: 'Curs ADO!' },
         enrollments: [],
         lessons: [{ id: 'lesson-2', title: 'A doua lecție', order: 2 }],
       },

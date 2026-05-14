@@ -29,7 +29,7 @@ describe('Guide Service', () => {
       } as any)
       vi.mocked(prisma.guide.findUnique).mockResolvedValue({
         id: 'guide-1',
-        title: 'Ghid ADO',
+        title: 'Ghid ADO!',
         slug: 'ghid-ado',
         coverImage: 'cover.jpg',
         contentJson: { pages: ['Pagina 1', 'Pagina 2'] },
@@ -52,7 +52,7 @@ describe('Guide Service', () => {
       })
       expect(result).toEqual({
         id: 'guide-1',
-        title: 'Ghid ADO',
+        title: 'Ghid ADO!',
         slug: 'ghid-ado',
         coverImage: 'cover.jpg',
         contentJson: { pages: ['Pagina 1', 'Pagina 2'] },
@@ -101,7 +101,7 @@ describe('Guide Service', () => {
           guideId: 'guide-1',
           guide: {
             id: 'guide-1',
-            title: 'Ghid ADO',
+            title: 'Ghid ADO!',
             slug: 'ghid-ado',
             coverImage: 'cover.jpg',
             description: 'Descriere 1',
@@ -136,7 +136,7 @@ describe('Guide Service', () => {
         },
         {
           id: 'guide-1',
-          title: 'Ghid ADO',
+          title: 'Ghid ADO!',
           slug: 'ghid-ado',
           coverImage: 'cover.jpg',
           description: 'Descriere 1',

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db'
 import { sendOrderConfirmationEmail, sendSessionBookedEmail } from './email'
+import { getEditionInstallmentDueDate } from './course'
 import { processInvoiceQueue, queueInvoice } from './invoice-pipeline'
 import { SESSION_PRICING } from '@/lib/constants/pricing'
 
@@ -102,11 +103,24 @@ export async function fulfillOrder(orderId: string): Promise<void> {
 
   try {
     const firstItem = order.items[0]
+    const isFirstInstallment = order.installmentNumber === 1
+    const courseItem = order.items.find((item) => item.productType === 'COURSE')
+    const secondInstallmentDueDate =
+      isFirstInstallment && courseItem
+        ? (await getEditionInstallmentDueDate(courseItem.productId))?.toLocaleDateString('ro-RO', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })
+        : undefined
+
     await sendOrderConfirmationEmail(order.user.email, {
       name: order.user.name,
       orderNumber: order.id,
       productName: firstItem ? `${firstItem.productType} ${firstItem.productId}` : 'Produse digitale',
       amount: `${order.totalAmount.toFixed(2)} ${order.currency}`,
+      isFirstInstallment,
+      secondInstallmentDueDate,
     })
   } catch (error) {
     console.error('Failed to send order confirmation email:', error)

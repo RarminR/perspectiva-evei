@@ -25,7 +25,7 @@ export const InstallmentReminderEmail = ({
 }: InstallmentReminderEmailProps) => (
   <Html>
     <Head />
-    <Preview>Rata 2 — Cursul A.D.O. este scadentă</Preview>
+    <Preview>Rata 2 — Cursul ADO! este scadentă</Preview>
     <Body style={main}>
       <Container style={container}>
         {/* Header */}
@@ -37,7 +37,7 @@ export const InstallmentReminderEmail = ({
         <Section style={content}>
           <Text style={greeting}>Salut {name},</Text>
           <Text style={bodyText}>
-            Aceasta este o notificare că rata 2 a cursului A.D.O. este scadentă.
+            Aceasta este o notificare că rata 2 a cursului ADO! este scadentă.
           </Text>
 
           {/* Payment Details */}

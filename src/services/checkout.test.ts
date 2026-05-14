@@ -57,7 +57,7 @@ describe('Checkout Service', () => {
         {
           productId: 'guide-1',
           productType: 'GUIDE',
-          name: 'Ghid ADO',
+          name: 'Ghid ADO!',
           priceEurCents: 118800,
           quantity: 1,
         },

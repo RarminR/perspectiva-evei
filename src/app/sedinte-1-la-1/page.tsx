@@ -37,7 +37,7 @@ const benefits = [
   {
     icon: '✧',
     title: 'Suport Continuu',
-    description: 'Primești instrumente și tehnici pe care le poți aplica imediat, cu rezultate vizibile în viața de zi cu zi.',
+    description: 'Primești ghidare pe parcursul a 8 săptămâni, învățând să trăiești conștient.',
   },
 ]
 
