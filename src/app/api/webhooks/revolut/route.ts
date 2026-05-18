@@ -37,6 +37,15 @@ async function processWebhookEvent(event: RevolutWebhookEvent): Promise<void> {
   }
 }
 
+const WEBHOOK_TOLERANCE_SECONDS = 300 // 5 minutes
+
+function extractTimestamp(signatureHeader: string, timestampHeader: string | null): number | null {
+  const tsPart = signatureHeader.split(',').find((p) => p.startsWith('ts='))
+  if (tsPart) return Number(tsPart.replace('ts=', ''))
+  if (timestampHeader) return Number(timestampHeader)
+  return null
+}
+
 export async function POST(req: Request) {
   const rawBody = await req.text()
 
@@ -52,6 +61,14 @@ export async function POST(req: Request) {
 
   if (!isValid) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+  }
+
+  const ts = extractTimestamp(signatureHeader, timestampHeader)
+  if (ts !== null) {
+    const ageSeconds = Math.floor(Date.now() / 1000) - ts
+    if (ageSeconds > WEBHOOK_TOLERANCE_SECONDS || ageSeconds < -60) {
+      return NextResponse.json({ error: 'Request timestamp out of tolerance' }, { status: 401 })
+    }
   }
 
   const event = JSON.parse(rawBody) as RevolutWebhookEvent

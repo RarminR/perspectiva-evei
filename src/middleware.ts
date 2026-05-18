@@ -72,6 +72,7 @@ export async function middlewareCallback(req: AuthRequest) {
     "/profilul-meu",
     "/curs/",
     "/programare",
+    "/checkout",
   ]
   const isProtected = protectedPaths.some((p) =>
     nextUrl.pathname.startsWith(p)

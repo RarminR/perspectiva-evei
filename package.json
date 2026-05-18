@@ -10,6 +10,7 @@
     "lint": "next lint",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "revolut:register-webhook": "ts-node scripts/register-revolut-webhook.ts",
     "prisma": {
       "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
     }
@@ -52,5 +53,10 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "vitest": "^1.1.0"
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   }
 }
