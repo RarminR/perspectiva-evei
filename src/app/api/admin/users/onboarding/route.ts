@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { sendWelcomeEmail } from '@/services/email'
+import { sendInviteEmail } from '@/services/email'
+
+const INVITE_TTL_DAYS = 30
 
 export async function POST(req: NextRequest) {
   const session = await auth()
@@ -18,13 +21,26 @@ export async function POST(req: NextRequest) {
     select: { id: true, name: true, email: true },
   })
 
+  const origin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
+  const expiresAt = new Date(Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60 * 1000)
+
   const results = await Promise.allSettled(
-    users.map((user) => sendWelcomeEmail(user.email, user.name))
+    users.map(async (user) => {
+      const token = randomBytes(32).toString('hex')
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { inviteToken: token, inviteTokenExpiresAt: expiresAt },
+      })
+      const inviteUrl = `${origin.replace(/\/$/, '')}/invitatie/${token}`
+      await sendInviteEmail(user.email, {
+        name: user.name || 'Dragă cititoare',
+        inviteUrl,
+      })
+    })
   )
 
-  const sentIds = users
-    .filter((_, i) => results[i].status === 'fulfilled')
-    .map((u) => u.id)
+  const sentIds = users.filter((_, i) => results[i].status === 'fulfilled').map((u) => u.id)
+  const failed = users.filter((_, i) => results[i].status === 'rejected').map((u) => u.email)
 
   if (sentIds.length > 0) {
     await prisma.user.updateMany({
@@ -32,8 +48,6 @@ export async function POST(req: NextRequest) {
       data: { onboardingEmailSentAt: new Date() },
     })
   }
-
-  const failed = users.filter((_, i) => results[i].status === 'rejected').map((u) => u.email)
 
   return NextResponse.json({ sent: sentIds.length, failed })
 }
