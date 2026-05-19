@@ -65,7 +65,8 @@ export async function POST(req: Request) {
 
   const ts = extractTimestamp(signatureHeader, timestampHeader)
   if (ts !== null) {
-    const ageSeconds = Math.floor(Date.now() / 1000) - ts
+    const tsSeconds = ts > 1e10 ? ts / 1000 : ts
+    const ageSeconds = Math.floor(Date.now() / 1000) - tsSeconds
     if (ageSeconds > WEBHOOK_TOLERANCE_SECONDS || ageSeconds < -60) {
       return NextResponse.json({ error: 'Request timestamp out of tolerance' }, { status: 401 })
     }
