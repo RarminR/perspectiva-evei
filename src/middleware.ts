@@ -93,8 +93,9 @@ export async function middlewareCallback(req: AuthRequest) {
   }
 
   if (isProtected && !isLoggedIn) {
+    const callbackUrl = encodeURIComponent(nextUrl.pathname + nextUrl.search)
     return NextResponse.redirect(
-      new URL(`/logare?callbackUrl=${nextUrl.pathname}`, nextUrl)
+      new URL(`/logare?callbackUrl=${callbackUrl}`, nextUrl)
     )
   }
 
