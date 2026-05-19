@@ -15,20 +15,46 @@ export async function GET(req: NextRequest) {
 
   const search = req.nextUrl.searchParams.get('search')
 
+  const onboardingFilter = req.nextUrl.searchParams.get('onboarding')
+  const activatedFilter = req.nextUrl.searchParams.get('activated')
+
+  const where: Record<string, unknown> = {}
+
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: 'insensitive' } },
+      { email: { contains: search, mode: 'insensitive' } },
+    ]
+  }
+
+  if (onboardingFilter === 'sent') where.onboardingEmailSentAt = { not: null }
+  if (onboardingFilter === 'not_sent') where.onboardingEmailSentAt = null
+
+  if (activatedFilter === 'yes') where.hashedPassword = { not: null }
+  if (activatedFilter === 'no') where.hashedPassword = null
+
   const users = await prisma.user.findMany({
-    where: search
-      ? {
-          OR: [
-            { name: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } },
-          ],
-        }
-      : {},
-    include: { _count: { select: { devices: true, orders: true } } },
+    where,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      hashedPassword: true,
+      onboardingEmailSentAt: true,
+      createdAt: true,
+      _count: { select: { devices: true, orders: true } },
+    },
     orderBy: { createdAt: 'desc' },
   })
 
-  return NextResponse.json({ users })
+  return NextResponse.json({
+    users: users.map((u) => ({
+      ...u,
+      accountActivated: !!u.hashedPassword,
+      hashedPassword: undefined,
+    })),
+  })
 }
 
 export async function POST(req: NextRequest) {
