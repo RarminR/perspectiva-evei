@@ -78,27 +78,28 @@ export const OrderConfirmationEmail = ({
 
           <Hr style={hr} />
 
-          <Text style={bodyText}>
-            Poți accesa conținutul tău imediat. Dacă ai nevoie de factură, o găsești mai jos.
-          </Text>
-
           {invoiceUrl && (
-            <Button style={button} href={invoiceUrl}>
-              Descarcă factura
-            </Button>
+            <>
+              <Text style={bodyText}>
+                Factura ta este disponibilă mai jos.
+              </Text>
+              <Button style={button} href={invoiceUrl}>
+                Descarcă factura
+              </Button>
+            </>
           )}
 
           <Button
             style={primaryButton}
-            href={`${process.env.NEXT_PUBLIC_APP_URL || 'https://perspectivaevei.com'}/curs`}
+            href={`${process.env.NEXT_PUBLIC_APP_URL || 'https://app.perspectivaevei.com'}`}
           >
-            Accesează conținutul
+            Hai pe platformă
           </Button>
 
           <Hr style={hr} />
 
           <Text style={footer}>
-            Dacă ai întrebări, contactează-ne la support@perspectivaevei.com
+            Dacă ai întrebări, contactează-ne la estedespremine@gmail.com
           </Text>
         </Section>
 
