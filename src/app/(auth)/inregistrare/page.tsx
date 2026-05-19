@@ -2,13 +2,15 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const inputClasses =
   "w-full bg-white/[0.08] border border-white/[0.15] rounded-xl px-4 py-3 text-[#f8f9fa] placeholder:text-white/30 focus:outline-none focus:border-[#a007dc] focus:ring-2 focus:ring-[#a007dc]/25 transition-colors duration-200 text-sm"
 
 export default function InregistrarePage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || ""
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -49,7 +51,10 @@ export default function InregistrarePage() {
         return
       }
 
-      router.push("/logare?registered=true")
+      const loginUrl = callbackUrl
+        ? `/logare?registered=true&callbackUrl=${encodeURIComponent(callbackUrl)}`
+        : "/logare?registered=true"
+      router.push(loginUrl)
     } catch {
       setError("A apărut o eroare de rețea")
       setLoading(false)
@@ -154,7 +159,7 @@ export default function InregistrarePage() {
       <div className="text-center text-sm">
         <p className="text-[#f8f9fa]/50">
           Ai deja un cont?{" "}
-          <Link href="/logare" className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
+          <Link href={callbackUrl ? `/logare?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/logare"} className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
             Loghează-te
           </Link>
         </p>

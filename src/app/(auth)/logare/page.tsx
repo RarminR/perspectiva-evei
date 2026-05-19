@@ -125,7 +125,7 @@ function LogareForm() {
         </p>
         <p className="text-[#f8f9fa]/50">
           Nu ai cont?{" "}
-          <Link href="/inregistrare" className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
+          <Link href={callbackUrl !== "/dashboard" ? `/inregistrare?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/inregistrare"} className="text-[#f8f9fa]/80 underline hover:text-[#f8f9fa] transition-colors">
             Creează unul
           </Link>
         </p>
