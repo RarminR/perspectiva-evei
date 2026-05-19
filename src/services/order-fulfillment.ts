@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db'
 import { sendOrderConfirmationEmail, sendSessionBookedEmail } from './email'
 import { getEditionInstallmentDueDate } from './course'
-import { processInvoiceQueue, queueInvoice } from './invoice-pipeline'
+import { processInvoiceQueue, queueInvoice, resolveProductNames, nameForItem } from './invoice-pipeline'
 import { SESSION_PRICING } from '@/lib/constants/pricing'
 
 function getEnrollmentExpiryDate(): Date {
@@ -114,10 +114,13 @@ export async function fulfillOrder(orderId: string): Promise<void> {
           })
         : undefined
 
+    const nameLookup = await resolveProductNames(order.items)
+    const productName = firstItem ? nameForItem(firstItem, nameLookup) : 'Produse digitale'
+
     await sendOrderConfirmationEmail(order.user.email, {
       name: order.user.name,
       orderNumber: order.id,
-      productName: firstItem ? `${firstItem.productType} ${firstItem.productId}` : 'Produse digitale',
+      productName,
       amount: `${order.totalAmount.toFixed(2)} ${order.currency}`,
       isFirstInstallment,
       secondInstallmentDueDate,
