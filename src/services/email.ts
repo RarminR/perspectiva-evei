@@ -21,11 +21,12 @@ async function renderToHtml(element: unknown): Promise<string> {
 }
 
 export async function sendWelcomeEmail(to: string, name: string) {
+  const html = await renderToHtml(WelcomeEmail({ name }))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Bun venit la Perspectiva Evei!',
-    react: WelcomeEmail({ name }),
+    html,
   })
 }
 
@@ -41,11 +42,12 @@ export async function sendOrderConfirmationEmail(
     secondInstallmentDueDate?: string
   }
 ) {
+  const html = await renderToHtml(OrderConfirmationEmail(params))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: `Confirmare comandă #${params.orderNumber}`,
-    react: OrderConfirmationEmail(params),
+    html,
   })
 }
 
@@ -58,11 +60,12 @@ export async function sendInstallmentReminderEmail(
     dueDate: string
   }
 ) {
+  const html = await renderToHtml(InstallmentReminderEmail(params))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Rata 2 — Cursul A.D.O.! este scadentă',
-    react: InstallmentReminderEmail(params),
+    html,
   })
 }
 
@@ -90,11 +93,12 @@ export async function sendPasswordResetEmail(
     resetUrl: string
   }
 ) {
+  const html = await renderToHtml(PasswordResetEmail(params))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Resetare parolă — Perspectiva Evei',
-    react: PasswordResetEmail(params),
+    html,
   })
 }
 
@@ -107,11 +111,12 @@ export async function sendSessionBookedEmail(
     zoomLink?: string
   }
 ) {
+  const html = await renderToHtml(SessionBookedEmail(params))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Ședință 1:1 confirmată',
-    react: SessionBookedEmail(params),
+    html,
   })
 }
 
@@ -124,11 +129,12 @@ export async function sendSessionReminderEmail(
     zoomLink?: string
   }
 ) {
+  const html = await renderToHtml(SessionReminderEmail(params))
   return getResend().emails.send({
     from: FROM,
     to,
     subject: 'Reminder: Ședința ta 1:1 este mâine',
-    react: SessionReminderEmail(params),
+    html,
   })
 }
 
