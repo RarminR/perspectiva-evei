@@ -77,13 +77,14 @@ export async function sendInviteEmail(
   }
 ) {
   const html = await renderToHtml(InviteEmail(params))
-  return getResend().emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to,
     subject: 'O nouă platformă Perspectiva Evei — setează-ți parola',
     html,
     text: `Bună ${params.name},\n\nTe invit să îți setezi o nouă parolă pe această platformă folosind link-ul de mai jos:\n\n${params.inviteUrl}\n\nLink-ul expiră în 30 de zile.\n\nCu drag,\nEva`,
   })
+  if (error) throw new Error(`Resend error for ${to}: ${error.message}`)
 }
 
 export async function sendPasswordResetEmail(
