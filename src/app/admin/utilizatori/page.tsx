@@ -35,6 +35,7 @@ export default function UsersPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [resetting, setResetting] = useState(false)
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null)
 
   const fetchUsers = useCallback(async () => {
@@ -74,6 +75,22 @@ export default function UsersPage() {
     })
   }
 
+  async function resetUnsent() {
+    if (!confirm('Resetezi onboardingEmailSentAt pentru toți utilizatorii care nu au primit efectiv mailul?')) return
+    setResetting(true)
+    try {
+      const res = await fetch('/api/admin/users/onboarding/reset-unsent', { method: 'POST' })
+      const data = await res.json() as { reset: number; emails: string[] }
+      setToast({ msg: `Resetat: ${data.reset} utilizatori`, ok: true })
+      void fetchUsers()
+    } catch {
+      setToast({ msg: 'Eroare la resetare.', ok: false })
+    } finally {
+      setResetting(false)
+      setTimeout(() => setToast(null), 4000)
+    }
+  }
+
   async function sendOnboarding() {
     if (selected.size === 0) return
     setSending(true)
@@ -104,9 +121,18 @@ export default function UsersPage() {
 
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Utilizatori</h1>
-        <Link href="/admin/utilizatori/new" className="px-4 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#51087e] transition">
-          Adaugă utilizator
-        </Link>
+        <div className="flex gap-2">
+          <button
+            onClick={() => void resetUnsent()}
+            disabled={resetting}
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition disabled:opacity-50"
+          >
+            {resetting ? 'Se resetează...' : 'Resetează netrimise'}
+          </button>
+          <Link href="/admin/utilizatori/new" className="px-4 py-2 bg-[#a007dc] text-white rounded-lg text-sm font-medium hover:bg-[#51087e] transition">
+            Adaugă utilizator
+          </Link>
+        </div>
       </div>
 
       {/* Search + Filters */}
