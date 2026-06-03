@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ensureDeviceRegistered } from '@/lib/device-fingerprint'
 
 interface SecureVideoPlayerProps {
   hlsSrc: string | null
@@ -39,9 +40,16 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
   const fetchVideoUrl = useCallback(async () => {
     if (!hlsSrc) return null
     try {
+      // Register this device (idempotent) and get its fingerprint
+      const { fingerprint, error: registrationError } = await ensureDeviceRegistered()
+      if (registrationError) {
+        setError(registrationError)
+        return null
+      }
+
       const res = await fetch(
         `/api/video/url?editionId=${editionId}&videoId=${encodeURIComponent(hlsSrc)}`,
-        { headers: { 'x-device-fingerprint': localStorage.getItem('device-fingerprint') || '' } }
+        { headers: { 'x-device-fingerprint': fingerprint } }
       )
       if (res.status === 403) {
         setError('Accesul tău a expirat. Te rugăm să contactezi suportul.')

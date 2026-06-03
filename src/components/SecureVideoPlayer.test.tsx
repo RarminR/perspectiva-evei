@@ -42,7 +42,12 @@ describe('SecureVideoPlayer', () => {
     vi.clearAllMocks()
     handlers.clear()
     vi.useFakeTimers()
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ status: 200 }))
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(async (url: unknown) => {
+      if (String(url).startsWith('/api/devices')) {
+        return { ok: true, status: 201, json: async () => ({ deviceId: 'dev-1' }) }
+      }
+      return { ok: true, status: 200, json: async () => ({ url: 'https://cdn.example.com/master.m3u8' }) }
+    }))
     vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {})
     vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue()
   })
@@ -94,7 +99,12 @@ describe('SecureVideoPlayer', () => {
   })
 
   it('shows Romanian access denied error on refresh 403', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ status: 403 }))
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(async (url: unknown) => {
+      if (String(url).startsWith('/api/devices')) {
+        return { ok: true, status: 201, json: async () => ({ deviceId: 'dev-1' }) }
+      }
+      return { ok: false, status: 403, json: async () => ({ error: 'Acces interzis' }) }
+    }))
     const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
 
     render(<SecureVideoPlayer hlsSrc="https://cdn.example.com/master.m3u8" editionId="ed-1" lessonId="lesson-1" />)
