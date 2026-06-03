@@ -8,6 +8,11 @@ interface VideoUploadProps {
   onChange: (videoId: string | null) => void
 }
 
+// Base64 helper safe for non-Latin1 chars (e.g. diacritice în numele fișierului)
+function b64(value: string) {
+  return btoa(String.fromCharCode(...new TextEncoder().encode(value)))
+}
+
 export function VideoUpload({ label = 'Video', value, onChange }: VideoUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -47,42 +52,74 @@ export function VideoUpload({ label = 'Video', value, onChange }: VideoUploadPro
 
       setStatus('Se încarcă videoclipul...')
 
-      // Step 2: Upload directly to Bunny via TUS protocol (plain XHR, no library)
-      // TUS creation request
-      const xhr = new XMLHttpRequest()
-      xhrRef.current = xhr
+      // Step 2: Upload directly to Bunny via TUS protocol (plain XHR, no library).
+      // TUS is two-step: a creation POST with EMPTY body returns a Location URL,
+      // then the file bytes are sent via PATCH to that URL.
+      const authHeaders: Record<string, string> = {
+        AuthorizationSignature: authSignature,
+        AuthorizationExpire: String(authExpire),
+        VideoId: videoId,
+        LibraryId: String(libraryId),
+      }
 
-      await new Promise<void>((resolve, reject) => {
+      // TUS creation request (no body)
+      const uploadUrl = await new Promise<string>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhrRef.current = xhr
         xhr.open('POST', tusEndpoint, true)
-        xhr.setRequestHeader('Content-Type', 'application/offset+octet-stream')
-        xhr.setRequestHeader('Upload-Length', String(file.size))
-        xhr.setRequestHeader('Upload-Offset', '0')
-        xhr.setRequestHeader('AuthorizationSignature', authSignature)
-        xhr.setRequestHeader('AuthorizationExpire', String(authExpire))
-        xhr.setRequestHeader('VideoId', videoId)
-        xhr.setRequestHeader('LibraryId', libraryId)
-        xhr.setRequestHeader('Upload-Metadata', `filetype ${btoa(file.type)},title ${btoa(file.name)}`)
         xhr.setRequestHeader('Tus-Resumable', '1.0.0')
-
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            setProgress(Math.round((e.loaded / e.total) * 100))
-          }
-        }
+        xhr.setRequestHeader('Upload-Length', String(file.size))
+        xhr.setRequestHeader('Upload-Metadata', `filetype ${b64(file.type)},title ${b64(file.name)}`)
+        for (const [k, v] of Object.entries(authHeaders)) xhr.setRequestHeader(k, v)
 
         xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve()
+          const location = xhr.getResponseHeader('Location')
+          if (xhr.status >= 200 && xhr.status < 300 && location) {
+            resolve(new URL(location, tusEndpoint).href)
           } else {
             reject(new Error(`Upload eșuat: ${xhr.status}`))
           }
         }
-
         xhr.onerror = () => reject(new Error('Eroare de rețea la încărcare'))
         xhr.onabort = () => reject(new Error('Încărcare anulată'))
-
-        xhr.send(file)
+        xhr.send()
       })
+
+      // TUS data upload via PATCH, in chunks so large files don't ride one giant request
+      const CHUNK_SIZE = 25 * 1024 * 1024 // 25MB
+      let offset = 0
+      while (offset < file.size) {
+        const chunkStart = offset
+        const chunk = file.slice(chunkStart, Math.min(chunkStart + CHUNK_SIZE, file.size))
+
+        offset = await new Promise<number>((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhrRef.current = xhr
+          xhr.open('PATCH', uploadUrl, true)
+          xhr.setRequestHeader('Tus-Resumable', '1.0.0')
+          xhr.setRequestHeader('Content-Type', 'application/offset+octet-stream')
+          xhr.setRequestHeader('Upload-Offset', String(chunkStart))
+          for (const [k, v] of Object.entries(authHeaders)) xhr.setRequestHeader(k, v)
+
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              setProgress(Math.round(((chunkStart + e.loaded) / file.size) * 100))
+            }
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const next = xhr.getResponseHeader('Upload-Offset')
+              resolve(next ? parseInt(next, 10) : chunkStart + chunk.size)
+            } else {
+              reject(new Error(`Upload eșuat: ${xhr.status}`))
+            }
+          }
+          xhr.onerror = () => reject(new Error('Eroare de rețea la încărcare'))
+          xhr.onabort = () => reject(new Error('Încărcare anulată'))
+          xhr.send(chunk)
+        })
+      }
 
       setUploading(false)
       setProgress(100)
