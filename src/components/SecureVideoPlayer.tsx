@@ -27,10 +27,23 @@ const QUALITY_OPTIONS = [
 
 const REFRESH_INTERVAL_MS = 90 * 60 * 1000
 
+function formatTime(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = Math.floor(seconds % 60)
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  }
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
 export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onProgress }: SecureVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const hlsRef = useRef<HlsInstance | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
   const [quality, setQuality] = useState('720')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -152,6 +165,20 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
     setIsPlaying(true)
   }, [isPlaying])
 
+  const handleSeek = useCallback((time: number) => {
+    if (!videoRef.current) return
+    videoRef.current.currentTime = time
+    setCurrentTime(time)
+  }, [])
+
+  const handleSkip = useCallback((deltaSeconds: number) => {
+    const video = videoRef.current
+    if (!video) return
+    const target = Math.min(Math.max(video.currentTime + deltaSeconds, 0), video.duration || Infinity)
+    video.currentTime = target
+    setCurrentTime(target)
+  }, [])
+
   const handleQualityChange = useCallback((newQuality: string) => {
     setQuality(newQuality)
 
@@ -192,13 +219,34 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
       <video
         ref={videoRef}
         className="w-full aspect-video"
-        onTimeUpdate={() => onProgress?.(videoRef.current?.currentTime ?? 0)}
+        onTimeUpdate={() => {
+          const time = videoRef.current?.currentTime ?? 0
+          setCurrentTime(time)
+          onProgress?.(time)
+        }}
+        onDurationChange={() => {
+          const d = videoRef.current?.duration
+          if (d && Number.isFinite(d)) setDuration(d)
+        }}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         playsInline
       />
 
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+        <input
+          type="range"
+          min={0}
+          max={duration || 0}
+          step={0.1}
+          value={Math.min(currentTime, duration || 0)}
+          onChange={(event) => handleSeek(Number(event.target.value))}
+          disabled={!duration}
+          className="w-full h-1.5 mb-3 cursor-pointer accent-[#a007dc]"
+          aria-label="Derulează video"
+          data-testid="seek-bar"
+        />
+
         <div className="flex items-center gap-3">
           <button
             onClick={handlePlayPause}
@@ -208,6 +256,28 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
           >
             {isPlaying ? '⏸' : '▶'}
           </button>
+
+          <button
+            onClick={() => handleSkip(-10)}
+            className="text-white hover:text-[#a007dc] transition text-xs font-medium"
+            aria-label="Înapoi 10 secunde"
+            data-testid="skip-back-button"
+          >
+            -10s
+          </button>
+
+          <button
+            onClick={() => handleSkip(10)}
+            className="text-white hover:text-[#a007dc] transition text-xs font-medium"
+            aria-label="Înainte 10 secunde"
+            data-testid="skip-forward-button"
+          >
+            +10s
+          </button>
+
+          <span className="text-white/80 text-xs tabular-nums" data-testid="time-display">
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </span>
 
           <div className="flex-1" />
 

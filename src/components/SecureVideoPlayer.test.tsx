@@ -117,6 +117,40 @@ describe('SecureVideoPlayer', () => {
     expect(screen.getByText('Accesul tău a expirat. Te rugăm să contactezi suportul.')).toBeInTheDocument()
   })
 
+  it('renders seek bar, time display and skip buttons', async () => {
+    const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
+
+    render(<SecureVideoPlayer hlsSrc="https://cdn.example.com/master.m3u8" editionId="ed-1" lessonId="lesson-1" />)
+
+    expect(screen.getByTestId('seek-bar')).toBeInTheDocument()
+    expect(screen.getByTestId('time-display')).toBeInTheDocument()
+    expect(screen.getByTestId('skip-back-button')).toBeInTheDocument()
+    expect(screen.getByTestId('skip-forward-button')).toBeInTheDocument()
+  })
+
+  it('seeks when skip buttons are clicked', async () => {
+    const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
+
+    render(<SecureVideoPlayer hlsSrc="https://cdn.example.com/master.m3u8" editionId="ed-1" lessonId="lesson-1" />)
+
+    const video = document.querySelector('video') as HTMLVideoElement
+    let time = 30
+    Object.defineProperty(video, 'currentTime', {
+      configurable: true,
+      get: () => time,
+      set: (value: number) => {
+        time = value
+      },
+    })
+    Object.defineProperty(video, 'duration', { configurable: true, value: 100 })
+
+    fireEvent.click(screen.getByTestId('skip-forward-button'))
+    expect(time).toBe(40)
+
+    fireEvent.click(screen.getByTestId('skip-back-button'))
+    expect(time).toBe(30)
+  })
+
   it('tracks progress via onProgress callback', async () => {
     const onProgress = vi.fn()
     const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
