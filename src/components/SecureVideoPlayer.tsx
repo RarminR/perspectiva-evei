@@ -40,8 +40,10 @@ function formatTime(seconds: number): string {
 
 export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onProgress }: SecureVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const hlsRef = useRef<HlsInstance | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [quality, setQuality] = useState('720')
@@ -179,6 +181,48 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
     setCurrentTime(target)
   }, [])
 
+  // Keep fullscreen state in sync (Esc key, system UI, etc.)
+  useEffect(() => {
+    const onChange = () => {
+      const doc = document as Document & { webkitFullscreenElement?: Element | null }
+      setIsFullscreen(Boolean(document.fullscreenElement || doc.webkitFullscreenElement))
+    }
+    document.addEventListener('fullscreenchange', onChange)
+    document.addEventListener('webkitfullscreenchange', onChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', onChange)
+      document.removeEventListener('webkitfullscreenchange', onChange)
+    }
+  }, [])
+
+  const handleFullscreenToggle = useCallback(() => {
+    const container = containerRef.current as
+      | (HTMLDivElement & { webkitRequestFullscreen?: () => void })
+      | null
+    const video = videoRef.current as
+      | (HTMLVideoElement & { webkitEnterFullscreen?: () => void })
+      | null
+    const doc = document as Document & {
+      webkitFullscreenElement?: Element | null
+      webkitExitFullscreen?: () => void
+    }
+
+    if (document.fullscreenElement || doc.webkitFullscreenElement) {
+      if (document.exitFullscreen) void document.exitFullscreen()
+      else doc.webkitExitFullscreen?.()
+      return
+    }
+
+    if (container?.requestFullscreen) {
+      void container.requestFullscreen()
+    } else if (container?.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen()
+    } else if (video?.webkitEnterFullscreen) {
+      // iPhone Safari: only the native video fullscreen is available
+      video.webkitEnterFullscreen()
+    }
+  }, [])
+
   const handleQualityChange = useCallback((newQuality: string) => {
     setQuality(newQuality)
 
@@ -215,10 +259,14 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
   }
 
   return (
-    <div className="relative bg-black rounded-2xl overflow-hidden" data-testid="secure-video-player">
+    <div
+      ref={containerRef}
+      className="relative bg-black rounded-2xl overflow-hidden"
+      data-testid="secure-video-player"
+    >
       <video
         ref={videoRef}
-        className="w-full aspect-video"
+        className={isFullscreen ? 'w-full h-full' : 'w-full aspect-video'}
         onTimeUpdate={() => {
           const time = videoRef.current?.currentTime ?? 0
           setCurrentTime(time)
@@ -294,6 +342,23 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
               </option>
             ))}
           </select>
+
+          <button
+            onClick={handleFullscreenToggle}
+            className="text-white hover:text-[#a007dc] transition"
+            aria-label={isFullscreen ? 'Ieși din ecran complet' : 'Ecran complet'}
+            data-testid="fullscreen-button"
+          >
+            {isFullscreen ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m5 5V5m0 4H5m10 0l5-5m-5 5V5m0 4h4M9 15l-5 5m5-5v4m0-4H5m10 0l5 5m-5-5v4m0-4h4" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 

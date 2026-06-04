@@ -151,6 +151,23 @@ describe('SecureVideoPlayer', () => {
     expect(time).toBe(30)
   })
 
+  it('requests fullscreen on the player container when fullscreen button is clicked', async () => {
+    const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
+
+    render(<SecureVideoPlayer hlsSrc="https://cdn.example.com/master.m3u8" editionId="ed-1" lessonId="lesson-1" />)
+
+    const container = screen.getByTestId('secure-video-player')
+    const requestFullscreen = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(container, 'requestFullscreen', {
+      configurable: true,
+      value: requestFullscreen,
+    })
+
+    fireEvent.click(screen.getByTestId('fullscreen-button'))
+
+    expect(requestFullscreen).toHaveBeenCalled()
+  })
+
   it('tracks progress via onProgress callback', async () => {
     const onProgress = vi.fn()
     const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
