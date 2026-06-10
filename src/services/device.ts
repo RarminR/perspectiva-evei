@@ -2,6 +2,9 @@ import { prisma } from '@/lib/db'
 
 const MAX_DEVICES = 2
 
+// Conturi exceptate de la limita de dispozitive (ex. conturi de test/demo).
+const DEVICE_LIMIT_EXEMPT_EMAILS = new Set(['test@example.com'])
+
 export async function registerDevice(
   userId: string,
   fingerprint: string,
@@ -19,11 +22,19 @@ export async function registerDevice(
     return { success: true, deviceId: existing.id }
   }
 
-  const count = await prisma.device.count({ where: { userId } })
-  if (count >= MAX_DEVICES) {
-    return {
-      success: false,
-      error: `Ai atins limita de ${MAX_DEVICES} dispozitive. Șterge un dispozitiv pentru a continua.`,
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true },
+  })
+  const isExempt = user?.email ? DEVICE_LIMIT_EXEMPT_EMAILS.has(user.email) : false
+
+  if (!isExempt) {
+    const count = await prisma.device.count({ where: { userId } })
+    if (count >= MAX_DEVICES) {
+      return {
+        success: false,
+        error: `Ai atins limita de ${MAX_DEVICES} dispozitive. Șterge un dispozitiv pentru a continua.`,
+      }
     }
   }
 
