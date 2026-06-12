@@ -16,7 +16,7 @@ export function Watermark({ text, cover = false }: WatermarkProps) {
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
-            className="absolute w-[140%] -left-[20%] whitespace-nowrap text-base font-semibold tracking-[0.3em] text-gray-700 opacity-20"
+            className="absolute w-[140%] -left-[20%] whitespace-nowrap text-base font-semibold tracking-[0.3em] text-gray-700 opacity-10"
             style={{
               top: `${5 + index * 13}%`,
               transform: 'rotate(-30deg)',
