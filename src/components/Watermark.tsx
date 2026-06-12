@@ -1,8 +1,34 @@
 interface WatermarkProps {
   text: string
+  /** Absolutely fills the nearest positioned ancestor instead of the sticky
+   * top-anchored layout used by scrolling text content. */
+  cover?: boolean
 }
 
-export function Watermark({ text }: WatermarkProps) {
+export function Watermark({ text, cover = false }: WatermarkProps) {
+  if (cover) {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-10 overflow-hidden select-none"
+        style={{ userSelect: 'none' }}
+      >
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div
+            key={index}
+            className="absolute w-[140%] -left-[20%] whitespace-nowrap text-base font-semibold tracking-[0.3em] text-gray-700 opacity-30"
+            style={{
+              top: `${5 + index * 13}%`,
+              transform: 'rotate(-30deg)',
+            }}
+          >
+            {text} {text} {text}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div
       aria-hidden="true"

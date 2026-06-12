@@ -342,7 +342,7 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
             gap: isSpread ? `${GAP_PX}px` : 0,
           }}
         >
-          <Watermark text={watermarkText} />
+          <Watermark text={watermarkText} cover />
           <canvas ref={leftCanvasRef} className="relative z-0 block" />
           <canvas
             ref={rightCanvasRef}
