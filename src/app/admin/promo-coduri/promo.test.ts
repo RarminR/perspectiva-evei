@@ -8,6 +8,7 @@ vi.mock('@/lib/auth', () => ({
 
 // Mock prisma
 const mockPromoCodeFindMany = vi.fn()
+const mockPromoCodeFindUnique = vi.fn()
 const mockPromoCodeCreate = vi.fn()
 const mockPromoCodeUpdate = vi.fn()
 const mockPromoCodeDelete = vi.fn()
@@ -20,6 +21,7 @@ vi.mock('@/lib/db', () => ({
   prisma: {
     promoCode: {
       findMany: (...args: any[]) => mockPromoCodeFindMany(...args),
+      findUnique: (...args: any[]) => mockPromoCodeFindUnique(...args),
       create: (...args: any[]) => mockPromoCodeCreate(...args),
       update: (...args: any[]) => mockPromoCodeUpdate(...args),
       delete: (...args: any[]) => mockPromoCodeDelete(...args),
@@ -90,6 +92,45 @@ describe('Admin Promo API', () => {
       expect(mockPromoCodeCreate).toHaveBeenCalledWith({
         data: expect.objectContaining({ code: 'NEW50', type: 'PERCENTAGE', value: 50 }),
       })
+    })
+  })
+
+  describe('GET /api/admin/promo/[id]', () => {
+    it('returns a single promo code', async () => {
+      const promo = { id: 'p1', code: 'SAVE20', type: 'PERCENTAGE', value: 20, active: true }
+      mockPromoCodeFindUnique.mockResolvedValue(promo)
+
+      const { GET } = await import('@/app/api/admin/promo/[id]/route')
+      const req = new Request('http://localhost/api/admin/promo/p1')
+
+      const res = await GET(req, { params: Promise.resolve({ id: 'p1' }) })
+      const data = await res.json()
+
+      expect(res.status).toBe(200)
+      expect(data).toEqual(promo)
+      expect(mockPromoCodeFindUnique).toHaveBeenCalledWith({ where: { id: 'p1' } })
+    })
+
+    it('returns 404 when the promo code does not exist', async () => {
+      mockPromoCodeFindUnique.mockResolvedValue(null)
+
+      const { GET } = await import('@/app/api/admin/promo/[id]/route')
+      const req = new Request('http://localhost/api/admin/promo/missing')
+
+      const res = await GET(req, { params: Promise.resolve({ id: 'missing' }) })
+
+      expect(res.status).toBe(404)
+    })
+
+    it('returns 401 for non-admin', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'u2', role: 'USER' } })
+
+      const { GET } = await import('@/app/api/admin/promo/[id]/route')
+      const req = new Request('http://localhost/api/admin/promo/p1')
+
+      const res = await GET(req, { params: Promise.resolve({ id: 'p1' }) })
+
+      expect(res.status).toBe(401)
     })
   })
 
