@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
+import { PromoActiveToggle } from './PromoActiveToggle'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,6 +44,7 @@ export default async function PromoCoduriPage() {
                   <th className="p-4 font-medium">Utilizări</th>
                   <th className="p-4 font-medium">Valabil</th>
                   <th className="p-4 font-medium">Status</th>
+                  <th className="p-4 font-medium">Acțiuni</th>
                 </tr>
               </thead>
               <tbody>
@@ -82,6 +84,17 @@ export default async function PromoCoduriPage() {
                       >
                         {code.active ? 'Activ' : 'Inactiv'}
                       </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <PromoActiveToggle promoId={code.id} active={code.active} />
+                        <Link
+                          href={`/admin/promo-coduri/${code.id}`}
+                          className="text-[#a007dc] hover:underline font-medium text-sm"
+                        >
+                          Editează
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                   )
