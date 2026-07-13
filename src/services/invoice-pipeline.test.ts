@@ -229,6 +229,46 @@ describe('invoice pipeline', () => {
     expect(payload.products[1].isTaxIncluded).toBe(true)
   })
 
+  it('issues the invoice in EUR with a full payment so it is marked collected', async () => {
+    vi.mocked(prisma.invoice.findMany).mockResolvedValue([makePendingInvoice()] as never)
+    vi.mocked(createInvoice).mockResolvedValue({
+      errorText: '',
+      message: 'ok',
+      number: '23',
+      series: 'EVEI',
+    })
+
+    await processInvoiceQueue()
+
+    const payload = vi.mocked(createInvoice).mock.calls[0][0]
+    expect(payload.currency).toBe('EUR')
+    expect(payload.products[0].currency).toBe('EUR')
+    expect(payload.payment).toEqual({ value: 99, type: 'Card', isCash: false })
+  })
+
+  it('pays the exact line sum when promo rounding shifts it from totalAmount', async () => {
+    vi.mocked(prisma.invoice.findMany).mockResolvedValue([
+      makePendingInvoice({
+        order: {
+          user: { name: 'Ana', email: 'ana@example.com' },
+          totalAmount: 99.98,
+          items: [{ productId: 'guide-1', unitPrice: 33.33, quantity: 3 }],
+        },
+      }),
+    ] as never)
+    vi.mocked(createInvoice).mockResolvedValue({
+      errorText: '',
+      message: 'ok',
+      number: '24',
+      series: 'EVEI',
+    })
+
+    await processInvoiceQueue()
+
+    const payload = vi.mocked(createInvoice).mock.calls[0][0]
+    expect(payload.payment?.value).toBe(99.99)
+  })
+
   it('uses B2C vatCode 0000000000000 for client', async () => {
     vi.mocked(prisma.invoice.findMany).mockResolvedValue([makePendingInvoice()] as never)
     vi.mocked(createInvoice).mockResolvedValue({
