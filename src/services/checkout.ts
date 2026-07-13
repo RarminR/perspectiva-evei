@@ -236,6 +236,15 @@ async function triggerInvoiceAsync(order: {
 
     const nameLookup = await resolveProductNames(order.items)
 
+    // Same rules as processInvoiceQueue: the document currency must match the
+    // line prices, and the attached payment (in document currency) must equal
+    // the sum of the tax-included lines for the invoice to be fully collected.
+    const paymentValue =
+      order.items.reduce(
+        (sum, item) => sum + Math.round(item.unitPrice * 100) * item.quantity,
+        0
+      ) / 100
+
     const invoice = await createInvoice({
       companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
       client: {
@@ -251,6 +260,7 @@ async function triggerInvoiceAsync(order: {
       },
       issueDate: new Date().toISOString().split('T')[0],
       seriesName: process.env.SMARTBILL_INVOICE_SERIES || '',
+      currency: 'EUR',
       products: order.items.map((item) => ({
         name: nameForItem(item, nameLookup),
         measuringUnitName: 'buc',
@@ -260,6 +270,11 @@ async function triggerInvoiceAsync(order: {
         isTaxIncluded: true,
         taxPercentage: 21,
       })),
+      payment: {
+        value: paymentValue,
+        type: 'Card',
+        isCash: false,
+      },
     })
 
     await prisma.invoice.create({

@@ -107,6 +107,16 @@ export async function processInvoiceQueue(): Promise<{
 
       const nameLookup = await resolveProductNames(invoice.order.items)
 
+      // The payment is recorded in the invoice's currency and must equal the
+      // document total (the sum of tax-included line prices) for SmartBill to
+      // mark the invoice fully collected. Promo rounding can shift the line
+      // sum a cent away from order.totalAmount, so derive it from the lines.
+      const paymentValue =
+        invoice.order.items.reduce(
+          (sum, item) => sum + Math.round(item.unitPrice * 100) * item.quantity,
+          0
+        ) / 100
+
       const payload = {
         companyVatCode: process.env.SMARTBILL_COMPANY_VAT_CODE || '',
         client: {
@@ -122,6 +132,7 @@ export async function processInvoiceQueue(): Promise<{
         },
         issueDate: today,
         seriesName: process.env.SMARTBILL_INVOICE_SERIES || 'EVEI',
+        currency: 'EUR',
         products: invoice.order.items.map((item) => ({
           name: nameForItem(item, nameLookup),
           measuringUnitName: 'buc',
@@ -133,7 +144,7 @@ export async function processInvoiceQueue(): Promise<{
           taxName: 'TVA',
         })),
         payment: {
-          value: invoice.order.totalAmount,
+          value: paymentValue,
           type: 'Card',
           isCash: false,
         },

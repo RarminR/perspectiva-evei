@@ -34,6 +34,7 @@ export interface CreateInvoiceParams {
   client: SmartBillClient
   issueDate: string
   seriesName: string
+  currency?: string
   products: SmartBillProduct[]
   payment?: SmartBillPayment
   isDraft?: boolean
