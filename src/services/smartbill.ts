@@ -96,6 +96,11 @@ export async function createInvoice(params: CreateInvoiceParams): Promise<SmartB
     },
     issueDate: params.issueDate,
     seriesName: params.seriesName,
+    // Document currency must match the product prices' currency. Without it
+    // SmartBill issues the invoice in RON, converts the EUR line prices at the
+    // BNR rate, and an attached payment (recorded in the document currency)
+    // covers only a fraction of the total — invoices show as partially paid.
+    currency: params.currency || "EUR",
     products,
     payment: params.payment,
     isDraft: params.isDraft ?? false,

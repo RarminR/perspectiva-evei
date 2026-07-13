@@ -78,6 +78,45 @@ describe("SmartBill service", () => {
     expect(body.products[0].taxName).toBe("TVA")
   })
 
+  it("createInvoice sets the document currency to EUR by default", async () => {
+    fetchMock.mockResolvedValueOnce(
+      createJsonResponse({
+        errorText: "",
+        message: "ok",
+        number: "1",
+        series: "PF",
+      })
+    )
+
+    await createInvoice({
+      companyVatCode: "RO123",
+      issueDate: "2026-01-10",
+      seriesName: "PF",
+      client: {
+        name: "John Doe",
+        vatCode: "0000000000000",
+        isTaxPayer: false,
+      },
+      products: [
+        {
+          name: "Guide",
+          measuringUnitName: "buc",
+          currency: "EUR",
+          quantity: 1,
+          price: 100,
+          isTaxIncluded: true,
+          taxPercentage: 21,
+        },
+      ],
+      payment: { value: 100, type: "Card", isCash: false },
+    })
+
+    const call = fetchMock.mock.calls[0]
+    const body = JSON.parse((call[1]?.body as string) ?? "{}")
+    expect(body.currency).toBe("EUR")
+    expect(body.payment).toEqual({ value: 100, type: "Card", isCash: false })
+  })
+
   it("createInvoice uses B2C vatCode when client vatCode not provided", async () => {
     fetchMock.mockResolvedValueOnce(
       createJsonResponse({
