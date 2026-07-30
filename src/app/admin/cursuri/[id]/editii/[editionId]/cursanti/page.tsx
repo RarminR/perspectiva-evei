@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import { AddStudentForm } from './AddStudentForm'
 import { MarkInstallmentPaidButton } from './MarkInstallmentPaidButton'
+import { EnrollmentActions } from './EnrollmentActions'
 
 export const dynamic = 'force-dynamic'
 
@@ -105,7 +106,13 @@ export default async function EnrolledStudentsPage({
                   <td className="px-6 py-4 font-medium text-gray-900">{enrollment.user.name}</td>
                   <td className="px-6 py-4 text-gray-500">{enrollment.user.email}</td>
                   <td className="px-6 py-4 text-gray-500">{formatDate(enrollment.createdAt)}</td>
-                  <td className="px-6 py-4 text-gray-500">{formatDate(enrollment.accessExpiresAt)}</td>
+                  <td className="px-6 py-4">
+                    <EnrollmentActions
+                      enrollmentId={enrollment.id}
+                      accessExpiresAt={enrollment.accessExpiresAt.toISOString().slice(0, 10)}
+                      userName={enrollment.user.name || enrollment.user.email}
+                    />
+                  </td>
                   <td className="px-6 py-4">
                     <span
                       className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
