@@ -500,4 +500,59 @@ describe('API: PUT /api/admin/lessons/[id]', () => {
     expect(res.status).toBe(200)
     expect(data.order).toBe(3)
   })
+
+  it('updates lesson title and availableFrom', async () => {
+    const { prisma } = await import('@/lib/db')
+    vi.mocked(prisma.lesson.update).mockResolvedValue({
+      id: 'l1',
+      editionId: 'e1',
+      title: 'Sesiunea 1 — Introducere',
+      order: 1,
+      availableFrom: new Date('2026-08-01T10:00:00'),
+      createdAt: new Date(),
+    } as any)
+
+    const { PUT } = await import('../../../api/admin/lessons/[id]/route')
+    const res = await PUT(
+      new Request('http://localhost/api/admin/lessons/l1', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Sesiunea 1 — Introducere',
+          availableFrom: '2026-08-01T10:00',
+        }),
+      }),
+      { params: Promise.resolve({ id: 'l1' }) }
+    )
+
+    expect(res.status).toBe(200)
+    expect(vi.mocked(prisma.lesson.update)).toHaveBeenCalledWith({
+      where: { id: 'l1' },
+      data: {
+        title: 'Sesiunea 1 — Introducere',
+        availableFrom: new Date('2026-08-01T10:00'),
+      },
+    })
+  })
+
+  it('clears availableFrom when null is sent', async () => {
+    const { prisma } = await import('@/lib/db')
+    vi.mocked(prisma.lesson.update).mockResolvedValue({ id: 'l1' } as any)
+
+    const { PUT } = await import('../../../api/admin/lessons/[id]/route')
+    const res = await PUT(
+      new Request('http://localhost/api/admin/lessons/l1', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ availableFrom: null }),
+      }),
+      { params: Promise.resolve({ id: 'l1' }) }
+    )
+
+    expect(res.status).toBe(200)
+    expect(vi.mocked(prisma.lesson.update)).toHaveBeenCalledWith({
+      where: { id: 'l1' },
+      data: { availableFrom: null },
+    })
+  })
 })
