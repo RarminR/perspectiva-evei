@@ -12,6 +12,48 @@ interface SecurePdfViewerProps {
 
 type RenderTask = { cancel: () => void; promise: Promise<void> }
 
+async function readApiError(res: Response, fallback: string): Promise<string> {
+  try {
+    const data = await res.json()
+    return data.error || fallback
+  } catch {
+    return fallback
+  }
+}
+
+// The API redirects to a signed Bunny CDN URL so the PDF downloads directly
+// from the CDN (no Fast Origin Transfer). If the browser blocks the
+// cross-origin fetch (CORS not configured on the pull zone), fall back to
+// the server-side proxy mode.
+async function fetchPdfBuffer(guideId: string): Promise<ArrayBuffer> {
+  const fallbackMsg = 'Eroare la încărcarea PDF-ului'
+
+  let useProxy = false
+  try {
+    const res = await fetch(`/api/guides/${guideId}/pdf`)
+    if (res.ok) {
+      return await res.arrayBuffer()
+    }
+    if (res.url.startsWith(window.location.origin)) {
+      // Same-origin error (401/403/404) — the proxy would fail identically.
+      throw new Error(await readApiError(res, fallbackMsg))
+    }
+    useProxy = true
+  } catch (err) {
+    if (err instanceof TypeError) {
+      // Network or CORS failure on the redirected CDN fetch.
+      useProxy = true
+    }
+    if (!useProxy) throw err
+  }
+
+  const proxyRes = await fetch(`/api/guides/${guideId}/pdf?mode=proxy`)
+  if (!proxyRes.ok) {
+    throw new Error(await readApiError(proxyRes, fallbackMsg))
+  }
+  return proxyRes.arrayBuffer()
+}
+
 const GAP_PX = 16
 const SPREAD_BREAKPOINT = '(min-width: 1024px)'
 
@@ -98,17 +140,7 @@ export function SecurePdfViewer({ guideId, userEmail, userId }: SecurePdfViewerP
 
     async function load() {
       try {
-        const res = await fetch(`/api/guides/${guideId}/pdf`)
-        if (!res.ok) {
-          let msg = 'Eroare la încărcarea PDF-ului'
-          try {
-            const data = await res.json()
-            msg = data.error || msg
-          } catch {}
-          throw new Error(msg)
-        }
-
-        const arrayBuffer = await res.arrayBuffer()
+        const arrayBuffer = await fetchPdfBuffer(guideId)
         if (cancelled) return
 
         const pdfjsLib = await import('pdfjs-dist')
