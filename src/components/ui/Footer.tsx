@@ -89,6 +89,24 @@ export function Footer() {
           </div>
         </div>
 
+        {/* ANPC — Ordinul 449/2022 modificat prin Ordinul 270/2026: doar pictograma SAL, 250x50 px, link către reclamatiisal.anpc.ro */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <a
+            href="https://reclamatiisal.anpc.ro/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'inline-block' }}
+          >
+            <Image
+              src="/images/anpc-sal.png"
+              alt="ANPC - Soluționarea alternativă a litigiilor (SAL)"
+              width={250}
+              height={50}
+              style={{ width: '250px', height: '50px', objectFit: 'contain', objectPosition: 'left center', display: 'block' }}
+            />
+          </a>
+        </div>
+
         {/* Divider */}
         <div style={{ backgroundColor: '#f8f9fa', width: '100%', height: '1px', marginBottom: '1.5rem' }} />
 
