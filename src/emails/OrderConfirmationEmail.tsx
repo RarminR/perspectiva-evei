@@ -19,6 +19,8 @@ interface OrderConfirmationEmailProps {
   invoiceUrl?: string
   isFirstInstallment?: boolean
   secondInstallmentDueDate?: string
+  /** Formatted date and time when the buyer asked for immediate access to digital content. */
+  digitalContentConsentAt?: string
 }
 
 export const OrderConfirmationEmail = ({
@@ -29,6 +31,7 @@ export const OrderConfirmationEmail = ({
   invoiceUrl,
   isFirstInstallment,
   secondInstallmentDueDate,
+  digitalContentConsentAt,
 }: OrderConfirmationEmailProps) => (
   <Html>
     <Head />
@@ -76,6 +79,15 @@ export const OrderConfirmationEmail = ({
             </Section>
           )}
 
+          {digitalContentConsentAt && (
+            <Section style={warningBox}>
+              <Text style={warningText}>
+                Ai cerut acces imediat la conținutul digital și ai confirmat, pe {digitalContentConsentAt},
+                că furnizarea începe acum și că astfel îți pierzi dreptul de retragere (OUG 34/2014, art. 16 lit. m).
+              </Text>
+            </Section>
+          )}
+
           <Hr style={hr} />
 
           {invoiceUrl && (
@@ -101,12 +113,17 @@ export const OrderConfirmationEmail = ({
           <Text style={footer}>
             Dacă ai întrebări, contactează-ne la estedespremine@gmail.com
           </Text>
+          <Text style={footer}>
+            Dreptul de retragere: în 14 zile de la comandă te poți retrage, în condițiile din Termeni și condiții,
+            folosind „Retrage-te din contract aici”:{' '}
+            {`${process.env.NEXT_PUBLIC_APP_URL || 'https://app.perspectivaevei.com'}/retragere`}
+          </Text>
         </Section>
 
         {/* Footer */}
         <Section style={footerSection}>
           <Text style={footerText}>
-            © 2025 Perspectiva Evei. Toate drepturile rezervate.
+            © {new Date().getFullYear()} Perspectiva Evei. Toate drepturile rezervate.
           </Text>
         </Section>
       </Container>

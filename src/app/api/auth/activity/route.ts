@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { recordLoginActivity } from '@/services/login-activity'
+import { geoFromHeaders, recordLoginActivity } from '@/services/login-activity'
 
 export async function POST(req: NextRequest) {
   const session = await auth()
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   const ip = forwarded?.split(',')[0]?.trim() || realIp || 'unknown'
   const userAgent = req.headers.get('user-agent') || undefined
 
-  await recordLoginActivity(userId, ip, userAgent)
+  await recordLoginActivity(userId, ip, userAgent, geoFromHeaders(req.headers))
 
   return NextResponse.json({ ok: true })
 }

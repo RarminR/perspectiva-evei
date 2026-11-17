@@ -28,6 +28,8 @@ export interface BillingInfo {
   address: string
   postalCode: string
   cnp?: string
+  /** When the buyer asked for immediate access to digital content (guides), ISO time. */
+  digitalContentConsentAt?: string
 }
 
 export interface CreateCheckoutResult {

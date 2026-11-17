@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { CookieSettingsButton } from '@/components/CookieSettingsButton'
 
 export function Footer() {
   return (
@@ -76,6 +77,7 @@ export function Footer() {
                   { href: 'https://www.perspectivaevei.com/politica-de-confidentialitate', label: 'Politica de confidențialitate' },
                   { href: 'https://www.perspectivaevei.com/setari-cookie-uri', label: 'Politica de cookies' },
                   { href: 'https://www.perspectivaevei.com/termeni-si-conditii', label: 'Termeni și condiții' },
+                  { href: '/retragere', label: 'Retrage-te din contract aici' },
                 ].map((link) => (
                   <Link
                     key={link.href}
@@ -85,6 +87,7 @@ export function Footer() {
                     {link.label}
                   </Link>
                 ))}
+                <CookieSettingsButton style={{ color: '#f8f9fa', fontSize: '0.875rem', fontWeight: 400 }} />
               </div>
             </div>
           </div>
@@ -133,6 +136,9 @@ export function Footer() {
             </Link>
             <Link href="https://www.perspectivaevei.com/termeni-si-conditii" style={{ color: '#f8f9fa', fontSize: '0.875rem', textDecoration: 'underline', transition: 'color .3s' }}>
               Termeni și condiții
+            </Link>
+            <Link href="/retragere" style={{ color: '#f8f9fa', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'underline', transition: 'color .3s' }}>
+              Retrage-te din contract aici
             </Link>
           </div>
         </div>

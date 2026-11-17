@@ -40,6 +40,7 @@ export async function sendOrderConfirmationEmail(
     invoiceUrl?: string
     isFirstInstallment?: boolean
     secondInstallmentDueDate?: string
+    digitalContentConsentAt?: string
   }
 ) {
   const html = await renderToHtml(OrderConfirmationEmail(params))

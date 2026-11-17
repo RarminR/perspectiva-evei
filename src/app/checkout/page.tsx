@@ -67,13 +67,14 @@ function CheckoutContent() {
   const [oras, setOras] = useState('')
   const [adresa, setAdresa] = useState('')
   const [codPostal, setCodPostal] = useState('')
-  const [cnp, setCnp] = useState('')
+  const [digitalConsent, setDigitalConsent] = useState(false)
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<{
     status: 'idle' | 'validating' | 'applied' | 'error'
     message?: string
     finalAmount?: number
   }>({ status: 'idle' })
+  const isDigitalContent = product?.productType === 'GUIDE' || product?.productType === 'BUNDLE'
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   const isBucuresti = judet === 'București'
@@ -144,6 +145,10 @@ function CheckoutContent() {
   async function handlePay() {
     if (!product) return
     if (!validateForm()) return
+    if (isDigitalContent && !digitalConsent) {
+      setError('Bifează acordul pentru accesul imediat la ghid ca să poți plăti.')
+      return
+    }
 
     setRedirecting(true)
     setError(null)
@@ -173,8 +178,8 @@ function CheckoutContent() {
             city: isBucuresti ? sector : oras.trim(),
             address: adresa.trim(),
             postalCode: codPostal.trim(),
-            cnp: cnp.trim() || undefined,
           },
+          digitalContentConsent: isDigitalContent ? digitalConsent : undefined,
         }),
       })
 
@@ -566,22 +571,23 @@ function CheckoutContent() {
             {formErrors.codPostal && <p style={{ color: '#dc2626', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.codPostal}</p>}
           </div>
 
-          {/* CNP */}
-          <div style={{ marginTop: '1rem' }}>
-            <label style={labelStyle}>CNP (opțional)</label>
-            <input
-              type="text"
-              value={cnp}
-              onChange={(e) => setCnp(e.target.value)}
-              style={{ ...inputStyle, maxWidth: '260px' }}
-              placeholder="13 cifre"
-              inputMode="numeric"
-            />
-            <p style={{ color: '#6b7280', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-              Dacă vrei CNP-ul pe factură. Poate fi lăsat gol.
-            </p>
-          </div>
         </div>
+
+        {/* Acord pentru conținut digital (OUG 34/2014, art. 16 lit. m) */}
+        {isDigitalContent && (
+          <label style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', backgroundColor: '#f6edfc', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', fontSize: '0.9rem', color: '#2c0246', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={digitalConsent}
+              onChange={(e) => setDigitalConsent(e.target.checked)}
+              style={{ marginTop: '0.2rem', width: '1.1rem', height: '1.1rem', flexShrink: 0 }}
+            />
+            <span>
+              Vreau acces imediat. Sunt de acord ca furnizarea conținutului digital să înceapă acum, înainte de
+              expirarea termenului de retragere de 14 zile, și iau la cunoștință că astfel îmi pierd dreptul de retragere.
+            </span>
+          </label>
+        )}
 
         {/* Note */}
         <div style={{ backgroundColor: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', fontSize: '0.9rem', color: '#92400e' }}>

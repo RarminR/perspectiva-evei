@@ -117,6 +117,16 @@ export async function fulfillOrder(orderId: string): Promise<void> {
     const nameLookup = await resolveProductNames(order.items)
     const productName = firstItem ? nameForItem(firstItem, nameLookup) : 'Produse digitale'
 
+    const consentIso = (order.shippingAddress as { digitalContentConsentAt?: string } | null)
+      ?.digitalContentConsentAt
+    const digitalContentConsentAt = consentIso
+      ? new Date(consentIso).toLocaleString('ro-RO', {
+          timeZone: 'Europe/Bucharest',
+          dateStyle: 'long',
+          timeStyle: 'short',
+        })
+      : undefined
+
     await sendOrderConfirmationEmail(order.user.email, {
       name: order.user.name,
       orderNumber: order.id,
@@ -124,6 +134,7 @@ export async function fulfillOrder(orderId: string): Promise<void> {
       amount: `${order.totalAmount.toFixed(2)} ${order.currency}`,
       isFirstInstallment,
       secondInstallmentDueDate,
+      digitalContentConsentAt,
     })
   } catch (error) {
     console.error('Failed to send order confirmation email:', error)

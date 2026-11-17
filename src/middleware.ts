@@ -51,6 +51,19 @@ export async function middlewareCallback(req: AuthRequest) {
     }
   }
 
+  if (pathname === "/api/retragere") {
+    const result = checkRateLimit(`retragere:${ip}`, CONTACT_LIMIT)
+    if (!result.allowed) {
+      return NextResponse.json(
+        { error: "Prea multe încercări. Încearcă din nou peste un minut." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(result.retryAfter ?? 0) },
+        }
+      )
+    }
+  }
+
   if (pathname === "/api/contact") {
     const result = checkRateLimit(`contact:${ip}`, CONTACT_LIMIT)
     if (!result.allowed) {
@@ -128,5 +141,6 @@ export const config = {
     "/api/auth/:path*",
     "/api/checkout/:path*",
     "/api/contact",
+    "/api/retragere",
   ],
 }

@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
     promoCode?: string
     billing?: Partial<BillingInfo>
     paymentType?: string
+    digitalContentConsent?: boolean
   }
   const paymentType: 'full' | 'installment' =
     body.paymentType === 'installment' ? 'installment' : 'full'
@@ -49,6 +50,19 @@ export async function POST(req: NextRequest) {
   if (items.length === 0) {
     return NextResponse.json({ error: 'Date checkout invalide' }, { status: 400 })
   }
+
+  // Guides are digital content delivered at once: the buyer must ask for immediate access and
+  // acknowledge losing the 14-day withdrawal right (OUG 34/2014, art. 16 lit. m).
+  const needsDigitalConsent = items.some(
+    (item) => item.productType === 'GUIDE' || item.productType === 'BUNDLE'
+  )
+  if (needsDigitalConsent && body.digitalContentConsent !== true) {
+    return NextResponse.json(
+      { error: 'Bifează acordul pentru accesul imediat la ghid ca să poți plăti.' },
+      { status: 400 }
+    )
+  }
+  const digitalContentConsentAt = needsDigitalConsent ? new Date().toISOString() : undefined
 
   const billing: BillingInfo | undefined = body.billing
     ? {
@@ -62,8 +76,11 @@ export async function POST(req: NextRequest) {
         address: String(body.billing.address ?? '').trim(),
         postalCode: String(body.billing.postalCode ?? '').trim(),
         cnp: body.billing.cnp ? String(body.billing.cnp).trim() : undefined,
+        digitalContentConsentAt,
       }
-    : undefined
+    : digitalContentConsentAt
+      ? ({ digitalContentConsentAt } as BillingInfo)
+      : undefined
 
   try {
     const result = await createCheckout(

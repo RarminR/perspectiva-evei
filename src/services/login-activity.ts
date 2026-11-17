@@ -9,21 +9,31 @@ interface GeoResult {
 
 const MAX_SPEED_KMH = 900
 
-async function geolocateIp(ip: string): Promise<GeoResult | null> {
-  if (ip === '127.0.0.1' || ip === '::1' || ip === 'unknown' || ip.startsWith('192.168.') || ip.startsWith('10.')) {
-    return null
+/**
+ * Approximate location from the hosting provider's request headers (Vercel adds them to every
+ * request). No IP address is sent to a third-party geolocation service.
+ */
+export function geoFromHeaders(headers: Headers): GeoResult | null {
+  const lat = Number(headers.get('x-vercel-ip-latitude'))
+  const lng = Number(headers.get('x-vercel-ip-longitude'))
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || (lat === 0 && lng === 0)) return null
+
+  let city = ''
+  try {
+    city = decodeURIComponent(headers.get('x-vercel-ip-city') ?? '')
+  } catch {
+    city = headers.get('x-vercel-ip-city') ?? ''
   }
 
+  const code = headers.get('x-vercel-ip-country') ?? ''
+  let country = code
   try {
-    const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,lat,lon,city,country`, {
-      signal: AbortSignal.timeout(3000),
-    })
-    const data = await res.json()
-    if (data.status !== 'success') return null
-    return { lat: data.lat, lng: data.lon, city: data.city, country: data.country }
+    country = code ? (new Intl.DisplayNames(['ro'], { type: 'region' }).of(code) ?? code) : ''
   } catch {
-    return null
+    country = code
   }
+
+  return { lat, lng, city, country }
 }
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -63,9 +73,13 @@ function checkSuspicious(
   return { flagged: false, reason: null }
 }
 
-export async function recordLoginActivity(userId: string, ip: string, userAgent?: string): Promise<void> {
+export async function recordLoginActivity(
+  userId: string,
+  ip: string,
+  userAgent?: string,
+  geo: GeoResult | null = null
+): Promise<void> {
   try {
-    const geo = await geolocateIp(ip)
 
     let flagged = false
     let flagReason: string | null = null
