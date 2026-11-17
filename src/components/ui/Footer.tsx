@@ -50,7 +50,7 @@ export function Footer() {
                 {[
                   { href: '/cursul-ado', label: 'Cursul A.D.O.!' },
                   { href: '/ghiduri', label: 'Ghiduri' },
-                  { href: '/sedinte-1-la-1', label: 'Ședințe 1:1' },
+                  { href: 'https://www.perspectivaevei.com/sedinte-1-la-1', label: 'Ședințe 1:1' },
                   { href: '/blog', label: 'Blog' },
                   { href: 'https://www.perspectivaevei.com/', label: 'Despre mine' },
                 ].map((link) => (
@@ -73,8 +73,9 @@ export function Footer() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {[
                   { href: '/contact', label: 'Contact' },
-                  { href: '/politica-de-confidentialitate', label: 'Politica de confidențialitate' },
-                  { href: '/termeni-si-conditii', label: 'Termeni și condiții' },
+                  { href: 'https://www.perspectivaevei.com/politica-de-confidentialitate', label: 'Politica de confidențialitate' },
+                  { href: 'https://www.perspectivaevei.com/setari-cookie-uri', label: 'Politica de cookies' },
+                  { href: 'https://www.perspectivaevei.com/termeni-si-conditii', label: 'Termeni și condiții' },
                 ].map((link) => (
                   <Link
                     key={link.href}
@@ -112,14 +113,25 @@ export function Footer() {
 
         {/* Bottom wrapper */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <p style={{ color: 'rgba(248,249,250,0.6)', fontSize: '0.875rem', margin: 0 }}>
-            © 2025 Perspectiva Evei. Toate drepturile rezervate.
-          </p>
-          <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link href="/politica-de-confidentialitate" style={{ color: '#f8f9fa', fontSize: '0.875rem', textDecoration: 'underline', transition: 'color .3s' }}>
+          <div>
+            <p style={{ color: 'rgba(248,249,250,0.6)', fontSize: '0.875rem', margin: 0 }}>
+              © {new Date().getFullYear()} Perspectiva Evei. Toate drepturile rezervate.
+            </p>
+            {/* Identificarea comerciantului (Legea 365/2002 art. 5, Legea 31/1990 art. 74), ca în footerul site-ului */}
+            <p style={{ color: 'rgba(248,249,250,0.6)', fontSize: '0.75rem', lineHeight: 1.5, margin: '0.5rem 0 0' }}>
+              Platformă operată de DECOR-IUTA S.R.L. · Sediu social: Str. Poștei nr. 30, Ploiești, jud. Prahova ·
+              Nr. Reg. Com.: J29/2879/25.11.2021 · EUID: ROONRC.J29/2879/2021 · CUI: 45280156 · Capital social: 200 lei ·
+              E-mail: <a href="mailto:estedespremine@gmail.com" style={{ color: 'inherit' }}>estedespremine@gmail.com</a>
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+            <Link href="https://www.perspectivaevei.com/politica-de-confidentialitate" style={{ color: '#f8f9fa', fontSize: '0.875rem', textDecoration: 'underline', transition: 'color .3s' }}>
               Politica de confidențialitate
             </Link>
-            <Link href="/termeni-si-conditii" style={{ color: '#f8f9fa', fontSize: '0.875rem', textDecoration: 'underline', transition: 'color .3s' }}>
+            <Link href="https://www.perspectivaevei.com/setari-cookie-uri" style={{ color: '#f8f9fa', fontSize: '0.875rem', textDecoration: 'underline', transition: 'color .3s' }}>
+              Politica de cookies
+            </Link>
+            <Link href="https://www.perspectivaevei.com/termeni-si-conditii" style={{ color: '#f8f9fa', fontSize: '0.875rem', textDecoration: 'underline', transition: 'color .3s' }}>
               Termeni și condiții
             </Link>
           </div>

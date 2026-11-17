@@ -6,6 +6,7 @@ import { createInvoice } from '@/services/smartbill'
 import { fulfillOrder } from '@/services/order-fulfillment'
 import { resolveProductNames, nameForItem } from '@/services/invoice-pipeline'
 import { incrementPromoUse, validatePromoCode } from '@/services/promo'
+import { resolveCheckoutItem } from '@/services/pricing'
 import type { CreateOrderParams } from '@/types/revolut'
 
 export interface CheckoutItem {
@@ -61,6 +62,21 @@ export async function createCheckout(
   billing?: BillingInfo,
   paymentType: PaymentType = 'full'
 ): Promise<CreateCheckoutResult> {
+  // Never trust the price, name or quantity sent by the browser: price every item on the
+  // server. Only physical products can be bought in a quantity above 1.
+  items = await Promise.all(
+    items.map(async (item) => {
+      const resolved = await resolveCheckoutItem(item.productType, item.productId, paymentType)
+      return {
+        productId: resolved.productId,
+        productType: resolved.productType,
+        name: resolved.name,
+        priceEurCents: resolved.priceEurCents,
+        quantity: resolved.productType === 'PRODUCT' ? item.quantity : 1,
+      }
+    })
+  )
+
   const isInstallmentCourse =
     paymentType === 'installment' && items.some((i) => i.productType === 'COURSE')
   const grossCents = items.reduce((sum, item) => sum + item.priceEurCents * item.quantity, 0)

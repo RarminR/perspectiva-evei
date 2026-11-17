@@ -58,7 +58,7 @@ export const InviteEmail = ({ name, inviteUrl }: InviteEmailProps) => (
 
           <Text style={footer}>
             Link-ul expiră în 30 de zile. Dacă ai întrebări, scrie-ne la
-            support@perspectivaevei.com.
+            estedespremine@gmail.com.
           </Text>
         </Section>
 

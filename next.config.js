@@ -37,6 +37,20 @@ const nextConfig = {
       headers: securityHeaders,
     },
   ],
+  // 1:1 sessions are requested through the form on the main site; Eva confirms each one
+  // by e-mail. No self-booking or session payment from the platform (decision Nov 2026).
+  redirects: async () => [
+    {
+      source: '/sedinte-1-la-1',
+      destination: 'https://www.perspectivaevei.com/sedinte-1-la-1',
+      permanent: false,
+    },
+    {
+      source: '/programare',
+      destination: 'https://www.perspectivaevei.com/sedinte-1-la-1#formular',
+      permanent: false,
+    },
+  ],
 }
 
 module.exports = nextConfig

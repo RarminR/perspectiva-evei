@@ -88,7 +88,7 @@ export const SessionReminderEmail = ({
           </Text>
 
           <Text style={footer}>
-            Dacă ai întrebări, contactează-ne la support@perspectivaevei.com
+            Dacă ai întrebări, contactează-ne la evapopescucoach@gmail.com
           </Text>
         </Section>
 

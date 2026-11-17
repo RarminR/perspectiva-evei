@@ -68,7 +68,7 @@ export const InstallmentReminderEmail = ({
           </Text>
 
           <Text style={footer}>
-            Contactează-ne: support@perspectivaevei.com
+            Contactează-ne: estedespremine@gmail.com
           </Text>
         </Section>
 

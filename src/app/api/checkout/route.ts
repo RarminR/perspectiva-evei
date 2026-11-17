@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { auth } from '@/lib/auth'
 import { createCheckout } from '@/services/checkout'
+import { PricingError } from '@/services/pricing'
 import type { CheckoutItem, BillingInfo } from '@/services/checkout'
 
 const PRODUCT_TYPES = new Set(['COURSE', 'GUIDE', 'BUNDLE', 'SESSION', 'PRODUCT'])
@@ -74,6 +75,9 @@ export async function POST(req: NextRequest) {
     )
     return NextResponse.json(result, { status: 201 })
   } catch (error) {
+    if (error instanceof PricingError) {
+      return NextResponse.json({ error: error.message }, { status: error.status })
+    }
     const message = error instanceof Error ? error.message : 'Checkout failed'
     return NextResponse.json({ error: message }, { status: 500 })
   }

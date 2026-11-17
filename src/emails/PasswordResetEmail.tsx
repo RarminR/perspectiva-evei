@@ -68,7 +68,7 @@ export const PasswordResetEmail = ({
           <Hr style={hr} />
 
           <Text style={footer}>
-            Dacă ai întrebări, contactează-ne la support@perspectivaevei.com
+            Dacă ai întrebări, contactează-ne la estedespremine@gmail.com
           </Text>
         </Section>
 

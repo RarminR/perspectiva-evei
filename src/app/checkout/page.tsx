@@ -609,6 +609,18 @@ function CheckoutContent() {
           {redirecting ? 'Se redirecționează...' : `Plătește EUR ${displayPrice}`}
         </button>
 
+        <p style={{ marginTop: '0.75rem', fontSize: '0.8rem', lineHeight: 1.5, color: '#6b7280', textAlign: 'center' }}>
+          Prin plată accepți{' '}
+          <a href="https://www.perspectivaevei.com/termeni-si-conditii" target="_blank" rel="noopener noreferrer" style={{ color: '#51087e', textDecoration: 'underline' }}>
+            Termenii și condițiile
+          </a>
+          , inclusiv condițiile dreptului de retragere de 14 zile. Cum folosim datele tale:{' '}
+          <a href="https://www.perspectivaevei.com/politica-de-confidentialitate" target="_blank" rel="noopener noreferrer" style={{ color: '#51087e', textDecoration: 'underline' }}>
+            Politica de confidențialitate
+          </a>
+          .
+        </p>
+
         {error && (
           <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#dc2626', textAlign: 'center' }}>{error}</p>
         )}

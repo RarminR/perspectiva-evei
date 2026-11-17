@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar, Footer, Section, Badge, Accordion } from '@/components/ui'
 import { getCourseWithEditions } from '@/services/course'
-import { COURSE_PRICING, PRICING_FEATURES } from '@/lib/constants/pricing'
+import { COURSE_PRICING, COURSE_PROMO, PRICING_FEATURES } from '@/lib/constants/pricing'
+import { applyCoursePromo, formatEur, isCoursePromoActive } from '@/lib/course-promo'
 import { formatEditionRange } from '@/lib/edition'
 
 export const metadata: Metadata = {
@@ -107,6 +108,15 @@ export default async function CursulAdoPage() {
   // Fetch course data with enrollment counts
   const course = await getCourseWithEditions('cursul-ado')
   const activeEdition = course?.editions?.find((e) => e.enrollmentOpen)
+
+  // Black Friday: show the reduced full price while the window is open (the page is dynamic).
+  // With COURSE_PROMO.applyInCode the database keeps the regular price; otherwise the price
+  // list constant is the reference, because the admin price is already reduced.
+  const promoActive = isCoursePromoActive()
+  const regularFull = COURSE_PROMO.applyInCode
+    ? (course?.price ?? COURSE_PRICING.FULL_PRICE_EUR)
+    : COURSE_PRICING.FULL_PRICE_EUR
+  const promoFull = applyCoursePromo(regularFull)
 
   return (
     <>
@@ -236,16 +246,25 @@ export default async function CursulAdoPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Full Payment Card */}
             <div className="relative bg-white/5 backdrop-blur-sm border border-white/15 rounded-2xl p-8 text-left hover:border-white/30 transition-all">
+              {promoActive && (
+                <div className="absolute -top-3 right-6">
+                  <span className="bg-[#e49fff] text-[#2c0246] text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    −{COURSE_PROMO.percentOff}% {COURSE_PROMO.label.toUpperCase()}
+                  </span>
+                </div>
+              )}
               <div className="text-sm font-medium text-white/50 uppercase tracking-wider mb-4">Plată integrală</div>
               <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-4xl font-bold text-white">{FULL_PRICE}</span>
-                <span className="text-white/40 line-through text-lg">{FULL_PRICE_CROSSED}</span>
+                <span className="text-4xl font-bold text-white">{promoActive ? formatEur(promoFull) : FULL_PRICE}</span>
+                <span className="text-white/40 line-through text-lg">{promoActive ? formatEur(regularFull) : FULL_PRICE_CROSSED}</span>
               </div>
               <div className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-400 text-xs font-medium px-2.5 py-1 rounded-full mb-6">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Salvezi {SAVINGS_PERCENT}
+                {promoActive
+                  ? `Economisești ${formatEur(regularFull - promoFull)} · până ${COURSE_PROMO.endsLabel}`
+                  : `Salvezi ${SAVINGS_PERCENT}`}
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2.5 text-sm text-white/70">

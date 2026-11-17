@@ -44,7 +44,7 @@ export const CourseExpiryEmail = ({
           <Hr style={hr} />
 
           <Text style={footer}>
-            Dacă ai întrebări, contactează-ne: support@perspectivaevei.com
+            Dacă ai întrebări, contactează-ne: estedespremine@gmail.com
           </Text>
         </Section>
 

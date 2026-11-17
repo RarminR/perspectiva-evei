@@ -30,13 +30,92 @@ vi.mock('@/services/smartbill', () => ({
   createInvoice: vi.fn(),
 }))
 
+vi.mock('@/services/pricing', () => ({
+  resolveCheckoutItem: vi.fn(),
+}))
+
 import { prisma } from '@/lib/db'
 import { createOrder, getOrder } from '@/services/revolut'
+import { resolveCheckoutItem } from '@/services/pricing'
 import { createCheckout, getOrderStatus, handleOrderComplete } from './checkout'
+
+// Prices as the database knows them; the browser's priceEurCents is ignored.
+const SERVER_PRICES: Record<string, number> = {
+  'guide-1': 118800,
+  'guide-2': 2500,
+  'guide-3': 1000,
+}
 
 describe('Checkout Service', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mocked(resolveCheckoutItem).mockImplementation(async (productType, productId) => {
+      const cents = SERVER_PRICES[productId ?? '']
+      if (cents === undefined) throw new Error('Ghidul nu a fost găsit')
+      return {
+        productId: productId as string,
+        productType: productType as 'GUIDE',
+        name: `Server: ${productId}`,
+        priceEur: cents / 100,
+        priceEurCents: cents,
+      }
+    })
+  })
+
+  describe('createCheckout: server-side prices', () => {
+    const revolutOrder = {
+      id: 'rev-order-x',
+      token: 'checkout-token-x',
+      state: 'PENDING',
+      type: 'payment',
+      created_date: new Date().toISOString(),
+      updated_date: new Date().toISOString(),
+      amount: 0,
+      currency: 'EUR',
+    }
+
+    it('charges the database price, not the price sent by the browser', async () => {
+      vi.mocked(createOrder).mockResolvedValue(revolutOrder as any)
+      vi.mocked(prisma.order.create).mockResolvedValue({ id: 'ord-x' } as any)
+
+      await createCheckout('user-1', [
+        { productId: 'guide-1', productType: 'GUIDE', name: 'Fake', priceEurCents: 1, quantity: 1 },
+      ])
+
+      expect(createOrder).toHaveBeenCalledWith(expect.objectContaining({ amount: 118800 }))
+      expect(prisma.order.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            totalAmount: 1188,
+            items: {
+              create: [expect.objectContaining({ productId: 'guide-1', unitPrice: 1188, quantity: 1 })],
+            },
+          }),
+        })
+      )
+    })
+
+    it('ignores a quantity above 1 for digital items', async () => {
+      vi.mocked(createOrder).mockResolvedValue(revolutOrder as any)
+      vi.mocked(prisma.order.create).mockResolvedValue({ id: 'ord-y' } as any)
+
+      await createCheckout('user-1', [
+        { productId: 'guide-2', productType: 'GUIDE', name: 'Ghid', priceEurCents: 2500, quantity: 3 },
+      ])
+
+      expect(createOrder).toHaveBeenCalledWith(expect.objectContaining({ amount: 2500 }))
+    })
+
+    it('creates no order when an item cannot be priced', async () => {
+      await expect(
+        createCheckout('user-1', [
+          { productId: 'missing', productType: 'GUIDE', name: 'Ghid', priceEurCents: 100, quantity: 1 },
+        ])
+      ).rejects.toThrow('Ghidul nu a fost găsit')
+
+      expect(createOrder).not.toHaveBeenCalled()
+      expect(prisma.order.create).not.toHaveBeenCalled()
+    })
   })
 
   describe('createCheckout', () => {

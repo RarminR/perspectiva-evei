@@ -91,7 +91,7 @@ export const SessionBookedEmail = ({
           </Text>
 
           <Text style={footer}>
-            Contactează-ne: support@perspectivaevei.com
+            Contactează-ne: evapopescucoach@gmail.com
           </Text>
         </Section>
 
