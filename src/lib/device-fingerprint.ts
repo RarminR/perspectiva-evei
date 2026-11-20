@@ -86,7 +86,11 @@ let registrationPromise: Promise<{ fingerprint: string; error?: string }> | null
  * and registers the device with the server so video routes can validate it.
  * Deduped per page load — concurrent callers share one registration request.
  */
-export function ensureDeviceRegistered(): Promise<{ fingerprint: string; error?: string }> {
+export function ensureDeviceRegistered(): Promise<{
+  fingerprint: string
+  error?: string
+  limitReached?: boolean
+}> {
   if (!registrationPromise) {
     registrationPromise = (async () => {
       let fingerprint = localStorage.getItem(STORAGE_KEY)
@@ -108,6 +112,8 @@ export function ensureDeviceRegistered(): Promise<{ fingerprint: string; error?:
         return {
           fingerprint,
           error: (data as { error?: string }).error || 'Eroare la înregistrarea dispozitivului',
+          // POST /api/devices answers 403 only when the account is at the device limit
+          limitReached: res.status === 403,
         }
       }
 

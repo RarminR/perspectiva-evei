@@ -109,7 +109,7 @@ export default async function ProfilulMeuPage() {
           </div>
 
           {/* Devices section */}
-          <div style={sectionStyle}>
+          <div id="dispozitive" style={{ ...sectionStyle, scrollMarginTop: '6rem' }}>
             <h2 style={sectionHeadingStyle}>Dispozitivele mele</h2>
             <DeviceList devices={devices} />
           </div>

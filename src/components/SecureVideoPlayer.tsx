@@ -48,6 +48,7 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
   const [duration, setDuration] = useState(0)
   const [quality, setQuality] = useState('720')
   const [error, setError] = useState<string | null>(null)
+  const [deviceLimitReached, setDeviceLimitReached] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
@@ -56,8 +57,9 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
     if (!hlsSrc) return null
     try {
       // Register this device (idempotent) and get its fingerprint
-      const { fingerprint, error: registrationError } = await ensureDeviceRegistered()
+      const { fingerprint, error: registrationError, limitReached } = await ensureDeviceRegistered()
       if (registrationError) {
+        setDeviceLimitReached(Boolean(limitReached))
         setError(registrationError)
         return null
       }
@@ -67,6 +69,7 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
         { headers: { 'x-device-fingerprint': fingerprint } }
       )
       if (res.status === 403) {
+        setDeviceLimitReached(false)
         setError('Accesul tău a expirat. Te rugăm să contactezi suportul.')
         return null
       }
@@ -250,10 +253,24 @@ export function SecureVideoPlayer({ hlsSrc, editionId, lessonId: _lessonId, onPr
   if (error) {
     return (
       <div
-        className="bg-black rounded-2xl aspect-video flex items-center justify-center"
+        className="bg-black rounded-2xl aspect-video flex flex-col items-center justify-center gap-3"
         data-testid="video-error"
       >
         <p className="text-red-400 text-sm text-center px-4">{error}</p>
+        {deviceLimitReached && (
+          <>
+            <a
+              href="/profilul-meu#dispozitive"
+              className="text-white text-sm font-medium underline underline-offset-4"
+              data-testid="device-limit-link"
+            >
+              Mergi la Dispozitivele mele
+            </a>
+            <p className="text-gray-400 text-xs text-center px-4">
+              După ce elimini dispozitivul vechi, revino aici și reîncarcă pagina.
+            </p>
+          </>
+        )}
       </div>
     )
   }

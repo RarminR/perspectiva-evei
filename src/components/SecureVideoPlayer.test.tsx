@@ -191,4 +191,50 @@ describe('SecureVideoPlayer', () => {
 
     expect(onProgress).toHaveBeenCalledWith(42)
   })
+
+  it('links to Dispozitivele mele when the device limit is reached', async () => {
+    vi.resetModules()
+    localStorage.setItem('device-fingerprint', 'fp-test')
+    const limitError = 'Ai atins limita de 2 dispozitive. Șterge un dispozitiv pentru a continua.'
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(async (url: unknown) => {
+      if (String(url).startsWith('/api/devices')) {
+        return { ok: false, status: 403, json: async () => ({ error: limitError }) }
+      }
+      return { ok: true, status: 200, json: async () => ({ url: 'https://cdn.example.com/master.m3u8' }) }
+    }))
+    const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
+
+    render(<SecureVideoPlayer hlsSrc="https://cdn.example.com/master.m3u8" editionId="ed-1" lessonId="lesson-1" />)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(screen.getByTestId('video-error')).toBeInTheDocument()
+    expect(screen.getByText(limitError)).toBeInTheDocument()
+    expect(screen.getByTestId('device-limit-link')).toHaveAttribute('href', '/profilul-meu#dispozitive')
+    localStorage.removeItem('device-fingerprint')
+  })
+
+  it('does not show the devices link for other registration errors', async () => {
+    vi.resetModules()
+    localStorage.setItem('device-fingerprint', 'fp-test')
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(async (url: unknown) => {
+      if (String(url).startsWith('/api/devices')) {
+        return { ok: false, status: 500, json: async () => ({}) }
+      }
+      return { ok: true, status: 200, json: async () => ({ url: 'https://cdn.example.com/master.m3u8' }) }
+    }))
+    const { SecureVideoPlayer } = await import('./SecureVideoPlayer')
+
+    render(<SecureVideoPlayer hlsSrc="https://cdn.example.com/master.m3u8" editionId="ed-1" lessonId="lesson-1" />)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(screen.getByText('Eroare la înregistrarea dispozitivului')).toBeInTheDocument()
+    expect(screen.queryByTestId('device-limit-link')).not.toBeInTheDocument()
+    localStorage.removeItem('device-fingerprint')
+  })
 })
